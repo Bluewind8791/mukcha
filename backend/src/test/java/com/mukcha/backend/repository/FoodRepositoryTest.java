@@ -20,7 +20,7 @@ public class FoodRepositoryTest {
     void test_1() {
         Food food = Food.builder()
                 .name("원헌드RED")
-                .company(new Company())
+                .company(Company.builder().name("치킨플러스").build())
                 .category(Category.CHICKEN)
                 .build();
         

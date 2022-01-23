@@ -5,7 +5,6 @@ import lombok.EqualsAndHashCode;
 import lombok.Builder;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
-import lombok.NonNull;
 import lombok.ToString;
 
 import java.time.LocalDate;
@@ -35,7 +34,6 @@ public class User extends BaseTimeEntity {
     @Column(nullable = false, unique = true)
     private String username;
 
-    // @NonNull
     // private String password;
 
     @Column(nullable = false, unique = true)
@@ -47,6 +45,9 @@ public class User extends BaseTimeEntity {
 
     @Enumerated(value = EnumType.STRING) // enum 이름을 DB에 저장
     private Gender gender;
+
+    @Column(columnDefinition = "boolean default false")
+    private boolean isDeleted;
 
 
     // private want;

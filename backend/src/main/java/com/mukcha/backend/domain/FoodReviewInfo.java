@@ -2,7 +2,6 @@ package com.mukcha.backend.domain;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
-import lombok.Builder;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 
@@ -17,7 +16,6 @@ import lombok.AllArgsConstructor;
 
 @Data
 @Entity
-@Builder
 @NoArgsConstructor
 @AllArgsConstructor
 @ToString(callSuper = true)
@@ -30,8 +28,7 @@ public class FoodReviewInfo extends BaseTimeEntity {
 
     private float averageReviewScore;
 
-    // @OneToOne
-    // private Food food;
+    @OneToOne
+    private Food food;
 
-    
 }

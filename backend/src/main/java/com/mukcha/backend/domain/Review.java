@@ -2,16 +2,15 @@ package com.mukcha.backend.domain;
 
 import java.time.LocalDate;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
-import lombok.Builder;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 import lombok.AllArgsConstructor;
@@ -19,7 +18,6 @@ import lombok.AllArgsConstructor;
 
 @Data
 @Entity
-@Builder
 @NoArgsConstructor
 @AllArgsConstructor
 @ToString(callSuper = true)
@@ -34,18 +32,16 @@ public class Review extends BaseTimeEntity {
 
     private float score;
 
-    private String image;
-
+    @Column(columnDefinition = "integer default 0")
     private int likesCount;
 
     private LocalDate eatenDate;
     
-    // @ManyToOne
-    // private User user;
+    @ManyToOne
+    private User user; // user_id
 
-    // @ManyToOne
-    // @JoinColumn(name = "food_id")
-    // private Food food;
+    @ManyToOne
+    private Food food; // food_id
 
 
 }

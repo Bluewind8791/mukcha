@@ -10,14 +10,11 @@ import lombok.ToString;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.persistence.CascadeType;
-import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
 
 
@@ -39,8 +36,9 @@ public class Company extends BaseTimeEntity {
     
     private String image;
     
-    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-    @JoinColumn
+    @OneToMany(mappedBy = "company", fetch = FetchType.EAGER)
+    @Builder.Default
+    @ToString.Exclude
     private List<Food> foods = new ArrayList<>();
 
 }
