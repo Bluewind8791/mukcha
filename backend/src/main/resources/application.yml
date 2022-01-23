@@ -1,0 +1,31 @@
+server:
+  port: 8000
+  servlet:
+    context-path: /
+    encoding:
+      charset: UTF-8
+      enabled: true
+      force: true
+
+spring:
+  datasource:
+    username: root
+    password: 1234
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/mukcha?serverTimezone=Asia/Seoul
+
+  jpa:
+    open-in-view: false # Explicitly configure spring.jpa.open-in-view to disable this warning
+    generate-ddl: true #
+    hibernate:
+      ddl-auto: create
+    show-sql: true # 콘솔에 jpa 실행쿼리
+    properties:
+      hibernate:
+        format_sql: true # 실행쿼리를 가독성있게 표현
+
+  output:
+    ansi:
+      enabled: always
+        
+
