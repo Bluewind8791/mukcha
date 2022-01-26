@@ -17,14 +17,17 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 
+import org.hibernate.annotations.Where;
+
 
 @Data
 @Entity
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@ToString(callSuper = true) // toString 재정의
+@ToString(callSuper = true)
 @EqualsAndHashCode(callSuper = true)
+@Where(clause = "deleted = false")
 public class User extends BaseTimeEntity {
     
     @Id
@@ -34,7 +37,8 @@ public class User extends BaseTimeEntity {
     @Column(nullable = false, unique = true)
     private String username;
 
-    // private String password;
+    @Column(nullable = false)
+    private String password;
 
     @Column(nullable = false, unique = true)
     private String email;
@@ -47,7 +51,7 @@ public class User extends BaseTimeEntity {
     private Gender gender;
 
     @Column(columnDefinition = "boolean default false")
-    private boolean isDeleted;
+    private boolean deleted;
 
 
     // private want;

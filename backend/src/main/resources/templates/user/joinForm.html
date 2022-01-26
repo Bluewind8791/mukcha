@@ -1,0 +1,24 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<body>
+    <div class="container">
+        <form action="/user/join" method="post">
+            <div class="form-group">
+
+                <label for="username"> 이름 </label>
+                <input type="text" id="username" name="username" placeholder="이름을 입력하세요">
+
+                <label for="password"> 비밀번호 </label>
+                <input type="text" id="password" name="password" placeholder="패스워드를 입력하세요">
+
+                <label for="email"> 이메일 </label>
+                <input type="text" id="email" name="email" placeholder="이메일을 입력하세요">
+
+            </div>
+            <button type="submit"> 등록 </button>
+        </form>
+    </div> <!-- /container -->
+</body>
+
+</html>
