@@ -1,18 +1,13 @@
-<!DOCTYPE HTML>
-<html xmlns:th="http://www.thymeleaf.org">
 
-<body>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org"
+    xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{layout/layout}">
 
-    <div class="container">
-        <div>
-            <h1>MUKCHA</h1>
-            <p>
-                <a href="/user/join">회원 가입</a>
-                <a href="/user">회원 목록</a>
-            </p>
-        </div>
-    </div> <!-- /container -->
-    
-</body>
+<div layout:fragment="content">
+    <div class="container-fluid mt-3">
+        <h3>Navbar Forms</h3>
+        <p>You can also include forms inside the navigation bar.</p>
+    </div>
+</div>
 
 </html>

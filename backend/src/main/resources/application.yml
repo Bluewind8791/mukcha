@@ -8,6 +8,19 @@ server:
       force: true
 
 spring:
+
+  thymeleaf:
+    prefix: classpath:templates/
+    suffix: .html
+    check-template-location: true
+    mode: HTML5
+
+  devtools:
+    livereload:
+      enabled: true
+    restart:
+      enabled: true
+
   datasource:
     username: root
     password: 1234

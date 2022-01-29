@@ -22,6 +22,7 @@ public class UserRepositoryTest {
     void test_1() {
         User user = User.builder()
                 .username("ben")
+                .password("1234")
                 .email("ben@email.com")
                 .gender(Gender.MALE)
                 .birthday(LocalDate.of(1991, 12, 14))

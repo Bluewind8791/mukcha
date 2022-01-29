@@ -8,14 +8,18 @@ import lombok.NoArgsConstructor;
 import lombok.ToString;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.OneToMany;
 
 import org.hibernate.annotations.Where;
 
@@ -53,6 +57,7 @@ public class User extends BaseTimeEntity {
     @Column(columnDefinition = "boolean default false")
     private boolean deleted;
 
-
-    // private want;
+    @OneToMany(fetch = FetchType.EAGER)
+    @Builder.Default
+    private List<Want> wantList = new ArrayList<>();
 }
