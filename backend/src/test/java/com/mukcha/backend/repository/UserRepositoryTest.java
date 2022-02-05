@@ -21,7 +21,7 @@ public class UserRepositoryTest {
     @Test
     void test_1() {
         User user = User.builder()
-                .username("ben")
+                .nickname("ben")
                 .password("1234")
                 .email("ben@email.com")
                 .gender(Gender.MALE)

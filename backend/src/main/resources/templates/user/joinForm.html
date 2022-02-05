@@ -3,23 +3,95 @@
     xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{layout/layout}">
 
 <div layout:fragment="content">
-    <div class="container">
+
+    <div class="container-fluid mt-3 w3-border w3-padding w3-round ws-grey">
         <form action="/user/join" method="post">
-            <div class="form-group">
 
-                <label for="username"> 이름 </label>
-                <input type="text" id="username" name="username" placeholder="이름을 입력하세요">
+            <br>
 
-                <label for="password"> 비밀번호 </label>
-                <input type="text" id="password" name="password" placeholder="패스워드를 입력하세요">
-
-                <label for="email"> 이메일 </label>
-                <input type="text" id="email" name="email" placeholder="이메일을 입력하세요">
-
+            <div class="mb-3 mt-3 was-validated">
+                <label for="username" class="form-label"> 아이디 : </label>
+                <input type="text" class="form-control" 
+                id="username" 
+                name="username" 
+                placeholder="아이디를 입력하세요" required>
+                <div class="valid-feedback"></div>
+                <div class="invalid-feedback">필수 항목입니다.</div>
             </div>
-            <button type="submit"> 등록 </button>
+
+            <div class="mb-3 was-validated">
+                <label for="pwd" class="form-label"> 비밀번호 : </label>
+                <input type="password" class="form-control" 
+                id="password" 
+                name="password"
+                placeholder="비밀번호를 입력하세요" required>
+                <div class="valid-feedback"></div>
+                <div class="invalid-feedback">필수 항목입니다.</div>
+            </div>
+
+            <div class="mb-3 mt-3 was-validated">
+                <label for="email" class="form-label"> 이메일 : </label>
+                <input type="email" class="form-control" 
+                id="email" 
+                name="email"
+                placeholder="이메일을 입력하세요" required>
+                <div class="valid-feedback"></div>
+                <div class="invalid-feedback">필수 항목입니다.</div>
+            </div>
+
+            <div class="mb-3 mt-3">
+                <label for="email" class="form-label"> 성별 : </label>
+                <select class="form-select" id="gender" name="gender">
+                    <option> 선택안함 </option>
+                    <option> 남자 </option>
+                    <option> 여자 </option>
+                </select>
+            </div>
+
+            <div class="mb-3 mt-3">
+                <label for="email" class="form-label"> 생년월일 : </label>
+            </div>
+
+            <button id="btn-save" class="btn btn-primary"> 회원가입 </button>
         </form>
+
     </div> <!-- /container -->
 </div>
 
 </html>
+
+<!-- 
+<div class="container-fluid mt-3 w3-border w3-padding w3-round ws-grey">
+    <div class="mb-3 mt-3">
+        <label for="email" class="fxorm-label">
+            <font style="vertical-align: inherit;">
+                <font style="vertical-align: inherit;">이메일:</font>
+            </font>
+        </label>
+        <input type="text" class="form-control" style="margin-top:5px!important" id="email" placeholder="이메일 입력"
+            name="email">
+    </div>
+    <div class="mb-3">
+        <label for="pwd" class="form-label">
+            <font style="vertical-align: inherit;">
+                <font style="vertical-align: inherit;">비밀번호:</font>
+            </font>
+        </label>
+        <input type="text" class="form-control" id="pwd" style="margin-top:5px!important" placeholder="암호를 입력"
+            name="pswd">
+    </div>
+    <div class="form-check mb-3">
+        <label class="form-check-label">
+            <input class="form-check-input" type="checkbox" name="remember">
+            <font style="vertical-align: inherit;">
+                <font style="vertical-align: inherit;"> 날 기억해
+                </font>
+            </font>
+        </label>
+    </div>
+    <button type="button" class="btn btn-primary mb-3">
+        <font style="vertical-align: inherit;">
+            <font style="vertical-align: inherit;">제출하다</font>
+        </font>
+    </button>
+</div> -->

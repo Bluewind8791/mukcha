@@ -15,12 +15,12 @@ import lombok.extern.slf4j.Slf4j;
 public class UserController {
 
     private UserService userService;
-    
+
     @Autowired
     public UserController(UserService userService) {
         this.userService = userService;
     }
-    
+
     // 회원가입 url
     @GetMapping("/user/join")
     public String joinForm() {
@@ -31,13 +31,13 @@ public class UserController {
     @PostMapping("/user/join")
     public String join(UserForm form) {
         User user = User.builder()
-            .username(form.getUsername())
-            .password(form.getPassword())
             .email(form.getEmail())
+            .password(form.getPassword())
+            .nickname(form.getNickname())
             .gender(form.getGender())
             .birthday(form.getBirthday())
             .build();
-        
+
         userService.join(user);
         log.info("회원가입이 처리되었습니다." + user.toString());
         return "redirect:/";

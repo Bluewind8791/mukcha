@@ -18,7 +18,7 @@ public class HomeController {
     // login page
     @GetMapping(value="/login")
     public String login() {
-        return "loginForm";
+        return "user/loginForm";
     }
 
     // login error - 로그인 에러시 loginForm 으로

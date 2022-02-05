@@ -1,4 +1,4 @@
-package com.mukcha.backend.controller.test;
+package com.mukcha.backend.controller;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

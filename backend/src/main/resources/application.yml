@@ -13,7 +13,7 @@ spring:
     prefix: classpath:templates/
     suffix: .html
     check-template-location: true
-    mode: HTML5
+    mode: HTML
 
   devtools:
     livereload:
@@ -39,6 +39,6 @@ spring:
 
   output:
     ansi:
-      enabled: always
-        
+      enabled: always # console color
+
 

@@ -2,8 +2,9 @@ package com.mukcha.backend.repository;
 
 import com.mukcha.backend.domain.Category;
 import com.mukcha.backend.domain.Company;
-import com.mukcha.backend.domain.Food;
+import com.mukcha.backend.repository.helper.RepositoryTestHelper;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,36 +15,30 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional
 public class CompanyRepositoryTest {
 
-    @Autowired
-    private CompanyRepository companyRepository;
+    @Autowired private CompanyRepository companyRepository;
+    @Autowired private FoodRepository foodRepository;
+    private RepositoryTestHelper repositoryTestHelper;
 
-    @Autowired
-    private FoodRepository foodRepository;
+    @BeforeEach
+    void before() {
+        this.repositoryTestHelper = new RepositoryTestHelper(foodRepository, companyRepository);
+        Company company = repositoryTestHelper.createCompany("치킨플러스", "imageUrl");
+        repositoryTestHelper.createFood("원헌드RED", company, Category.CHICKEN, "testImage");
+    }
 
-    @DisplayName("1. Company Repository Test")
+    @DisplayName("1. findById Test")
     @Test
     void test_1() {
-
-        givenFood();
-        
         System.out.println(companyRepository.findById(1L));
         System.out.println(foodRepository.findById(1L));
     }
 
-    private Food givenFood() {
-        Food food = new Food();
-        food.setName("원헌드RED");
-        food.setCategory(Category.CHICKEN);
-        food.setCompany(givenCompany());
-
-        return foodRepository.save(food);
+    @DisplayName("2. findByName Test")
+    @Test
+    void test_2() {
+        System.out.println(companyRepository.findByName("치킨플러스"));
     }
 
-    private Company givenCompany() {
-        Company company = new Company();
-        company.setName("치킨플러스");
-        return companyRepository.save(company);
-    }
 
 
 }

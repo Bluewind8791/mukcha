@@ -59,7 +59,7 @@ public class ReviewRepositoryTest {
 
     public User givenUser() {
         User user = new User();
-        user.setUsername("ben");
+        user.setNickname("ben");
         user.setEmail("ben@email.com");
         return userRepository.save(user);
     }
