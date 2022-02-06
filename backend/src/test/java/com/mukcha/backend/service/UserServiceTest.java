@@ -81,23 +81,30 @@ public class UserServiceTest extends WithUserTest {
     void test_5() {
         User user = userTestHelper.createUser("ben@test.com", "ben", Authority.ROLE_USER); // make user
         userService.addAuthority(user.getUserId(), Authority.ROLE_ADMIN); // add authority
-
         User savedUser = userService.findUser(user.getUserId()).get();
-
         userTestHelper.assertUser(savedUser, "ben@test.com", "ben", Authority.ROLE_USER, Authority.ROLE_ADMIN);
     }
 
-    @DisplayName("6. ")
+    @DisplayName("6. ADMIN 권한 취소")
     @Test
     void test_6() {
+        User user = userTestHelper.createUser("ben@test.com", "ben", Authority.ROLE_USER, Authority.ROLE_ADMIN);
+        userService.removeAuthority(user.getUserId(), Authority.ROLE_ADMIN);
+        User savedUser = userService.findUser(user.getUserId()).get();
+        userTestHelper.assertUser(savedUser, "ben@test.com", "ben", Authority.ROLE_USER);
+    }
 
+    @DisplayName("7. UserSecurityService의 email로 검색할 수 있다")
+    @Test
+    void test_7() {
+        userTestHelper.createUser("ben@test.com", "ben");
+        User savedUser = (User) userSecurityService.loadUserByUsername("ben@test.com");
+        userTestHelper.assertUser(savedUser, "ben@test.com", "ben");
     }
 
 
 /**
- * 이메일을 제외한 이름, 패스워드, 기타 정보를 수정할 수 있다.
- * email로 검색할 수 있다.
- * email이 중복되어서 등록되지 않는다.
+ * 패스워드를 수정할 수 있다.
  */
 
 

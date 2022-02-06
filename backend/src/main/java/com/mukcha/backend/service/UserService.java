@@ -3,6 +3,8 @@ package com.mukcha.backend.service;
 import java.time.LocalDate;
 import java.util.HashSet;
 import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 import com.mukcha.backend.domain.Authority;
 import com.mukcha.backend.domain.Gender;
@@ -16,22 +18,25 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 @Transactional
 public class UserService {
-    
+
     private final UserRepository userRepository;
-    
+
     @Autowired
     public UserService(UserRepository userRepository) {
         this.userRepository = userRepository;
     }
 
-    /**
-     * 회원가입 서비스
-     * username, email 중복 불가
-     */
+    // find services
+    public Optional<User> findUser(Long userId) {
+        return userRepository.findById(userId);
+    }
+
+    // 회원가입 서비스
     public User join(User user) {
         return userRepository.save(user);
     }
 
+    // 수정 서비스
     public void updateEmail(Long userId, String email) {
         // userRepository.findByEmail(email)
         //     .ifPresent(m -> {
@@ -78,9 +83,25 @@ public class UserService {
         });
     }
 
-    public Optional<User> findUser(Long userId) {
-        return userRepository.findById(userId);
+    public void removeAuthority(Long userId, String authority) {
+        userRepository.findById(userId).ifPresent(user -> {
+            Authority targetRole = new Authority(user.getUserId(), authority); // target role 생성
+            if (user.getAuthorities() == null) { // 아무 권한이 없다면
+                return;
+            } else if (user.getAuthorities().contains(targetRole)) { // 해당 권한을 가지고 있다면
+                Set<Authority> authorities = user.getAuthorities()
+                    .stream()
+                    .filter(
+                        auth -> !auth.equals(targetRole))
+                            .collect(Collectors.toSet());
+
+                user.setAuthorities(authorities);
+                join(user);
+            }
+        });
     }
+
+
 
 
     // email 중복 검사
