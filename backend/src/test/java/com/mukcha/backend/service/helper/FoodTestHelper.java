@@ -13,7 +13,7 @@ import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
 public class FoodTestHelper {
-    
+
     private final FoodService foodService;
 
     public Food makeFood(String name, Company company, Category category, String image) {

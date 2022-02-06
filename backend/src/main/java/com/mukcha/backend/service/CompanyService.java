@@ -11,7 +11,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 @Transactional
 public class CompanyService {
-    
+
     private final CompanyRepository companyRepository;
 
     @Autowired

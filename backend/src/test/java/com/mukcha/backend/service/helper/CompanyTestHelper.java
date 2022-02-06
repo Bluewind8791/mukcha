@@ -13,7 +13,7 @@ public class CompanyTestHelper {
 
     private final CompanyService companyService;
 
-    public Company makeCompany(String name, String imageUrl) {
+    public static Company makeCompany(String name, String imageUrl) {
         return Company.builder()
                     .name(name)
                     .image(imageUrl)

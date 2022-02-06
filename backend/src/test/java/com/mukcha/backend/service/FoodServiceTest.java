@@ -5,45 +5,23 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import java.util.List;
 
 import com.mukcha.backend.domain.Category;
-import com.mukcha.backend.domain.Company;
 import com.mukcha.backend.domain.Food;
-import com.mukcha.backend.repository.CompanyRepository;
-import com.mukcha.backend.repository.FoodRepository;
-import com.mukcha.backend.service.helper.CompanyTestHelper;
-import com.mukcha.backend.service.helper.FoodTestHelper;
+import com.mukcha.backend.service.helper.WithFoodTest;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
 
 
 @Transactional
 @SpringBootTest
-public class FoodServiceTest {
+public class FoodServiceTest extends WithFoodTest {
 
-    @Autowired private FoodRepository foodRepository;
-    @Autowired private CompanyService companyService;
-    @Autowired private CompanyRepository companyRepository;
-
-    private FoodService foodService;
-    private FoodTestHelper foodTestHelper;
-    private CompanyTestHelper companyTestHelper;
-    Food food;
-    Company company;
-    
     @BeforeEach
     void before() {
-        this.foodRepository.deleteAll();
-        this.companyRepository.deleteAll();
-        this.foodService = new FoodService(foodRepository);
-        this.foodTestHelper = new FoodTestHelper(this.foodService);
-        this.companyTestHelper = new CompanyTestHelper(this.companyService);
-
-        company = this.companyTestHelper.createCompany("test company", "imageUrl");
-        food = this.foodTestHelper.createFood("test food", company, Category.CHICKEN, "imageUrl");
+        prepareFoodTest();
     }
 
     @DisplayName("1. 음식을 생성한다")
@@ -70,10 +48,6 @@ public class FoodServiceTest {
         assertEquals("test2 food", foodRepository.findAll().get(0).getName());
         assertEquals("imageUrl2", foodRepository.findAll().get(0).getImage());
         assertEquals(Category.PIZZA, foodRepository.findAll().get(0).getCategory());
-
-        // Company company2 = this.companyTestHelper.createCompany("test2 company", "imageUrl2");
-        // foodService.editFoodCompany(food.getId(), "test2 company");
-        // assertEquals("test2 company", foodRepository.findAll().get(0).getCompany().getName());
     }
 
     @DisplayName("3. 카테고리를 가져온다")
