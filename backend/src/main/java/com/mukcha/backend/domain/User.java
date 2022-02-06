@@ -43,13 +43,12 @@ public class User extends BaseTimeEntity implements UserDetails {
     @GeneratedValue(strategy = GenerationType.IDENTITY) // 순차적으로 증가
     private Long userId;
 
-    @Column(nullable = false, unique = true)
+    @Column(unique = true)
     private String email;
     
-    @Column(nullable = false)
     private String password;
 
-    @Column(nullable = false, unique = true)
+    @Column(unique = true)
     private String nickname;
 
     private String profileImage;
