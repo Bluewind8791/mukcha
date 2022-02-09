@@ -10,6 +10,7 @@ import lombok.ToString;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
@@ -29,18 +30,24 @@ import javax.persistence.Table;
 @ToString(callSuper = true)
 @EqualsAndHashCode(callSuper = true)
 public class Company extends BaseTimeEntity {
-    
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long companyId;
 
     private String name;
-    
+
     private String image;
-    
-    @OneToMany(mappedBy = "company", fetch = FetchType.EAGER)
+
+    @OneToMany(fetch = FetchType.EAGER, mappedBy = "company", cascade = CascadeType.ALL)
     @Builder.Default
     @ToString.Exclude
     private List<Food> foods = new ArrayList<>();
+    
+
+    public void addFood(Food food) {
+        this.getFoods().add(food);
+        food.setCompany(this);
+    }
 
 }

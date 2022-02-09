@@ -38,7 +38,8 @@ public class Food extends BaseTimeEntity {
     @Enumerated(EnumType.STRING)
     private Category category;
 
-    @ManyToOne // 한 회사에는 여러가지의 메뉴/음식이 있다.
+    // 한 회사에는 여러가지의 메뉴/음식이 있다.
+    @ManyToOne
     @JoinColumn(foreignKey = @ForeignKey(name = "foodId"))
     Company company;
 
