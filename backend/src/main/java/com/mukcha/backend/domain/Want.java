@@ -20,7 +20,7 @@ public class Want {
     
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private Long wantId;
 
     private Long food_id;
 }

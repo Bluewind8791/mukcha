@@ -26,7 +26,7 @@ public class Review extends BaseTimeEntity {
     
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private Long reviewId;
 
     private String comment;
 
@@ -35,7 +35,7 @@ public class Review extends BaseTimeEntity {
     @Column(columnDefinition = "integer default 0")
     private int likesCount;
 
-    private LocalDate eatenDate;
+    private LocalDate eatenDate; // updateable
     
     @ManyToOne
     private User user; // user_id

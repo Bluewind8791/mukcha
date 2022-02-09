@@ -24,7 +24,7 @@ public class FoodReviewInfo extends BaseTimeEntity {
     
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private Long foodReviewInfoId;
 
     private float averageReviewScore;
 

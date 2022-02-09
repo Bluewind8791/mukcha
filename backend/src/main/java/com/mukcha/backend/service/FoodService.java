@@ -31,7 +31,7 @@ public class FoodService {
     
     // 음식을 생성한다.
     public Food save(Food food) {
-        if (food.getId() == null) {
+        if (food.getFoodId() == null) {
             food.setCreatedAt(LocalDateTime.now());
         }
         food.setUpdatedAt(LocalDateTime.now());

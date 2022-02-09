@@ -38,14 +38,14 @@ import org.springframework.security.core.userdetails.UserDetails;
 @ToString(callSuper = true)
 @EqualsAndHashCode(callSuper = true)
 public class User extends BaseTimeEntity implements UserDetails {
-    
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY) // 순차적으로 증가
     private Long userId;
 
     @Column(unique = true)
     private String email;
-    
+
     private String password;
 
     @Column(unique = true)

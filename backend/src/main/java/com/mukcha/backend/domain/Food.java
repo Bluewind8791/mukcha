@@ -3,6 +3,7 @@ package com.mukcha.backend.domain;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
+import javax.persistence.ForeignKey;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -28,7 +29,7 @@ public class Food extends BaseTimeEntity {
     
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private Long foodId;
 
     private String name;
     
@@ -37,8 +38,8 @@ public class Food extends BaseTimeEntity {
     @Enumerated(EnumType.STRING)
     private Category category;
 
-    @ManyToOne
-    @JoinColumn(name = "company_id")
-    private Company company;
+    @ManyToOne // 한 회사에는 여러가지의 메뉴/음식이 있다.
+    @JoinColumn(foreignKey = @ForeignKey(name = "foodId"))
+    Company company;
 
 }

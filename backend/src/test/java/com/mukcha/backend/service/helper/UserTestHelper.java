@@ -38,6 +38,12 @@ public class UserTestHelper {
         return userService.join(user);
     }
 
+    public User createUser(String email, String nickname, String password) {
+        User user = makeUser(email, nickname);
+        user.setPassword(passwordEncoder.encode(password));
+        return userService.join(user);
+    }
+
     public User createUser(String email, String nickname, String ... authorities) {
         User user = createUser(email, nickname);
         Stream.of(authorities).forEach(auth -> userService.addAuthority(user.getUserId(), auth));

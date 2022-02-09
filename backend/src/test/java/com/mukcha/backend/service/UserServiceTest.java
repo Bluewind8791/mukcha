@@ -102,10 +102,16 @@ public class UserServiceTest extends WithUserTest {
         userTestHelper.assertUser(savedUser, "ben@test.com", "ben");
     }
 
+    @DisplayName("8. 패스워드를 수정할 수 있다.")
+    @Test
+    void test_8() {
+        User user = userTestHelper.createUser("ben@test.com", "ben", "123456"); // make user
+        userService.updatePassword(user.getUserId(), "111111"); // update password
+        User savedUser = userService.findUser(user.getUserId()).get(); // find user
+        assertEquals("111111", savedUser.getPassword()); // assert
+    }
 
-/**
- * 패스워드를 수정할 수 있다.
- */
+
 
 
 }

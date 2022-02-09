@@ -12,6 +12,7 @@ import com.mukcha.backend.domain.User;
 import com.mukcha.backend.repository.UserRepository;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -63,6 +64,13 @@ public class UserService {
         userRepository.updateBirthday(userId, birthday);
     }
 
+    public void updatePassword(Long userId, String password) {
+        if (password.length() <= 5 || password.length() > 20) {
+            throw new IllegalArgumentException("패스워드는 6자 이상, 20자 이하여야 합니다");
+        }
+        userRepository.updatePassword(userId, password);
+    }
+
 
     // 권한 부여
     public void addAuthority(Long userId, String authority) {
@@ -100,6 +108,8 @@ public class UserService {
             }
         });
     }
+
+    
 
 
 

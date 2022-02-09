@@ -20,9 +20,11 @@ public class WithUserTest {
 
         // clear repo
         this.userRepository.deleteAll();
+
         // service
         this.userService = new UserService(userRepository);
         this.userSecurityService = new UserSecurityService(userRepository);
+        
         //test helper
         this.userTestHelper = new UserTestHelper(userService, NoOpPasswordEncoder.getInstance());
     }

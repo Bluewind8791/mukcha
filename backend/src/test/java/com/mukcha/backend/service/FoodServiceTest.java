@@ -41,9 +41,9 @@ public class FoodServiceTest extends WithFoodTest {
     @DisplayName("2. 음식 이름, 회사, 이미지, 카테고리를 수정한다.")
     @Test
     void test_2() {
-        foodService.editFoodName(food.getId(), "test2 food");
-        foodService.editFoodImage(food.getId(), "imageUrl2");
-        foodService.editFoodCategory(food.getId(), Category.PIZZA);
+        foodService.editFoodName(food.getFoodId(), "test2 food");
+        foodService.editFoodImage(food.getFoodId(), "imageUrl2");
+        foodService.editFoodCategory(food.getFoodId(), Category.PIZZA);
         
         assertEquals("test2 food", foodRepository.findAll().get(0).getName());
         assertEquals("imageUrl2", foodRepository.findAll().get(0).getImage());

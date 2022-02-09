@@ -16,6 +16,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
+import javax.persistence.Table;
 
 
 
@@ -24,13 +25,14 @@ import javax.persistence.OneToMany;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
+@Table(name = "company")
 @ToString(callSuper = true)
 @EqualsAndHashCode(callSuper = true)
 public class Company extends BaseTimeEntity {
     
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private Long companyId;
 
     private String name;
     

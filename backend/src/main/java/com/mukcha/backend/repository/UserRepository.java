@@ -36,6 +36,10 @@ public interface UserRepository extends JpaRepository<User, Long> {
     @Query("update User set profileImage=?2 where userId=?1")
     void updateProfileImage(Long userId, String profileImage);
 
+    @Modifying(clearAutomatically = true)
+    @Query("update User set password=?2 where userId=?1")
+    void updatePassword(Long userId, String password);
+
 
 }
 
