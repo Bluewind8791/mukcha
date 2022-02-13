@@ -68,7 +68,6 @@ public class FoodService {
 
     // 음식 회사를 수정한다
     public Optional<Food> editFoodCompany(Long foodId, String companyName) {
-        
         try {
             companyRepository.findByName(companyName); 
         } catch (NullPointerException e) { // 존재하지 않는 회사라면
@@ -80,7 +79,6 @@ public class FoodService {
                 return food;
             });
         }
-        
         // 존재하는 회사라면
         Company cmp = companyRepository.findByName(companyName);
         return foodRepository.findById(foodId).map(food -> {
@@ -88,8 +86,19 @@ public class FoodService {
             foodRepository.save(food);
             return food;
         });
-
     }
+
+
+    // food 에서 company 와의 연관관계를 끊는다. (null 처리)
+    public void FoodRemoveCompany(Long foodId) {
+        Food targetFood = foodRepository.findById(foodId).orElseThrow(() -> 
+        new IllegalArgumentException("해당 음식/메뉴를 찾을 수 없습니다.")
+        );
+        targetFood.setCompany(null);
+        foodRepository.save(targetFood);
+    }
+
+
 
     public List<String> categories() {
         return foodRepository.getAllCategories();
@@ -98,6 +107,7 @@ public class FoodService {
     public List<Food> findAllByCategory(Category category) {
         return foodRepository.findAllByCategory(category);
     }
+
 
 
 

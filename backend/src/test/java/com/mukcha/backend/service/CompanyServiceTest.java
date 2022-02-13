@@ -89,19 +89,26 @@ public class CompanyServiceTest {
     void test_5() {
         companyService.companyAddFood(company.getCompanyId(), food1);
         companyService.companyAddFood(company.getCompanyId(), food2);
+
         companyService.CompanyRemoveFood(company.getCompanyId(), food1);
+        foodService.FoodRemoveCompany(food1.getFoodId());
 
         Company savedCompany = companyService.findByCompanyId(company.getCompanyId());
         assertEquals(1, savedCompany.getFoods().size());
         assertEquals("food2", savedCompany.getFoods().iterator().next().getName());
+
+        System.out.println(">>> "+savedCompany.getFoods());
+        System.out.println(">>> "+foodRepository.findAll());
     }
 
 
+
+}
 
 /**
  * 회사를 생성한다
  * 회사의 음식/메뉴들을 추가한다.
  * 회사의 음식/메뉴들, 이미지URL를 수정한다.
+ * 회사의 음식을 삭제한다.
  * 회사의 메뉴들을 조회한다.
  */
-}

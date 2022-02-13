@@ -10,6 +10,7 @@ import com.mukcha.backend.domain.Category;
 import com.mukcha.backend.domain.Company;
 import com.mukcha.backend.domain.Food;
 import com.mukcha.backend.domain.Review;
+import com.mukcha.backend.domain.Score;
 import com.mukcha.backend.domain.User;
 
 
@@ -42,7 +43,7 @@ public class ReviewRepositoryTest {
     public void givenReview(User user, Food food) {
         Review review = new Review();
         review.setComment("존맛탱");
-        review.setScore(4.5F);
+        review.setScore(Score.GOOD);
         review.setEatenDate(LocalDate.now());
         review.setFood(food);
         review.setUser(user);

@@ -9,6 +9,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 
+import groovy.transform.builder.Builder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
@@ -18,6 +19,7 @@ import lombok.AllArgsConstructor;
 
 @Data
 @Entity
+@Builder
 @NoArgsConstructor
 @AllArgsConstructor
 @ToString(callSuper = true)
@@ -30,7 +32,7 @@ public class Review extends BaseTimeEntity {
 
     private String comment;
 
-    private float score;
+    private Score score;
 
     @Column(columnDefinition = "integer default 0")
     private int likesCount;
@@ -38,10 +40,10 @@ public class Review extends BaseTimeEntity {
     private LocalDate eatenDate; // updateable
     
     @ManyToOne
-    private User user; // user_id
+    private User user;
 
     @ManyToOne
-    private Food food; // food_id
+    private Food food;
 
 
 }

@@ -6,7 +6,6 @@ import java.util.List;
 import com.mukcha.backend.domain.Company;
 import com.mukcha.backend.domain.Food;
 import com.mukcha.backend.repository.CompanyRepository;
-import com.mukcha.backend.repository.FoodRepository;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -24,9 +23,6 @@ public class CompanyService {
     public CompanyService(CompanyRepository companyRepository) {
         this.companyRepository = companyRepository;
     }
-
-    @Autowired
-    private FoodRepository foodRepository;
 
     public Company save(Company company) {
         return companyRepository.save(company);
@@ -63,15 +59,8 @@ public class CompanyService {
         // 기존 food 리스트에 삭제하려는 food가 들어있다면
         if (originFoods.contains(food)) {
             originFoods.remove(food);
-            // companyAddFood(companyId, food);
             companyRepository.save(company);
         }
-        // food 에서 company 항목 null 처리
-        // Food targetFood = foodRepository.findById(food.getFoodId()).orElseThrow(() -> 
-        //     new IllegalArgumentException("해당 음식/메뉴를 찾을 수 없습니다.")
-        //     );
-        // targetFood.setCompany(null);
-        // foodRepository.save(targetFood);
     }
 
 
