@@ -44,7 +44,7 @@ public class UserTestHelper {
         return userService.join(user);
     }
 
-    public User createUser(String email, String nickname, String ... authorities) {
+    public User createUserWithAuth(String email, String nickname, String ... authorities) {
         User user = createUser(email, nickname);
         Stream.of(authorities).forEach(auth -> userService.addAuthority(user.getUserId(), auth));
         return user;

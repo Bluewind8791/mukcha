@@ -36,11 +36,6 @@ public class CompanyRepositoryTest {
     }
 
     @Test
-    void testFindByName() {
-        System.out.println(companyRepository.findByName("치킨플러스"));
-    }
-
-    @Test
     void testFindByFoodId() {
         // System.out.println(companyRepository.findByFoodsId(company.getCompanyId(), food.getFoodId()));
     }

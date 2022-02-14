@@ -1,7 +1,7 @@
 package com.mukcha.backend.service;
 
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.*;
 
 import java.time.LocalDate;
 
@@ -22,8 +22,10 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.transaction.annotation.Transactional;
 
 
+@Transactional
 @SpringBootTest
 public class ReviewServiceTest {
 
@@ -33,12 +35,13 @@ public class ReviewServiceTest {
 
     private CompanyTestHelper companyTestHelper;
     private FoodTestHelper foodTestHelper;
+    private ReviewService reviewService;
     private CompanyService companyService;
     private FoodService foodService;
     Company company;
     Food food;
-    Review review;
     User user;
+    // Review review;
 
     @BeforeEach
     void before() {
@@ -46,6 +49,7 @@ public class ReviewServiceTest {
 
         this.companyService = new CompanyService(companyRepository);
         this.foodService = new FoodService(foodRepository);
+        this.reviewService = new ReviewService(reviewRepository);
         this.companyTestHelper = new CompanyTestHelper(companyService);
         this.foodTestHelper = new FoodTestHelper(foodService);
 
@@ -57,16 +61,17 @@ public class ReviewServiceTest {
     @DisplayName("1. 리뷰를 생성한다.")
     @Test
     void test_1() {
-
-        // review.setFood(food);
-        // review.setUser(user);
+        Review review = new Review();
+        review.setFood(food);
+        review.setUser(user);
         review.setComment("존맛이에요");
         review.setEatenDate(LocalDate.now());
         review.setScore(Score.BEST);
         reviewRepository.save(review);
 
-        System.out.println(reviewRepository.findAll());
+        Review savedReview = reviewService.findById(review.getReviewId());
 
+        System.out.println(savedReview);
     }
 
 

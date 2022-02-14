@@ -26,6 +26,8 @@ import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
+import org.hibernate.annotations.ColumnDefault;
+import org.hibernate.annotations.Where;
 import org.springframework.security.core.userdetails.UserDetails;
 
 
@@ -36,6 +38,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 @AllArgsConstructor
 @Table(name = "user")
 @ToString(callSuper = true)
+@Where(clause = "enabled = true")
 @EqualsAndHashCode(callSuper = true)
 public class User extends BaseTimeEntity implements UserDetails {
 
@@ -58,7 +61,7 @@ public class User extends BaseTimeEntity implements UserDetails {
     @Enumerated(value = EnumType.STRING) // enum 이름을 DB에 저장
     private Gender gender;
 
-    @Column(columnDefinition = "boolean default false")
+    @ColumnDefault("true")
     private boolean enabled;
 
     @OneToMany(fetch = FetchType.EAGER)

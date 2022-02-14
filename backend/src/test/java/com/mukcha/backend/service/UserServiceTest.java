@@ -33,13 +33,11 @@ public class UserServiceTest extends WithUserTest {
     @DisplayName("1. 사용자 생성 테스트")
     @Test
     void test_1() {
-        userTestHelper.createUser("ben@test.com", "ben");
+        User user = userTestHelper.createUser("ben@test.com", "ben");
+        User savedUser = userService.findUser(user.getUserId());
 
-        List<User> list = StreamSupport.stream(userRepository.findAll().spliterator(), false)
-                .collect(Collectors.toList());
-        assertEquals(1, list.size());
-        assertEquals("ben@test.com", list.get(0).getEmail());
-        assertEquals("ben", list.get(0).getNickname());
+        assertEquals("ben@test.com", savedUser.getEmail());
+        assertEquals("ben", savedUser.getNickname());
     }
 
     @DisplayName("2. 닉네임은 중복될 수 없다")
@@ -60,37 +58,38 @@ public class UserServiceTest extends WithUserTest {
     @Test
     void test_4() {
         User user = userTestHelper.createUser("ben@test.com", "ben");
-        userService.updateNickname(user.getUserId(), "testname");
         userService.updateEmail(user.getUserId(), "test@test.com");
+        userService.updateNickname(user.getUserId(), "testname");
         userService.updateProfileImage(user.getUserId(), "testImage");
         userService.updateBirthday(user.getUserId(), LocalDate.of(1991, 12, 14));
         userService.updateGender(user.getUserId(), Gender.MALE);
 
-        List<User> list = StreamSupport.stream(userRepository.findAll().spliterator(), false)
-                .collect(Collectors.toList());
+        // List<User> list = StreamSupport.stream(userRepository.findAll().spliterator(), false)
+        //         .collect(Collectors.toList());
+        User savedUser = userService.findUser(user.getUserId());
 
-        assertEquals("testname", list.get(0).getNickname());
-        assertEquals("test@test.com", list.get(0).getEmail());
-        assertEquals("testImage", list.get(0).getProfileImage());
-        assertEquals(LocalDate.of(1991, 12, 14), list.get(0).getBirthday());
-        assertEquals(Gender.MALE, list.get(0).getGender());
+        assertEquals("test@test.com", savedUser.getEmail());
+        assertEquals("testname", savedUser.getNickname());
+        assertEquals("testImage", savedUser.getProfileImage());
+        assertEquals(LocalDate.of(1991, 12, 14), savedUser.getBirthday());
+        assertEquals(Gender.MALE, savedUser.getGender());
     }
 
     @DisplayName("5. ADMIN 권한 부여")
     @Test
     void test_5() {
-        User user = userTestHelper.createUser("ben@test.com", "ben", Authority.ROLE_USER); // make user
+        User user = userTestHelper.createUserWithAuth("ben@test.com", "ben", Authority.ROLE_USER); // make user
         userService.addAuthority(user.getUserId(), Authority.ROLE_ADMIN); // add authority
-        User savedUser = userService.findUser(user.getUserId()).get();
+        User savedUser = userService.findUser(user.getUserId());
         userTestHelper.assertUser(savedUser, "ben@test.com", "ben", Authority.ROLE_USER, Authority.ROLE_ADMIN);
     }
 
     @DisplayName("6. ADMIN 권한 취소")
     @Test
     void test_6() {
-        User user = userTestHelper.createUser("ben@test.com", "ben", Authority.ROLE_USER, Authority.ROLE_ADMIN);
+        User user = userTestHelper.createUserWithAuth("ben@test.com", "ben", Authority.ROLE_USER, Authority.ROLE_ADMIN);
         userService.removeAuthority(user.getUserId(), Authority.ROLE_ADMIN);
-        User savedUser = userService.findUser(user.getUserId()).get();
+        User savedUser = userService.findUser(user.getUserId());
         userTestHelper.assertUser(savedUser, "ben@test.com", "ben", Authority.ROLE_USER);
     }
 
@@ -107,7 +106,7 @@ public class UserServiceTest extends WithUserTest {
     void test_8() {
         User user = userTestHelper.createUser("ben@test.com", "ben", "123456"); // make user
         userService.updatePassword(user.getUserId(), "111111"); // update password
-        User savedUser = userService.findUser(user.getUserId()).get(); // find user
+        User savedUser = userService.findUser(user.getUserId()); // find user
         assertEquals("111111", savedUser.getPassword()); // assert
     }
 

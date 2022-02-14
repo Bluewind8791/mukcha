@@ -98,7 +98,6 @@ public class CompanyServiceTest {
         assertEquals("food2", savedCompany.getFoods().iterator().next().getName());
 
         System.out.println(">>> "+savedCompany.getFoods());
-        System.out.println(">>> "+foodRepository.findAll());
     }
 
 

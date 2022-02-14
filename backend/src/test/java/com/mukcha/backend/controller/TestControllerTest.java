@@ -18,11 +18,13 @@ public class TestControllerTest {
     @DisplayName("1. controller test")
     @Test
     void test_1() throws Exception {
-        
+
         mockMvc.perform(MockMvcRequestBuilders.get("/test/hello"))
             .andDo(MockMvcResultHandlers.print())
             .andExpect(MockMvcResultMatchers.status().isOk())
-            .andExpect(MockMvcResultMatchers.content().string("hello"));
-            
+            .andExpect(MockMvcResultMatchers.content().string("hello")
+        );
     }
+
+
 }
