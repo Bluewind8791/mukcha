@@ -3,9 +3,6 @@ package com.mukcha.backend.service;
 import static org.junit.jupiter.api.Assertions.*;
 
 import java.time.LocalDate;
-import java.util.List;
-import java.util.stream.Collectors;
-import java.util.stream.StreamSupport;
 
 import com.mukcha.backend.domain.Authority;
 import com.mukcha.backend.domain.Gender;

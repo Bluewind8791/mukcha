@@ -13,6 +13,7 @@ import groovy.transform.builder.Builder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
+import lombok.NonNull;
 import lombok.ToString;
 import lombok.AllArgsConstructor;
 
@@ -39,9 +40,11 @@ public class Review extends BaseTimeEntity {
 
     private LocalDate eatenDate; // updateable
     
+    @NonNull
     @ManyToOne
     private User user;
 
+    @NonNull
     @ManyToOne
     private Food food;
 

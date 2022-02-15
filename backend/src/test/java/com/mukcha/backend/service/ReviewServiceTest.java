@@ -41,7 +41,7 @@ public class ReviewServiceTest {
     Company company;
     Food food;
     User user;
-    // Review review;
+    Review review = new Review();
 
     @BeforeEach
     void before() {
@@ -56,33 +56,76 @@ public class ReviewServiceTest {
         company = companyTestHelper.createCompany("test company", "companyLogo");
         food = foodTestHelper.createFood("food", company, Category.CHICKEN, null);
         user = User.builder().email("ben@test.com").password("1234").nickname("ben").build();
-    }
-
-    @DisplayName("1. 리뷰를 생성한다.")
-    @Test
-    void test_1() {
-        Review review = new Review();
         review.setFood(food);
         review.setUser(user);
-        review.setComment("존맛이에요");
-        review.setEatenDate(LocalDate.now());
+    }
+
+    @Test
+    @DisplayName("1. 리뷰를 생성한다.")
+    void test_1() {
         review.setScore(Score.BEST);
+        reviewService.setReviewEatenDate(review, LocalDate.now());
+        reviewService.setReviewComment(review, "존맛이에요");
         reviewRepository.save(review);
 
         Review savedReview = reviewService.findById(review.getReviewId());
 
-        System.out.println(savedReview);
+        assertEquals("food", savedReview.getFood().getName());
+        assertEquals("ben", savedReview.getUser().getNickname());
+        assertEquals("존맛이에요", savedReview.getComment());
+        assertEquals(Score.BEST, savedReview.getScore());
+        assertEquals(LocalDate.now(), savedReview.getEatenDate());
     }
 
+    @Test
+    @DisplayName("2. 점수를 매기지 않고 먹은날짜 설정과 코멘트를 달 수 없다.")
+    void test_2() {
+        assertThrows(
+            IllegalArgumentException.class, 
+            () -> reviewService.setReviewComment(review, "test comment"),
+            "점수를 먼저 매겨주세요!");
+
+        assertThrows(
+            IllegalArgumentException.class, 
+            () -> reviewService.setReviewEatenDate(review, LocalDate.now()),
+            "점수를 먼저 매겨주세요!");
+    }
+
+    @Test
+    @DisplayName("3. 리뷰의 점수, 코멘트, 먹은날짜를 수정한다.")
+    void test_3() {
+        review.setScore(Score.BEST);
+        reviewService.setReviewEatenDate(review, LocalDate.now());
+        reviewService.setReviewComment(review, "존맛이에요");
+        reviewRepository.save(review);
+
+        reviewService.editReviewScore(review, Score.GOOD);
+        reviewService.editReviewComment(review, "괜찮았어요");
+        reviewService.editReviewEatenDate(review, LocalDate.now().minusDays(1));
+
+        Review savedReview = reviewService.findById(review.getReviewId());
+        assertEquals(Score.GOOD, savedReview.getScore());
+        assertEquals("괜찮았어요", savedReview.getComment());
+        assertEquals(LocalDate.now().minusDays(1), savedReview.getEatenDate());
+    }
+
+    @Test
+    @DisplayName("4. 점수를 삭제하면 리뷰가 삭제된다.")
+    void test_4() {
+        reviewRepository.save(review);
+        reviewService.deleteScore(review);
+
+        assertTrue(reviewRepository.findAll().isEmpty());
+    }
 
 
 
 
 
 /**
- * 1. 리뷰를 생성한다.
- * 2. 점수 없이 코멘트만 달 수 없다.
- * 3. 리뷰를 수정한다.
- * 
+ * 리뷰를 생성한다.
+ * 점수를 매기지 않고 먹은날짜 설정과 코멘트를 달 수 없다.
+ * 리뷰의 점수, 코멘트, 먹은날짜를 수정한다.
+ * 점수를 삭제하면 리뷰가 삭제된다.
  */
 }
