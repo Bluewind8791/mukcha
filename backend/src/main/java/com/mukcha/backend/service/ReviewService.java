@@ -1,6 +1,7 @@
 package com.mukcha.backend.service;
 
 import java.time.LocalDate;
+import java.util.Optional;
 
 import com.mukcha.backend.domain.Review;
 import com.mukcha.backend.domain.Score;
@@ -22,10 +23,12 @@ public class ReviewService {
     }
 
 
-    public Review findById(Long reviewId) {
-        return reviewRepository.findById(reviewId).orElseThrow(
-            () -> new IllegalArgumentException("찾을 수 없는 리뷰입니다.")
-        );
+    public Review save(Review review) {
+        return reviewRepository.save(review);
+    }
+
+    public Optional<Review> findReview(Long reviewId) {
+        return reviewRepository.findById(reviewId);
     }
 
     public void setReviewComment(Review review, String comment) {
@@ -61,6 +64,9 @@ public class ReviewService {
     public void deleteScore(Review review) {
         reviewRepository.deleteById(review.getReviewId());
     }
+
+
+
 
 
 

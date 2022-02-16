@@ -28,13 +28,8 @@ public class HomeController {
         return "loginForm";
     }
 
-    // 회원 정보 확인 및 수정
-    @GetMapping(value="/user-page")
-    public String userPage() {
-        return "userPage";
-    }
-    
-    
+
+
 
 
 }

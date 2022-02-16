@@ -2,6 +2,7 @@ package com.mukcha.backend.service;
 
 
 import java.util.List;
+import java.util.Optional;
 
 import com.mukcha.backend.domain.Company;
 import com.mukcha.backend.domain.Food;
@@ -28,8 +29,8 @@ public class CompanyService {
         return companyRepository.save(company);
     }
 
-    public Company findByCompanyId(Long companyId) {
-        return companyRepository.findById(companyId).orElseThrow(() -> new IllegalArgumentException("해당 회사를 찾을 수 없습니다."));
+    public Optional<Company> findCompany(Long companyId) {
+        return companyRepository.findById(companyId);
     }
 
     public void companyAddFood(Long companyId ,Food food) {

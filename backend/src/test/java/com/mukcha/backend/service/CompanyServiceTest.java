@@ -49,7 +49,9 @@ public class CompanyServiceTest {
     @Test
     void test_1() {
         // Company company = companyTestHelper.createCompany("test company", "companyLogo");
-        Company savedCompany = companyService.findByCompanyId(company.getCompanyId());
+        Company savedCompany = companyService.findCompany(company.getCompanyId()).orElseThrow(() -> 
+            new IllegalArgumentException("해당 회사를 찾을 수 없습니다.")
+        );
         companyTestHelper.assertCompany(savedCompany, "test company", "companyLogo");
     }
 
@@ -79,7 +81,9 @@ public class CompanyServiceTest {
     void test_4() {
         companyService.updateCompanyName(company.getCompanyId(), "ChickenPlus");
         companyService.updateCompanyImage(company.getCompanyId(), "NewCompanyLogo");
-        Company savedCompany = companyService.findByCompanyId(company.getCompanyId());
+        Company savedCompany = companyService.findCompany(company.getCompanyId()).orElseThrow(() -> 
+            new IllegalArgumentException("해당 회사를 찾을 수 없습니다.")
+        );
         assertEquals("ChickenPlus", savedCompany.getName());
         assertEquals("NewCompanyLogo", savedCompany.getImage());
     }
@@ -93,7 +97,9 @@ public class CompanyServiceTest {
         companyService.CompanyRemoveFood(company.getCompanyId(), food1);
         foodService.FoodRemoveCompany(food1.getFoodId());
 
-        Company savedCompany = companyService.findByCompanyId(company.getCompanyId());
+        Company savedCompany = companyService.findCompany(company.getCompanyId()).orElseThrow(() -> 
+            new IllegalArgumentException("해당 회사를 찾을 수 없습니다.")
+        );
         assertEquals(1, savedCompany.getFoods().size());
         assertEquals("food2", savedCompany.getFoods().iterator().next().getName());
 

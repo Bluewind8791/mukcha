@@ -108,6 +108,10 @@ public class FoodService {
         return foodRepository.findAllByCategory(category);
     }
 
+    public Optional<Food> findFood(Long foodId) {
+        return foodRepository.findById(foodId);
+    }
+
 
 
 

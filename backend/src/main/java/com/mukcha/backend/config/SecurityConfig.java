@@ -11,45 +11,41 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 
-// @EnableWebSecurity(debug = true) // filter 확인
 // @EnableGlobalMethodSecurity(prePostEnabled = true) // prepost 로 권한 체크
+@EnableWebSecurity(debug = false) // filter 확인
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
 
 
-    // @Override
-    // protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-    //     auth
-    //         .inMemoryAuthentication()
-    //         .withUser(
-    //             User.builder()
-    //                 .username("ben")
-    //                 .password(passwordEncoder().encode("123"))
-    //         )
-    //     ;
-    // }
-
-    // @Bean
-    // PasswordEncoder passwordEncoder() {
-    //     return new BCryptPasswordEncoder();
-    // }
+    @Bean
+    PasswordEncoder passwordEncoder() {
+        return new BCryptPasswordEncoder();
+    }
 
 
-    // @Override
-    // protected void configure(HttpSecurity http) throws Exception {
-    //     http
-    //         .authorizeRequests((requests) -> {
-    //             requests
-    //                 .antMatchers("/").permitAll() // root page permit all
-    //                 .anyRequest().authenticated(); // 나머지 모든것에 auth 적용
-    //         })
-    //         .formLogin(login -> {
-    //             login.loginPage("/login")
-    //             .permitAll()
-    //             .defaultSuccessUrl("/", false) // 로그인 성공시
-    //             .failureUrl("/login-error"); // 로그인 에러시
-    //         })
-    //         .logout(logout -> logout.logoutSuccessUrl("/"));
-	// 	http.httpBasic();
-    // }
+    @Override
+    protected void configure(HttpSecurity http) throws Exception {
+
+        http
+            .authorizeRequests(request -> {
+                request.anyRequest().permitAll();
+            })
+        ;
+        // http
+        //     .authorizeRequests(request -> {
+        //         request
+        //             .anyRequest().permitAll() // permit all
+        //             // .anyRequest().authenticated() // 나머지 모든것에 auth 적용
+        //         ;
+        //     }
+            // .formLogin(login -> {
+            //     login.loginPage("/login")
+            //     .permitAll()
+            //     .defaultSuccessUrl("/", false) // 로그인 성공시
+            //     .failureUrl("/login-error"); // 로그인 에러시
+            // })
+        //     .logout(logout -> logout.logoutSuccessUrl("/"));
+		// http.httpBasic()
+
+    }
 }

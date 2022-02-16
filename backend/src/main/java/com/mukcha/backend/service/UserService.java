@@ -2,6 +2,7 @@ package com.mukcha.backend.service;
 
 import java.time.LocalDate;
 import java.util.HashSet;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -26,8 +27,12 @@ public class UserService {
     }
 
 
-    public User findUser(Long userId) {
-        return userRepository.findById(userId).orElseThrow(() -> new IllegalArgumentException("해당 사용자를 찾을 수 없습니다."));
+    public User save(User user) {
+        return userRepository.save(user);
+    }
+
+    public Optional<User> findUser(Long userId) {
+        return userRepository.findById(userId);
     }
 
     // 회원가입 서비스

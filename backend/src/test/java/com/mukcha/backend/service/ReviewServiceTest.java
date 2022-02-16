@@ -68,7 +68,9 @@ public class ReviewServiceTest {
         reviewService.setReviewComment(review, "존맛이에요");
         reviewRepository.save(review);
 
-        Review savedReview = reviewService.findById(review.getReviewId());
+        Review savedReview = reviewService.findReview(review.getReviewId()).orElseThrow(() -> 
+            new IllegalArgumentException("해당 리뷰를 찾을 수 없습니다.")
+        );
 
         assertEquals("food", savedReview.getFood().getName());
         assertEquals("ben", savedReview.getUser().getNickname());
@@ -103,7 +105,9 @@ public class ReviewServiceTest {
         reviewService.editReviewComment(review, "괜찮았어요");
         reviewService.editReviewEatenDate(review, LocalDate.now().minusDays(1));
 
-        Review savedReview = reviewService.findById(review.getReviewId());
+        Review savedReview = reviewService.findReview(review.getReviewId()).orElseThrow(() -> 
+            new IllegalArgumentException("해당 리뷰를 찾을 수 없습니다.")
+        );
         assertEquals(Score.GOOD, savedReview.getScore());
         assertEquals("괜찮았어요", savedReview.getComment());
         assertEquals(LocalDate.now().minusDays(1), savedReview.getEatenDate());

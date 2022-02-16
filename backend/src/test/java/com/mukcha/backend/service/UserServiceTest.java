@@ -31,7 +31,7 @@ public class UserServiceTest extends WithUserTest {
     @Test
     void test_1() {
         User user = userTestHelper.createUser("ben@test.com", "ben");
-        User savedUser = userService.findUser(user.getUserId());
+        User savedUser = userService.findUser(user.getUserId()).get();
 
         assertEquals("ben@test.com", savedUser.getEmail());
         assertEquals("ben", savedUser.getNickname());
@@ -63,7 +63,7 @@ public class UserServiceTest extends WithUserTest {
 
         // List<User> list = StreamSupport.stream(userRepository.findAll().spliterator(), false)
         //         .collect(Collectors.toList());
-        User savedUser = userService.findUser(user.getUserId());
+        User savedUser = userService.findUser(user.getUserId()).get();
 
         assertEquals("test@test.com", savedUser.getEmail());
         assertEquals("testname", savedUser.getNickname());
@@ -77,7 +77,7 @@ public class UserServiceTest extends WithUserTest {
     void test_5() {
         User user = userTestHelper.createUserWithAuth("ben@test.com", "ben", Authority.ROLE_USER); // make user
         userService.addAuthority(user.getUserId(), Authority.ROLE_ADMIN); // add authority
-        User savedUser = userService.findUser(user.getUserId());
+        User savedUser = userService.findUser(user.getUserId()).get();
         userTestHelper.assertUser(savedUser, "ben@test.com", "ben", Authority.ROLE_USER, Authority.ROLE_ADMIN);
     }
 
@@ -86,7 +86,7 @@ public class UserServiceTest extends WithUserTest {
     void test_6() {
         User user = userTestHelper.createUserWithAuth("ben@test.com", "ben", Authority.ROLE_USER, Authority.ROLE_ADMIN);
         userService.removeAuthority(user.getUserId(), Authority.ROLE_ADMIN);
-        User savedUser = userService.findUser(user.getUserId());
+        User savedUser = userService.findUser(user.getUserId()).get();
         userTestHelper.assertUser(savedUser, "ben@test.com", "ben", Authority.ROLE_USER);
     }
 
@@ -103,7 +103,7 @@ public class UserServiceTest extends WithUserTest {
     void test_8() {
         User user = userTestHelper.createUser("ben@test.com", "ben", "123456"); // make user
         userService.updatePassword(user.getUserId(), "111111"); // update password
-        User savedUser = userService.findUser(user.getUserId()); // find user
+        User savedUser = userService.findUser(user.getUserId()).get(); // find user
         assertEquals("111111", savedUser.getPassword()); // assert
     }
 
