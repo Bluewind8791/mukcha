@@ -1,6 +1,5 @@
 package com.mukcha.backend.controller;
 
-import com.mukcha.backend.domain.User;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;

@@ -1,20 +1,29 @@
 package com.mukcha.backend.config;
 
+import javax.sql.DataSource;
+
+import com.mukcha.backend.service.UserSecurityService;
+
 import org.springframework.context.annotation.Bean;
-import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
-import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
-import org.springframework.security.core.userdetails.User;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.authentication.rememberme.JdbcTokenRepositoryImpl;
+import org.springframework.security.web.authentication.rememberme.PersistentTokenBasedRememberMeServices;
+import org.springframework.security.web.authentication.rememberme.PersistentTokenRepository;
+
+import lombok.RequiredArgsConstructor;
 
 
 // @EnableGlobalMethodSecurity(prePostEnabled = true) // prepost 로 권한 체크
+@RequiredArgsConstructor
 @EnableWebSecurity(debug = false) // filter 확인
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
+    private final UserSecurityService userSecurityService;
+    private final DataSource dataSource;
 
 
     @Bean
@@ -37,15 +46,38 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
             .authorizeRequests(request -> {
                 request.anyRequest().permitAll();
             })
+            .rememberMe(service -> {
+                service.rememberMeServices(rememberMeServices());
+            })
         ;
-        // http
-        //     .authorizeRequests(request -> {
-        //         request
-        //             .anyRequest().permitAll() // permit all
-        //             // .anyRequest().authenticated() // 나머지 모든것에 auth 적용
-        //         ;
-        //     }
-
-
     }
+
+
+    @Bean
+    public PersistentTokenBasedRememberMeServices rememberMeServices() {
+        PersistentTokenBasedRememberMeServices rememberMeServices = new PersistentTokenBasedRememberMeServices(
+            "rememberme-key", userSecurityService, tokenRepository()
+        );
+        rememberMeServices.setParameter("remember-me");
+        rememberMeServices.setTokenValiditySeconds(60*60*24); // one day
+        rememberMeServices.setAlwaysRemember(false);
+        return rememberMeServices;
+    }
+
+    @Bean
+    public PersistentTokenRepository tokenRepository() {
+        JdbcTokenRepositoryImpl repositoryImpl = new JdbcTokenRepositoryImpl();
+        repositoryImpl.setDataSource(dataSource);
+        try {
+            repositoryImpl.removeUserTokens("username");
+        } catch (Exception e) {
+            repositoryImpl.setCreateTableOnStartup(true);
+        }
+        return repositoryImpl;
+    }
+
+
+
+
+
 }
