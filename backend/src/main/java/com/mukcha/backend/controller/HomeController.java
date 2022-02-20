@@ -4,6 +4,7 @@ package com.mukcha.backend.controller;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 
 
@@ -18,15 +19,11 @@ public class HomeController {
 
     // login page
     @GetMapping("/login")
-    public String login() {
+    public String login(
+            @RequestParam(value = "error", defaultValue = "false") Boolean error,
+            Model model) {
+        model.addAttribute("error", error);
         return "user/loginForm";
-    }
-
-    // login error - 로그인 에러시 loginForm 으로
-    @GetMapping("/login-error")
-    public String loginError(Model model) {
-        model.addAttribute("loginError", true);
-        return "loginForm";
     }
 
 

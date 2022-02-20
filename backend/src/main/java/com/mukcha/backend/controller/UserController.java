@@ -46,7 +46,7 @@ public class UserController {
     }
 
     // 회원 정보 확인 및 수정
-    @GetMapping(value="/user-page")
+    @GetMapping("/user-page")
     public String userPage() {
         return "user/userPage";
     }

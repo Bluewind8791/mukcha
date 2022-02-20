@@ -1,7 +1,7 @@
 <!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml"
-    xmlns:th="http://www.thymeleaf.org"
-    xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{layout/layout}">
+<html lang="ko" xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:th="http://www.thymeleaf.org"
+                xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{layout/layout}">
 
 
 <div layout:fragment="content">
@@ -37,19 +37,19 @@
             
             <button type="submit" class="btn btn-primary"> 로그인 </button>
 
-            <a class="btn btn-primary" href="/joinForm" > 회원가입 </a>
+            <a class="btn btn-primary" th:href="@{/user/join}"> 회원가입 </a>
 
         </form>
-        
-        <div class="alert alert-danger alert-dismissible fade show id-password-alert" role="alert" th:if="${loginError}">
-            <span> 아이디나 패스워드가 올바르지 않습니다. </span>
+        <br>
+
+        <!--로그인에러-->
+        <div th:if="${param.error}" class="alert alert-danger" role="alert"> 
+            <strong>이메일</strong>과 <strong>비밀번호</strong>를 다시 한번 확인해주세요.
         </div>
-        <style>
-            .id-password-alert {
-                width: 500px;
-                margin: auto;
-            }
-        </style>
+
+        <!-- <div th:if="${param.error}" th:text="${loginFailMsg}" class="alert alert-danger" role="alert"> alert text </div> -->
+
+
     </div>
 
 

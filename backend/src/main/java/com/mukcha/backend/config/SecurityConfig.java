@@ -5,6 +5,7 @@ import javax.sql.DataSource;
 import com.mukcha.backend.service.UserSecurityService;
 
 import org.springframework.context.annotation.Bean;
+import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
@@ -17,9 +18,9 @@ import org.springframework.security.web.authentication.rememberme.PersistentToke
 import lombok.RequiredArgsConstructor;
 
 
-// @EnableGlobalMethodSecurity(prePostEnabled = true) // prepost 로 권한 체크
 @RequiredArgsConstructor
 @EnableWebSecurity(debug = false) // filter 확인
+@EnableGlobalMethodSecurity(prePostEnabled = true) // prepost 로 권한 체크
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     private final UserSecurityService userSecurityService;
