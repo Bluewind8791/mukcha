@@ -27,6 +27,13 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception {
 
         http
+            .csrf().disable()
+            .formLogin(login -> {
+                login.loginPage("/login");
+            })
+            .logout(logout -> {
+                logout.logoutSuccessUrl("/");
+            })
             .authorizeRequests(request -> {
                 request.anyRequest().permitAll();
             })
@@ -38,14 +45,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         //             // .anyRequest().authenticated() // 나머지 모든것에 auth 적용
         //         ;
         //     }
-            // .formLogin(login -> {
-            //     login.loginPage("/login")
-            //     .permitAll()
-            //     .defaultSuccessUrl("/", false) // 로그인 성공시
-            //     .failureUrl("/login-error"); // 로그인 에러시
-            // })
-        //     .logout(logout -> logout.logoutSuccessUrl("/"));
-		// http.httpBasic()
+
 
     }
 }

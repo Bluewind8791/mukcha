@@ -1,5 +1,7 @@
 package com.mukcha.backend.controller;
 
+import com.mukcha.backend.domain.User;
+
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -16,7 +18,7 @@ public class HomeController {
     }
 
     // login page
-    @GetMapping(value="/login")
+    @GetMapping("/login")
     public String login() {
         return "user/loginForm";
     }
