@@ -24,7 +24,7 @@ public class DBInit implements CommandLineRunner {
     @Override
     public void run(String... args) throws Exception {
 
-        userService.findUser(1L).or(() ->{
+        userService.findByEmail("admin@test.com").or(() ->{
             User admin = User.builder()
                             .email("admin@test.com")
                             .nickname("admin_ben")
@@ -39,7 +39,7 @@ public class DBInit implements CommandLineRunner {
             return Optional.of(userService.save(admin));
         });
 
-        userService.findUser(1L).or(() ->{
+        userService.findByEmail("user@test.com").or(() ->{
             User user = User.builder()
                             .email("user@test.com")
                             .nickname("ben")
