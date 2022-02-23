@@ -1,9 +1,9 @@
-package com.mukcha.backend.repository;
+package com.mukcha.repository;
 
-import com.mukcha.backend.domain.Category;
-import com.mukcha.backend.domain.Company;
-import com.mukcha.backend.domain.Food;
-import com.mukcha.backend.repository.helper.RepositoryTestHelper;
+import com.mukcha.domain.Category;
+import com.mukcha.domain.Company;
+import com.mukcha.domain.Food;
+import com.mukcha.repository.helper.RepositoryTestHelper;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

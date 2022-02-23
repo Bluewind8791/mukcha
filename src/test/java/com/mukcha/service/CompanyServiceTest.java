@@ -1,14 +1,14 @@
-package com.mukcha.backend.service;
+package com.mukcha.service;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import com.mukcha.backend.domain.Category;
-import com.mukcha.backend.domain.Company;
-import com.mukcha.backend.domain.Food;
-import com.mukcha.backend.repository.CompanyRepository;
-import com.mukcha.backend.repository.FoodRepository;
-import com.mukcha.backend.service.helper.CompanyTestHelper;
-import com.mukcha.backend.service.helper.FoodTestHelper;
+import com.mukcha.domain.Category;
+import com.mukcha.domain.Company;
+import com.mukcha.domain.Food;
+import com.mukcha.repository.CompanyRepository;
+import com.mukcha.repository.FoodRepository;
+import com.mukcha.service.helper.CompanyTestHelper;
+import com.mukcha.service.helper.FoodTestHelper;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;

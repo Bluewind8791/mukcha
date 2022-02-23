@@ -1,12 +1,12 @@
-package com.mukcha.backend.service;
+package com.mukcha.service;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.util.List;
 
-import com.mukcha.backend.domain.Category;
-import com.mukcha.backend.domain.Food;
-import com.mukcha.backend.service.helper.WithFoodTest;
+import com.mukcha.domain.Category;
+import com.mukcha.domain.Food;
+import com.mukcha.service.helper.WithFoodTest;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
