@@ -31,9 +31,14 @@ public class UserService {
         return userRepository.save(user);
     }
 
+
     public Optional<User> findUser(Long userId) {
         return userRepository.findById(userId);
     }
+    public Optional<User> findByEmail(String email) {
+        return userRepository.findByEmail(email);
+    }
+
 
     // 회원가입 서비스
     public User join(User user) {
@@ -110,7 +115,10 @@ public class UserService {
         });
     }
 
-    
+
+
+
+
 
 
 
