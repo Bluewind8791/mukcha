@@ -11,7 +11,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 import lombok.extern.slf4j.Slf4j;
 
-@Slf4j
+
+// ROLE_USER 권한 있어야 진입가능
 @Controller
 @RequestMapping(value = "/user")
 public class UserController {
@@ -23,30 +24,9 @@ public class UserController {
         this.userService = userService;
     }
 
-    // 회원가입 url
-    @GetMapping("/join")
-    public String joinForm() {
-        return "user/joinForm";
-    }
-
-    // 회원가입 처리
-    @PostMapping("/join")
-    public String join(UserForm form) {
-        User user = User.builder()
-            .email(form.getEmail())
-            .password(form.getPassword())
-            .nickname(form.getNickname())
-            .gender(form.getGender())
-            .birthday(form.getBirthday())
-            .build();
-
-        userService.join(user);
-        log.info("회원가입이 처리되었습니다." + user.toString());
-        return "redirect:/";
-    }
 
     // 회원 정보 확인 및 수정
-    @GetMapping("/user-page")
+    @GetMapping("/edit")
     public String userPage() {
         return "user/userPage";
     }

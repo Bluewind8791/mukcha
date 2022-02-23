@@ -25,7 +25,7 @@
                         <a class="nav-link" href="/login" sec:authorize="isAnonymous()"> 로그인 </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="/user/join" sec:authorize="isAnonymous()"> 회원가입 </a>
+                        <a class="nav-link" href="/join" sec:authorize="isAnonymous()"> 회원가입 </a>
                     </li>
 
                     <!-- 검색창 들어갈 자리 -->
@@ -35,7 +35,7 @@
                             <span sec:authentication="name"> username </span>
                         </a>
                         <ul class="dropdown-menu">
-                            <li><a class="dropdown-item" href="/user/user-page"> 내 정보 </a></li>
+                            <li><a class="dropdown-item" href="/user/edit"> 내 정보 </a></li>
                             <li><a class="dropdown-item" href="/logout"> 로그아웃 </a></li>
                         </ul>
                     </li>

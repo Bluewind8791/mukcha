@@ -45,7 +45,13 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 logout.logoutSuccessUrl("/");
             })
             .authorizeRequests(request -> {
-                request.anyRequest().permitAll();
+                request
+                    .antMatchers("/").permitAll()
+                    .antMatchers("/login").permitAll()
+                    .antMatchers("/join").permitAll()
+                    .antMatchers("/user/**").hasAnyAuthority("ROLE_USER", "ROLE_ADMIN")
+                    .antMatchers("/manager/**").hasAnyAuthority("ROLE_ADMIN")
+                    .anyRequest().permitAll();
             })
             .rememberMe(service -> {
                 service.rememberMeServices(rememberMeServices());

@@ -5,7 +5,7 @@
 <div layout:fragment="content">
 
     <div class="container-fluid mt-3 w3-border w3-padding w3-round ws-grey">
-        <form novalidate method="post" action="/user/join">
+        <form novalidate method="post" action="/join">
 
             <h3 class="mb-3"> 회원 가입 </h3>
             <h5> 필수항목 </h5>
@@ -53,9 +53,9 @@
             <div class="mb-3 mt-3">
                 <label class="form-label"> 성별 </label>
                 <select class="form-select" id="gender" name="gender">
-                    <option> 선택안함 </option>
-                    <option> 남자 </option>
-                    <option> 여자 </option>
+                    <option value="">선택안함</option>
+                    <option value="MALE">남자</option>
+                    <option value="FEMALE">여자</option>
                 </select>
             </div>
 
@@ -63,34 +63,37 @@
                 <label class="form-label"> 생년월일 </label>
 
                 <div class="col">
-                    <span class="ps_box">
-                        <input type="text" class="form-control" id="birth-year" placeholder="년(4자)" maxlength="4">
+                    <span class="ps_box input-group">
+                        <input type="text" class="form-control" id="birthYear" name="birthYear" placeholder="숫자만 적어주세요 (4자)" maxlength="4">
+                        <span class="input-group-text">년</span>
                     </span>
                 </div>
 
                 <div class="col">
-                    <span class="ps_box focus">
-                        <select class="form-select" id="birth-month">
-                            <option>월</option>
-                            <option>1월</option>
-                            <option>2월</option>
-                            <option>3월</option>
-                            <option>4월</option>
-                            <option>5월</option>
-                            <option>6월</option>
-                            <option>7월</option>
-                            <option>8월</option>
-                            <option>9월</option>
-                            <option>10월</option>
-                            <option>11월</option>
-                            <option>12월</option>
+                    <span class="ps_box input-group">
+                        <select class="form-select" id="birthMonth" name="birthMonth">
+                            <option value="">선택해 주세요</option>
+                            <option value="1">1</option>
+                            <option value="2">2</option>
+                            <option value="3">3</option>
+                            <option value="4">4</option>
+                            <option value="5">5</option>
+                            <option value="6">6</option>
+                            <option value="7">7</option>
+                            <option value="8">8</option>
+                            <option value="9">9</option>
+                            <option value="10">10</option>
+                            <option value="11">11</option>
+                            <option value="12">12</option>
                         </select>
+                        <span class="input-group-text">월</span>
                     </span>
                 </div>
 
                 <div class="col">
-                    <span class="ps_box">
-                        <input type ="text" class="form-control" id ="birth-day" placeholder="일" maxlength="2">
+                    <span class="ps_box input-group">
+                        <input type ="text" class="form-control" id="birthDay" name="birthDay" placeholder="숫자만 적어주세요 (2자)" maxlength="2">
+                        <span class="input-group-text">일</span>
                     </span>
                 </div>
             </div>
