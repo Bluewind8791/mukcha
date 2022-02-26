@@ -18,10 +18,7 @@
                 <input type="email" class="form-control" id="email" name="email" 
                     th:field="*{email}" th:value="${form.email}"
                     placeholder="you@example.com" required autofocus>
-                <!-- <div class="invalid-feedback">
-                    (필수) 정확한 이메일 양식으로 적어주세요.
-                </div> -->
-                <span th:text="${valid_email}"></span>
+                <span style="color:tomato" th:text="${valid_email}"></span>
             </div>
 
             <div class="row">
@@ -31,10 +28,7 @@
                     <input type="password" class="form-control" id="password" name="password" 
                         th:field="*{password}" th:value="${form.password}"
                         placeholder="******" required>
-                    <!-- <div class="invalid-feedback">
-                        (필수) 패스워드는 6자 이상, 20자 이하여야 합니다.
-                    </div> -->
-                    <span th:text="${valid_password}"></span>
+                    <span style="color:tomato" th:text="${valid_password}"></span>
                 </div>
 
                 <!-- Password confirm -->
@@ -43,10 +37,7 @@
                     <input type="password" class="form-control" id="rePassword" 
                         th:field="*{rePassword}" th:value="${form.rePassword}"
                         name="rePassword" placeholder="******" required>
-                    <!-- <div class="invalid-feedback">
-                        (필수) 동일한 비밀번호를 입력해주세요.
-                    </div> -->
-                    <span th:text="${valid_rePassword}"></span>
+                    <span style="color:tomato" th:text="${valid_rePassword}"></span>
                 </div>
             </div>
 
@@ -57,10 +48,7 @@
                     th:field="*{nickname}" th:value="${form.nickname}"
                     placeholder="홍길동" required>
                 <div class="valid-feedback"></div>
-                <!-- <div class="invalid-feedback">
-                    (필수) 사이트 내에서 사용할 별명을 적어주세요.
-                </div> -->
-                <span th:text="${valid_nickname}"></span>
+                <span style="color:tomato" th:text="${valid_nickname}"></span>
             </div>
 
             <hr class="mb-4">
@@ -81,9 +69,10 @@
                 <div class="col">
                     <span class="ps_box input-group">
                         <input type="text" class="form-control" id="birthYear" name="birthYear"
-                            placeholder="숫자만 적어주세요 (4자)" size="4">
+                            placeholder="숫자만 적어주세요 (4자)" maxlength="4" th:value="${form.birthYear}">
                         <span class="input-group-text">년</span>
                     </span>
+                    <span th:if="${birthYear != null}" style="color:tomato" th:text="${valid_birthYear}"></span>
                 </div>
 
                 <div class="col">
@@ -110,9 +99,10 @@
                 <div class="col">
                     <span class="ps_box input-group">
                         <input type="text" class="form-control" id="birthDay" name="birthDay"
-                            placeholder="숫자만 적어주세요 (2자)" maxlength="2">
+                            placeholder="숫자만 적어주세요 (2자)" maxlength="2" th:value="${form.birthDay}">
                         <span class="input-group-text">일</span>
                     </span>
+                    <span th:if="${birthDay != null}" style="color:tomato" th:text="${valid_birthDay}"></span>
                 </div>
             </div>
 

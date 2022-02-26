@@ -35,13 +35,13 @@ public class UserTestHelper {
     public User createUser(String email, String nickname) {
         User user = makeUser(email, nickname);
         user.setPassword(passwordEncoder.encode(nickname+"123"));
-        return userService.join(user);
+        return userService.save(user);
     }
 
     public User createUser(String email, String nickname, String password) {
         User user = makeUser(email, nickname);
         user.setPassword(passwordEncoder.encode(password));
-        return userService.join(user);
+        return userService.save(user);
     }
 
     public User createUserWithAuth(String email, String nickname, String ... authorities) {

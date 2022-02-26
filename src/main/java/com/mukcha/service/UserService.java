@@ -55,6 +55,9 @@ public class UserService {
     public Optional<User> findByEmail(String email) {
         return userRepository.findByEmail(email);
     }
+    public Optional<User> findByNickname(String nickname) {
+        return userRepository.findByNickname(nickname);
+    }
 
 
     // 수정 서비스
@@ -63,7 +66,6 @@ public class UserService {
         userRepository.updateEmail(userId, email);
         // userRepository.save(user);
     }
-
     public void updateNickname(Long userId, String nickname) {
         // userRepository.findByNickname(nickname)
         //     .ifPresent(m -> {
@@ -71,7 +73,6 @@ public class UserService {
         //     });
         userRepository.updateNickname(userId, nickname);
     }
-
     public void updateProfileImage(Long userId, String profileImage) {
         userRepository.updateProfileImage(userId, profileImage);
     }
@@ -81,7 +82,6 @@ public class UserService {
     public void updateBirthday(Long userId, LocalDate birthday) {
         userRepository.updateBirthday(userId, birthday);
     }
-
     public void updatePassword(Long userId, String password) {
         if (password.length() <= 5 || password.length() > 20) {
             throw new IllegalArgumentException("패스워드는 6자 이상, 20자 이하여야 합니다");
@@ -126,6 +126,8 @@ public class UserService {
             }
         });
     }
+
+
 
 
 

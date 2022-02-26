@@ -40,3 +40,4 @@
 
 - https://javaee.github.io/javaee-spec/javadocs/javax/validation/constraints/package-summary.html
 - 쟈미님의 devlog : [링크](https://jyami.tistory.com/55)
+- 유효성 검사 코드 참고 : victolee 님의 [블로그](https://victorydntmd.tistory.com/332)

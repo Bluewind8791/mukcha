@@ -30,8 +30,18 @@ public class UserForm {
     
     private String gender;
 
+    // @Pattern(
+    //     regexp = "([0-9]+).{4}",
+    //     message = "숫자만 입력해주세요. (4자)"
+    // )
     private String birthYear;
+
     private String birthMonth;
+
+    // @Pattern(
+    //     regexp = "[0-9]+",
+    //     message = "숫자만 입력해주세요."
+    // )
     private String birthDay;
 
     // private String profileImage;
