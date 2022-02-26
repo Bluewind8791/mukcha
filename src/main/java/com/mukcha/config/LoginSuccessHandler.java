@@ -5,15 +5,16 @@ import java.io.IOException;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 import org.springframework.security.core.Authentication;
+import org.springframework.security.web.WebAttributes;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.security.web.savedrequest.HttpSessionRequestCache;
 import org.springframework.security.web.savedrequest.RequestCache;
 import org.springframework.security.web.savedrequest.SavedRequest;
-import org.springframework.stereotype.Service;
 
-@Service
+
 public class LoginSuccessHandler implements AuthenticationSuccessHandler {
 
     private RequestCache requestCache = new HttpSessionRequestCache();
@@ -24,6 +25,9 @@ public class LoginSuccessHandler implements AuthenticationSuccessHandler {
             HttpServletResponse response,
             Authentication authentication
         ) throws IOException, ServletException {
+
+        // clear authentication error
+        clearAuthenticationAttributes(request);
 
         // 강제 intercept 당했을 때 데이터 획득
         SavedRequest savedRequest = requestCache.getRequest(request, response);
@@ -42,11 +46,15 @@ public class LoginSuccessHandler implements AuthenticationSuccessHandler {
             url = prevPage;
         }
 
-        // 로그인 완료시 세션 저장
-
-
         // redirect
         response.sendRedirect(url);
+    }
+
+    private void clearAuthenticationAttributes(HttpServletRequest request) {
+        HttpSession session = request.getSession(false);
+        if (session != null) {
+            session.removeAttribute(WebAttributes.AUTHENTICATION_EXCEPTION);
+        }
     }
 
 

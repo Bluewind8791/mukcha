@@ -3,14 +3,13 @@
                 xmlns:th="http://www.thymeleaf.org"
                 xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{layout/layout}">
 
-
 <div layout:fragment="content">
 
     <div class="container mt-3">
         <form class="form-signin" method="POST" th:action="@{/login}">
             
             <h1 class="h3 mb-3 font-weight-normal"> 로그인 </h1>
-
+    
             <div class="mb-3 mt-3">
                 <label for="username"> 이메일 </label>
                 <input type="email" 
@@ -19,7 +18,7 @@
                     class="form-control" 
                     placeholder="이메일을 입력해주세요" required autofocus>
             </div>
-
+    
             <div class="mb-3">
                 <label for="pwd"> 비밀번호 </label>
                 <input type="password"
@@ -28,7 +27,7 @@
                 class="form-control"
                 placeholder="비밀번호를 입력해주세요" required>
             </div>
-
+    
             <div class="form-check mb-3">
                 <label class="form-check-label">
                     <input class="form-check-input" type="checkbox" name="remember-me"> 자동 로그인
@@ -36,23 +35,20 @@
             </div>
             
             <button type="submit" class="btn btn-primary"> 로그인 </button>
-
+    
             <a class="btn btn-primary" th:href="@{/user/join}"> 회원가입 </a>
-
+            
+            <!--로그인에러-->
+            <div th:if="${param.error}">
+                <p class="error-message" th:text="${errorMessage}">Error Message</p>
+            </div>
         </form>
         <br>
-
-        <!--로그인에러-->
-        <div th:if="${param.error}" class="alert alert-danger" role="alert"> 
-            <strong>이메일</strong>과 <strong>비밀번호</strong>를 다시 한번 확인해주세요.
-        </div>
-
-        <!-- <div th:if="${param.error}" th:text="${loginFailMsg}" class="alert alert-danger" role="alert"> alert text </div> -->
-
-
+    
     </div>
-
+    
 
 </div>
 
 </html>
+

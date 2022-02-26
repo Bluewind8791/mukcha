@@ -11,6 +11,8 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.authentication.AuthenticationFailureHandler;
+import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.security.web.authentication.rememberme.JdbcTokenRepositoryImpl;
 import org.springframework.security.web.authentication.rememberme.PersistentTokenBasedRememberMeServices;
 import org.springframework.security.web.authentication.rememberme.PersistentTokenRepository;
@@ -40,6 +42,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
             .csrf().disable()
             .formLogin(login -> {
                 login.loginPage("/login");
+                login.successHandler(successHandler()); // custom success handler
+                login.failureHandler(failureHandler()); // custom failure handler
             })
             .logout(logout -> {
                 logout.logoutSuccessUrl("/");
@@ -55,6 +59,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
             })
             .rememberMe(service -> {
                 service.rememberMeServices(rememberMeServices());
+            })
+            .exceptionHandling(denied -> {
+                denied.accessDeniedPage("/access-denied");
             })
         ;
     }
@@ -83,6 +90,15 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         return repositoryImpl;
     }
 
+    @Bean
+    public AuthenticationSuccessHandler successHandler() {
+        return new LoginSuccessHandler();
+    }
+
+    @Bean
+    public AuthenticationFailureHandler failureHandler() {
+        return new LoginFailureHandler();
+    }
 
 
 

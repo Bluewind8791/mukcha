@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <html lang="ko" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
-
 <header th:fragment="headerFragment">
     <nav class="navbar navbar-expand-xxl navbar-dark bg-dark">
         <div class="container-fluid">
@@ -11,11 +10,17 @@
             </button>
 
             <div class="collapse navbar-collapse" id="mynavbar">
-                <ul class="navbar-nav me-auto">
-                </ul>
+                <!-- 아래의 항목을 뒤로 땡김 -->
+                <ul class="navbar-nav me-auto"></ul>
 
+                <!-- 검색창 -->
+                <form class="d-flex">
+                    <input class="form-control me-2" type="text" placeholder="Search">
+                    <button class="btn btn-primary" type="button">Search</button>
+                </form>
 
                 <ul class="navbar-nav">
+                    <!-- 로그인, 회원가입 -->
                     <li class="nav-item">
                         <a class="nav-link" href="/login" sec:authorize="isAnonymous()"> 로그인 </a>
                     </li>
@@ -23,10 +28,10 @@
                         <a class="nav-link" href="/join" sec:authorize="isAnonymous()"> 회원가입 </a>
                     </li>
 
-                    <!-- 검색창 들어갈 자리 -->
-
-                    <li class="nav-item dropdown" >
-                        <a class="nav-link dropdown-toggle active" data-bs-toggle="dropdown" href="#" sec:authorize="isAuthenticated()"> 
+                    <!-- 로그인 후 dropdown 으로 바뀌는 영역 -->
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle active" data-bs-toggle="dropdown" href="#"
+                            sec:authorize="isAuthenticated()">
                             <span sec:authentication="name"> username </span>
                         </a>
                         <ul class="dropdown-menu">

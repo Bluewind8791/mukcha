@@ -1,54 +1,70 @@
 <!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org"
+<html lang="ko" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org"
     xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{layout/layout}">
+
 
 <div layout:fragment="content">
 
-    <div class="container-fluid mt-3 w3-border w3-padding w3-round ws-grey">
-        <form novalidate method="post" action="/join">
+    <div class="container-fluid p-5 mt-5 text-center">
 
-            <h3 class="mb-3"> 회원 가입 </h3>
-            <h5> 필수항목 </h5>
+        <form method="POST" th:action="@{/join}" th:object="${form}" modelAttribute="form">
 
+            <h3 class="mb-5"> 회원 가입 </h3>
+            <h5 class="mb-2"> 필수항목 </h5>
+
+            <!-- Email -->
             <div class="mb-3 was-validated">
                 <label for="email">이메일 <span class="text-muted">(로그인 아이디)</span></label>
-                <input type="email" class="form-control" id="email" name="email" placeholder="you@example.com" required>
-                <div class="invalid-feedback">
+                <input type="email" class="form-control" id="email" name="email" 
+                    th:field="*{email}" th:value="${form.email}"
+                    placeholder="you@example.com" required autofocus>
+                <!-- <div class="invalid-feedback">
                     (필수) 정확한 이메일 양식으로 적어주세요.
-                </div>
-            </div>
-
-            <div class="mb-3 mt-3 was-validated">
-                <label for="name" class="form-label"> 아이디 <span class="text-muted">(별명)</span></label>
-                <input type="text" class="form-control" 
-                id="nickname" 
-                name="nickname" 
-                placeholder="홍길동" required>
-                <div class="valid-feedback"></div>
-                <div class="invalid-feedback">
-                    (필수) 사이트 내에서 사용할 별명을 적어주세요.
-                </div>
+                </div> -->
+                <span th:text="${valid_email}"></span>
             </div>
 
             <div class="row">
+                <!-- Password -->
                 <div class="col-md-6 mb-3 was-validated">
                     <label for="password"> 비밀번호 </label>
-                    <input type="password" class="form-control" id="password" name="password" placeholder="******" required>
-                    <div class="invalid-feedback">
+                    <input type="password" class="form-control" id="password" name="password" 
+                        th:field="*{password}" th:value="${form.password}"
+                        placeholder="******" required>
+                    <!-- <div class="invalid-feedback">
                         (필수) 패스워드는 6자 이상, 20자 이하여야 합니다.
-                    </div>
+                    </div> -->
+                    <span th:text="${valid_password}"></span>
                 </div>
+
+                <!-- Password confirm -->
                 <div class="col-md-6 mb-3 was-validated">
                     <label for="rePassword"> 비밀번호 (확인) </label>
-                    <input type="password" class="form-control" id="rePassword" name="rePassword" placeholder="******" required>
-                    <div class="invalid-feedback">
+                    <input type="password" class="form-control" id="rePassword" 
+                        th:field="*{rePassword}" th:value="${form.rePassword}"
+                        name="rePassword" placeholder="******" required>
+                    <!-- <div class="invalid-feedback">
                         (필수) 동일한 비밀번호를 입력해주세요.
-                    </div>
+                    </div> -->
+                    <span th:text="${valid_rePassword}"></span>
                 </div>
             </div>
 
+            <!-- Nickname -->
+            <div class="mb-3 mt-3 was-validated">
+                <label for="name" class="form-label"> 아이디 <span class="text-muted">(별명)</span></label>
+                <input type="text" class="form-control" id="nickname" name="nickname" 
+                    th:field="*{nickname}" th:value="${form.nickname}"
+                    placeholder="홍길동" required>
+                <div class="valid-feedback"></div>
+                <!-- <div class="invalid-feedback">
+                    (필수) 사이트 내에서 사용할 별명을 적어주세요.
+                </div> -->
+                <span th:text="${valid_nickname}"></span>
+            </div>
+
             <hr class="mb-4">
-            <h5> 선택항목 </h5>
+            <h5 class="mb-2 text-center"> 선택항목 </h5>
 
             <div class="mb-3 mt-3">
                 <label class="form-label"> 성별 </label>
@@ -64,7 +80,8 @@
 
                 <div class="col">
                     <span class="ps_box input-group">
-                        <input type="text" class="form-control" id="birthYear" name="birthYear" placeholder="숫자만 적어주세요 (4자)" maxlength="4">
+                        <input type="text" class="form-control" id="birthYear" name="birthYear"
+                            placeholder="숫자만 적어주세요 (4자)" size="4">
                         <span class="input-group-text">년</span>
                     </span>
                 </div>
@@ -92,18 +109,27 @@
 
                 <div class="col">
                     <span class="ps_box input-group">
-                        <input type ="text" class="form-control" id="birthDay" name="birthDay" placeholder="숫자만 적어주세요 (2자)" maxlength="2">
+                        <input type="text" class="form-control" id="birthDay" name="birthDay"
+                            placeholder="숫자만 적어주세요 (2자)" maxlength="2">
                         <span class="input-group-text">일</span>
                     </span>
                 </div>
             </div>
 
+            <!-- blank -->
             <hr class="mb-4">
 
+            <!-- submit button -->
             <button type="submit" class="btn btn-primary"> 회원가입 </button>
+
         </form>
 
-    </div> <!-- /container -->
+    </div>
+
+
 </div>
 
 </html>
+
+
+

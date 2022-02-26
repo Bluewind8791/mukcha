@@ -14,10 +14,8 @@ import org.springframework.security.authentication.DisabledException;
 import org.springframework.security.authentication.LockedException;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.authentication.AuthenticationFailureHandler;
-import org.springframework.stereotype.Service;
 
 
-@Service
 public class LoginFailureHandler implements AuthenticationFailureHandler {
 
     private final String DEFAULT_FAILURE_URL = "/login?error=true";
@@ -29,23 +27,23 @@ public class LoginFailureHandler implements AuthenticationFailureHandler {
                 AuthenticationException exception
         ) throws IOException, ServletException {
 
-        String loginFailMsg = null;
+        String errorMessage = null;
 
         if (exception instanceof AuthenticationServiceException) {
-            loginFailMsg = "존재하지 않는 사용자입니다.";
+            errorMessage = "존재하지 않는 사용자입니다.";
         } else if (exception instanceof BadCredentialsException) {
-			loginFailMsg = "아이디 또는 비밀번호가 틀립니다.";
+			errorMessage = "아이디 또는 비밀번호가 틀립니다.";
 		} else if (exception instanceof LockedException) {
-			loginFailMsg = "잠긴 계정입니다.";
+			errorMessage = "잠긴 계정입니다.";
 		} else if (exception instanceof DisabledException) {
-			loginFailMsg = "비활성화된 계정입니다.";
+			errorMessage = "비활성화된 계정입니다.";
 		} else if (exception instanceof AccountExpiredException) {
-			loginFailMsg = "만료된 계정입니다.";
+			errorMessage = "만료된 계정입니다.";
 		} else if (exception instanceof CredentialsExpiredException) {
-			loginFailMsg = "비밀번호가 만료되었습니다.";
+			errorMessage = "비밀번호가 만료되었습니다.";
 		}
     
-        request.setAttribute("loginFailMsg", loginFailMsg);
+        request.setAttribute("errorMessage", errorMessage);
         request.getRequestDispatcher(DEFAULT_FAILURE_URL).forward(request, response);
 
         /*

@@ -1,7 +1,9 @@
 package com.mukcha.service;
 
 import java.time.LocalDate;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -14,6 +16,8 @@ import com.mukcha.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.validation.Errors;
+import org.springframework.validation.FieldError;
 
 @Service
 @Transactional
@@ -26,12 +30,25 @@ public class UserService {
         this.userRepository = userRepository;
     }
 
-
+    // 회원가입 서비스
     public User save(User user) {
         return userRepository.save(user);
     }
 
+    // 회원가입 시 유효성 체크
+    public Map<String, String> validateHandling(Errors errors) {
+        Map<String, String> validatorResult = new HashMap<>();
 
+        // 유효성 검사에 실패한 필드들은 Map 자료구조를 이용하여 키값과 에러 메시지를 응답
+        for (FieldError error : errors.getFieldErrors()) {
+            String validKeyName = String.format("valid_%s", error.getField()); // 키 : valid_{dto 필드명}
+            validatorResult.put(validKeyName, error.getDefaultMessage()); // 메시지 : dto에서 작성한 message 값
+        }
+        return validatorResult;
+    }
+
+
+    // finding services
     public Optional<User> findUser(Long userId) {
         return userRepository.findById(userId);
     }
@@ -39,11 +56,6 @@ public class UserService {
         return userRepository.findByEmail(email);
     }
 
-
-    // 회원가입 서비스
-    public User join(User user) {
-        return userRepository.save(user);
-    }
 
     // 수정 서비스
     public void updateEmail(Long userId, String email) {
@@ -86,13 +98,13 @@ public class UserService {
                 HashSet<Authority> authorities = new HashSet<>();
                 authorities.add(newRole);
                 user.setAuthorities(authorities);
-                join(user);
+                save(user);
             } else if (!user.getAuthorities().contains(newRole)) { // 해당 권한만 가지고 있지 않다면
                 HashSet<Authority> authorities = new HashSet<>();
                 authorities.addAll(user.getAuthorities()); // 기존의 권한에서
                 authorities.add(newRole); // new role 추가
                 user.setAuthorities(authorities);
-                join(user);
+                save(user);
             }
         });
     }
@@ -110,7 +122,7 @@ public class UserService {
                             .collect(Collectors.toSet());
 
                 user.setAuthorities(authorities);
-                join(user);
+                save(user);
             }
         });
     }
