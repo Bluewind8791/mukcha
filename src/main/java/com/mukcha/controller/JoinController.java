@@ -76,7 +76,7 @@ public class JoinController {
                             .nickname(form.getNickname())
                             .password(passwordEncoder.encode(form.getPassword()))
                             .gender(getGenderForJoin(form.getGender()))
-                            .birthday(getBirthday(form.getBirthYear(), form.getBirthMonth(), form.getBirthDay()))
+                            .birthday(getBirthday(form.getBirthYear(), form.getBirthMonth(), form.getBirthDayOfMonth()))
                             .enabled(true)
                             .build();
         User savedUser = userService.save(user);

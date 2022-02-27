@@ -46,7 +46,6 @@ public class User extends BaseTimeEntity implements UserDetails {
     @GeneratedValue(strategy = GenerationType.IDENTITY) // 순차적으로 증가
     private Long userId;
 
-    @Column(unique = true)
     private String email;
 
     private String password;
@@ -96,4 +95,19 @@ public class User extends BaseTimeEntity implements UserDetails {
     public boolean isEnabled() {
         return enabled;
     }
+
+    public Integer getBirthYear() {
+        return birthday.getYear();
+    }
+    public Integer getBirthMonth() {
+        return birthday.getMonthValue();
+    }
+    public Integer getBirthDayOfMonth() {
+        return birthday.getDayOfMonth();
+    }
+    public String getStringGender() {
+        return gender.toString();
+    }
+
+
 }

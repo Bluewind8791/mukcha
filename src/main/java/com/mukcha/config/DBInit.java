@@ -1,9 +1,11 @@
 package com.mukcha.config;
 
+import java.time.LocalDate;
 import java.util.Optional;
 import java.util.Set;
 
 import com.mukcha.domain.Authority;
+import com.mukcha.domain.Gender;
 import com.mukcha.domain.User;
 import com.mukcha.service.UserService;
 
@@ -28,7 +30,7 @@ public class DBInit implements CommandLineRunner {
             User admin = User.builder()
                             .email("admin@test.com")
                             .nickname("admin_ben")
-                            .password(passwordEncoder.encode("1234"))
+                            .password(passwordEncoder.encode("qwe1"))
                             .enabled(true)
                             .build();
             userService.save(admin);
@@ -42,8 +44,10 @@ public class DBInit implements CommandLineRunner {
         userService.findByEmail("user@test.com").or(() ->{
             User user = User.builder()
                             .email("user@test.com")
-                            .nickname("ben")
-                            .password(passwordEncoder.encode("1234"))
+                            .nickname("test_user")
+                            .password(passwordEncoder.encode("qwe1"))
+                            .gender(Gender.MALE)
+                            .birthday(LocalDate.of(1991, 12, 14))
                             .enabled(true)
                             .build();
             userService.save(user);

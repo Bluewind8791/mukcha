@@ -19,6 +19,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.Errors;
 import org.springframework.validation.FieldError;
 
+
 @Service
 @Transactional
 public class UserService {
@@ -29,6 +30,7 @@ public class UserService {
     public UserService(UserRepository userRepository) {
         this.userRepository = userRepository;
     }
+
 
     // 회원가입 서비스
     public User save(User user) {
@@ -60,32 +62,23 @@ public class UserService {
     }
 
 
-    // 수정 서비스
+    // update 서비스
     public void updateEmail(Long userId, String email) {
-        // User user = findUser(userId);
         userRepository.updateEmail(userId, email);
-        // userRepository.save(user);
     }
     public void updateNickname(Long userId, String nickname) {
-        // userRepository.findByNickname(nickname)
-        //     .ifPresent(m -> {
-        //         throw new IllegalStateException("이미 사용중인 아이디입니다.");
-        //     });
         userRepository.updateNickname(userId, nickname);
     }
     public void updateProfileImage(Long userId, String profileImage) {
         userRepository.updateProfileImage(userId, profileImage);
     }
-    public void updateGender(Long userId, Gender gender ) {
+    public void updateGender(Long userId, Gender gender) {
         userRepository.updateGender(userId, gender);
     }
     public void updateBirthday(Long userId, LocalDate birthday) {
         userRepository.updateBirthday(userId, birthday);
     }
     public void updatePassword(Long userId, String password) {
-        if (password.length() <= 5 || password.length() > 20) {
-            throw new IllegalArgumentException("패스워드는 6자 이상, 20자 이하여야 합니다");
-        }
         userRepository.updatePassword(userId, password);
     }
 
