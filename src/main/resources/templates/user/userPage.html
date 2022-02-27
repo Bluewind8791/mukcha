@@ -75,8 +75,7 @@
 
                 <div class="col">
                     <span class="ps_box input-group">
-                        <input type="text" class="form-control" id="birthYear" 
-                            placeholder="년(4자)" maxlength="4"
+                        <input type="text" class="form-control" id="birthYear" placeholder="년(4자)" maxlength="4"
                             th:value="${#authentication.principal.getBirthYear()}">
                         <span class="input-group-text">년</span>
                     </span>
@@ -97,9 +96,9 @@
 
                 <div class="col">
                     <span class="ps_box input-group">
-                        <input type ="text" class="form-control" id="birthDay"
-                        placeholder="일" maxlength="2"
+                        <input type ="text" class="form-control" id="birthDay" placeholder="일" maxlength="2"
                         th:value="${#authentication.principal.getBirthDayOfMonth()}">
+
                         <span class="input-group-text">일</span>
                     </span>
                 </div>

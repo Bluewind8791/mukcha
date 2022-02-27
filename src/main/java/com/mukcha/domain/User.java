@@ -96,17 +96,38 @@ public class User extends BaseTimeEntity implements UserDetails {
         return enabled;
     }
 
+
     public Integer getBirthYear() {
-        return birthday.getYear();
+        try {
+            return birthday.getYear();
+        } catch (NullPointerException e) {
+            return null;
+        }
     }
+
     public Integer getBirthMonth() {
-        return birthday.getMonthValue();
+        try {
+            return birthday.getMonthValue();
+        } catch (NullPointerException e) {
+            return null;
+        }
     }
+
     public Integer getBirthDayOfMonth() {
-        return birthday.getDayOfMonth();
+        try {
+            return birthday.getDayOfMonth();
+        } catch (NullPointerException e) {
+            return null;
+        } 
     }
+
     public String getStringGender() {
-        return gender.toString();
+        try {
+            return gender.toString();
+        } catch (NullPointerException e) {
+            return "";
+        }
+        
     }
 
 
