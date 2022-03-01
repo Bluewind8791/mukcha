@@ -10,7 +10,10 @@ import com.mukcha.domain.User;
 import com.mukcha.service.UserService;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -89,12 +92,13 @@ public class UserController {
         userService.updateGender(user.getUserId(), getGenderForController(form.getGender()));
         userService.updateBirthday(user.getUserId(), getBirthdayForController(form.getBirthYear(), form.getBirthMonth(), form.getBirthDayOfMonth()));
         User savedUser = userService.findUser(user.getUserId()).get();
-        
-        System.out.println("form >>> "+form.toString());
-        System.out.println("user >>> "+savedUser.toString());
 
-        log.info("회원 정보 수정이 처리되었습니다.");
-        model.addAttribute("ifSuccess", "true");
+        // for update principal, re-login
+        Authentication authentication = new UsernamePasswordAuthenticationToken(savedUser, savedUser.getPassword(), savedUser.getAuthorities());
+        SecurityContextHolder.getContext().setAuthentication(authentication);
+
+        log.info("회원 정보 수정이 처리되었습니다."+savedUser.toString());
+        // model.addAttribute("ifSuccess", "true");
 
         return "redirect:/";
     }

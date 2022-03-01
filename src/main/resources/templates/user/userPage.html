@@ -1,14 +1,10 @@
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org"
+    xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
     xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{layout/layout}">
 
 <head>
-    <th:block th:if="${ifSuccess} == true">
-        <script type="text/javascript">
-            alert("성공");
-            top.alert("[[${ifSuccess}}]]");
-        </script>
-    </th:block>
+    
 </head>
 
 
@@ -24,8 +20,8 @@
             <!-- E-mail -->
             <div class="mb-3 was-validated">
                 <label for="email">이메일 <span class="text-muted">(로그인 아이디)</span></label>
-                <input type="email" class="form-control" id="email" name="email" 
-                    th:value="${#authentication.principal.email}" readonly>
+                <input type="email" class="form-control" id="email" name="email"
+                th:value="${#authentication.principal.email}" readonly>
                 <span style="color:royalblue">(이메일은 수정이 불가합니다.)</span>
             </div>
 
@@ -98,11 +94,10 @@
                     <span class="ps_box input-group">
                         <input type ="text" class="form-control" id="birthDay" placeholder="일" maxlength="2"
                         th:value="${#authentication.principal.getBirthDayOfMonth()}">
-
                         <span class="input-group-text">일</span>
                     </span>
                 </div>
-            </div>
+            </div> <!-- end of row -->
 
             <hr class="mb-4">
 
