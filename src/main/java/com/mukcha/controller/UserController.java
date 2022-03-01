@@ -97,6 +97,7 @@ public class UserController {
         Authentication authentication = new UsernamePasswordAuthenticationToken(savedUser, savedUser.getPassword(), savedUser.getAuthorities());
         SecurityContextHolder.getContext().setAuthentication(authentication);
 
+        System.out.println(form.getBirthYear()+form.getBirthMonth()+form.getBirthDayOfMonth());
         log.info("회원 정보 수정이 처리되었습니다."+savedUser.toString());
         // model.addAttribute("ifSuccess", "true");
 
