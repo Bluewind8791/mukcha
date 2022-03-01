@@ -120,6 +120,14 @@ public class UserService {
         });
     }
 
+    // 회원 삭제 (enabled = false)
+    @Transactional(rollbackFor = {RuntimeException.class})
+    public void disableUser(Long userId) {
+        updateProfileImage(userId, null); // delete 프로필 사진
+        updateNickname(userId, null); // delete nickname
+        userRepository.disableUser(userId); // enable=false 처리
+    }
+
 
 
 

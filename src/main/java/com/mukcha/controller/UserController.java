@@ -3,6 +3,7 @@ package com.mukcha.controller;
 import java.time.LocalDate;
 import java.util.Map;
 
+import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 
 import com.mukcha.domain.Gender;
@@ -22,6 +23,7 @@ import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
@@ -42,13 +44,13 @@ public class UserController {
     @Autowired
     private PasswordEncoder passwordEncoder;
 
+
     // 회원 정보 확인 및 수정
     @GetMapping("/edit")
     public String userPage(Model model, @AuthenticationPrincipal User user) {
         log.info(user.getEmail() + " 님의 회원 정보 수정 진입 >>> "+user.toString());
         return "user/userPage";
     }
-
 
     @PostMapping(value = "/edit")
     public String updateUserInfo(
@@ -99,15 +101,57 @@ public class UserController {
         Authentication authentication = new UsernamePasswordAuthenticationToken(savedUser, savedUser.getPassword(), savedUser.getAuthorities());
         SecurityContextHolder.getContext().setAuthentication(authentication);
 
-        System.out.println(form.getBirthYear()+form.getBirthMonth()+form.getBirthDayOfMonth());
-        log.info("회원 정보 수정이 처리되었습니다."+savedUser.toString());
-
         // 회원 정보 수정 성공 메세지를 위한 redirect attribute
         redirectAttributes.addFlashAttribute("resultMessage", "success");
-
+        
+        log.info("회원 정보 수정이 처리되었습니다."+savedUser.toString());
         return "redirect:/user/edit";
     }
 
+
+    // 회원 탈퇴
+    @GetMapping(value = "/delete")
+    public String disable(@AuthenticationPrincipal User user) {
+        log.info(user.getEmail()+" 님 회원 탈퇴 창 진입");
+        return "user/deleteForm";
+    }
+
+    @PostMapping(value = "/delete")
+    public String disableUser(
+            @ModelAttribute UserForm form,
+            Model model,
+            @AuthenticationPrincipal User user,
+            HttpSession httpSession
+        ) {
+
+        // 비밀번호 확인 불일치
+        if (!form.getPassword().equals(form.getRePassword())) {
+            model.addAttribute("valid_rePassword", "비밀번호가 일치하지 않습니다.");
+            log.info("valid_rePassword" + "위의 비밀번호와 동일하지 않습니다.");
+            return "user/deleteForm";
+        }
+
+        // 현재 비밀번호와 불일치
+        if (!passwordEncoder.matches(form.getPassword(), user.getPassword())) {
+            System.out.println(user.getPassword());
+            System.out.println(form.getPassword());
+            model.addAttribute("valid_password", "비밀번호가 일치하지 않습니다.");
+            log.info("valid_password" + "비밀번호가 일치하지 않습니다.");
+            return "user/deleteForm";
+        }
+
+        // delete login session
+        Object loginSession = httpSession.getAttribute("login");
+        if (loginSession != null) {
+            httpSession.removeAttribute("login");
+            httpSession.invalidate();
+        }
+
+        userService.disableUser(user.getUserId());
+        log.info("회원이 탈퇴 되었습니다.");
+
+        return "redirect:/";
+    }
 
 
 

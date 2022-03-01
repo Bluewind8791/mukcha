@@ -13,7 +13,6 @@ import java.util.List;
 import java.util.Set;
 
 import javax.persistence.CascadeType;
-import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
@@ -24,9 +23,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
-import javax.persistence.Table;
 
-import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.Where;
 import org.springframework.security.core.userdetails.UserDetails;
 
@@ -36,7 +33,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "user")
+// @Table(name = "user")
 @ToString(callSuper = true)
 @Where(clause = "enabled = true")
 @EqualsAndHashCode(callSuper = true)
@@ -50,7 +47,6 @@ public class User extends BaseTimeEntity implements UserDetails {
 
     private String password;
 
-    @Column(unique = true)
     private String nickname;
 
     private String profileImage;
@@ -60,7 +56,6 @@ public class User extends BaseTimeEntity implements UserDetails {
     @Enumerated(value = EnumType.STRING) // enum 이름을 DB에 저장
     private Gender gender;
 
-    @ColumnDefault("true")
     private boolean enabled;
 
     @OneToMany(fetch = FetchType.EAGER)

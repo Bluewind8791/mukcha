@@ -40,6 +40,11 @@ public interface UserRepository extends JpaRepository<User, Long> {
     @Query("update User set password=?2 where userId=?1")
     void updatePassword(Long userId, String password);
 
+    // 회원 탈퇴
+    @Modifying(clearAutomatically = true)
+    @Query("update User set enabled=false where userId=?1")
+    void disableUser(Long userId);
+
 
 }
 

@@ -3,6 +3,7 @@ package com.mukcha.service;
 import static org.junit.jupiter.api.Assertions.*;
 
 import java.time.LocalDate;
+import java.util.Optional;
 
 import com.mukcha.domain.Authority;
 import com.mukcha.domain.Gender;
@@ -51,21 +52,17 @@ public class UserServiceTest extends WithUserTest {
         assertThrows(DataIntegrityViolationException.class, () -> userTestHelper.createUser("ben@test.com", "ben2"));
     }
 
-    @DisplayName("4. nickname, email, profileImage, birthday, gender 수정")
+    @DisplayName("4. nickname, profileImage, birthday, gender 수정")
     @Test
     void test_4() {
         User user = userTestHelper.createUser("ben@test.com", "ben");
-        userService.updateEmail(user.getUserId(), "test@test.com");
         userService.updateNickname(user.getUserId(), "testname");
         userService.updateProfileImage(user.getUserId(), "testImage");
         userService.updateBirthday(user.getUserId(), LocalDate.of(1991, 12, 14));
         userService.updateGender(user.getUserId(), Gender.MALE);
 
-        // List<User> list = StreamSupport.stream(userRepository.findAll().spliterator(), false)
-        //         .collect(Collectors.toList());
         User savedUser = userService.findUser(user.getUserId()).get();
 
-        assertEquals("test@test.com", savedUser.getEmail());
         assertEquals("testname", savedUser.getNickname());
         assertEquals("testImage", savedUser.getProfileImage());
         assertEquals(LocalDate.of(1991, 12, 14), savedUser.getBirthday());
@@ -105,6 +102,17 @@ public class UserServiceTest extends WithUserTest {
         userService.updatePassword(user.getUserId(), "111111"); // update password
         User savedUser = userService.findUser(user.getUserId()).get(); // find user
         assertEquals("111111", savedUser.getPassword()); // assert
+    }
+
+    @Test
+    @DisplayName("9. 회원 탈퇴를 진행한다.")
+    void test_9() {
+        User user = userTestHelper.createUser("test1@test.com", "test1");
+        User user2 = userTestHelper.createUser("test2@test.com", "test2");
+        userService.disableUser(user.getUserId());
+        userService.disableUser(user2.getUserId());
+        assertEquals(Optional.empty(), userService.findUser(user.getUserId()));
+        assertEquals(Optional.empty(), userService.findUser(user2.getUserId()));
     }
 
 
