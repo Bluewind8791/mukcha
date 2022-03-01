@@ -4,14 +4,19 @@
     xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{layout/layout}">
 
 <head>
-    
+    <script th:inline="javascript">
+        var message = [[${resultMessage}]];
+        if (message == "success") {
+            alert("회원 정보 수정이 완료되었습니다.");
+        }
+    </script>
 </head>
-
 
 
 <div layout:fragment="content">
 
     <div class="container-fluid p-5 mt-5 text-center">
+
         <form class="form-signin" th:action="@{/user/edit}" method="POST" th:object="${form}" modelAttribute="form">
 
             <h3 class="mb-5"> 회원 정보 수정 </h3>
@@ -113,9 +118,5 @@
     </div> <!-- /container -->
 
 </div>
-
-<script>
-
-</script>
 
 </html>

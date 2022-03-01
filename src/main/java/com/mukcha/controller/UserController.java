@@ -23,6 +23,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -55,7 +56,8 @@ public class UserController {
             BindingResult bindingResult,
             Model model,
             Errors errors,
-            @AuthenticationPrincipal User user
+            @AuthenticationPrincipal User user,
+            RedirectAttributes redirectAttributes
         ) {
 
         // 비밀번호 확인 불일치
@@ -99,9 +101,11 @@ public class UserController {
 
         System.out.println(form.getBirthYear()+form.getBirthMonth()+form.getBirthDayOfMonth());
         log.info("회원 정보 수정이 처리되었습니다."+savedUser.toString());
-        // model.addAttribute("ifSuccess", "true");
 
-        return "redirect:/";
+        // 회원 정보 수정 성공 메세지를 위한 redirect attribute
+        redirectAttributes.addFlashAttribute("resultMessage", "success");
+
+        return "redirect:/user/edit";
     }
 
 
