@@ -1,4 +1,5 @@
 .modal_wrap {
+    display: none; /*버튼 눌러야 보이게*/
     position: fixed;
     top: 50%;
     left: 50%;

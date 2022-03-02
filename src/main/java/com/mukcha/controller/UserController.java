@@ -23,7 +23,6 @@ import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
@@ -140,14 +139,8 @@ public class UserController {
             return "user/deleteForm";
         }
 
-        // delete login session
-        Object loginSession = httpSession.getAttribute("login");
-        if (loginSession != null) {
-            httpSession.removeAttribute("login");
-            httpSession.invalidate();
-        }
-
-        userService.disableUser(user.getUserId());
+        httpSession.invalidate(); // delete login session
+        userService.disableUser(user.getUserId()); // disable user
         log.info("회원이 탈퇴 되었습니다.");
 
         return "redirect:/";
