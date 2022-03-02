@@ -1,26 +1,63 @@
 <!DOCTYPE html>
-<html lang="ko" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<html lang="ko" 
+    xmlns:th="http://www.thymeleaf.org" 
+    xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+
 <header th:fragment="headerFragment">
+
+    <style type="text/css">
+        .header_welcome {
+            margin-left: 10px;
+            margin-right: 10px;
+        }
+        .header_searchbar {
+            
+            margin-left: auto;
+            margin-right: 10px;
+        }
+        .nav_category {
+            margin-left: 10px;
+        }
+        .navbar-collapse {
+            flex-grow: 0;
+        }
+    </style>
+
     <nav class="navbar navbar-expand-xxl navbar-dark bg-dark">
         <div class="container-fluid">
             <a class="navbar-brand" href="/"> MUKCHA </a>
+
+            <ul class="nav_category navbar-nav">
+                <a class="nav-link" href="#"> 치킨 </a>
+            </ul>
+            <ul class="nav_category navbar-nav">
+                <a class="nav-link" href="#"> 피자 </a>
+            </ul>
+
+            <!-- 검색창 -->
+            <form class="header_searchbar d-flex">
+                <input class="form-control me-2" type="text" placeholder="Search">
+                <button class="btn btn-primary" type="button">Search</button>
+            </form>
 
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mynavbar">
                 <span class="navbar-toggler-icon"></span>
             </button>
 
             <div class="collapse navbar-collapse" id="mynavbar">
+                
                 <!-- 아래의 항목을 뒤로 땡김 -->
                 <ul class="navbar-nav me-auto"></ul>
 
-                <!-- 검색창 -->
-                <form class="d-flex">
-                    <input class="form-control me-2" type="text" placeholder="Search">
-                    <button class="btn btn-primary" type="button">Search</button>
-                </form>
+                
+
+                <!-- welcome message -->
+                <div class="header_welcome text-white" sec:authorize="isAuthenticated()" id="header_welcome">
+                    <a><span sec:authentication="name">username</span> 님 환영합니다!</a>
+                </div>
 
                 <ul class="navbar-nav">
-                    <!-- 로그인, 회원가입 -->
+                    <!-- 비 로그인 사용자 노출 영역 -->
                     <li class="nav-item">
                         <a class="nav-link" href="/login" sec:authorize="isAnonymous()"> 로그인 </a>
                     </li>
@@ -28,16 +65,17 @@
                         <a class="nav-link" href="/join" sec:authorize="isAnonymous()"> 회원가입 </a>
                     </li>
 
-                    <!-- 로그인 후 dropdown 으로 바뀌는 영역 -->
-                    <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle active" data-bs-toggle="dropdown" href="#"
-                            sec:authorize="isAuthenticated()">
-                            <span sec:authentication="name"> username </span>
-                        </a>
-                        <ul class="dropdown-menu">
-                            <li><a class="dropdown-item" href="/user/edit"> 내 정보 </a></li>
-                            <li><a class="dropdown-item" href="/logout"> 로그아웃 </a></li>
-                        </ul>
+                    <!-- 매니저 사용자 노출 영역 -->
+                    <li class="nav-item">
+                        <a class="nav-link" href="/admin" sec:authorize="hasRole('ROLE_ADMIN')">매니저</a>
+                    </li>
+
+                    <!-- 로그인 사용자 노출 영역 -->
+                    <li class="nav-item">
+                        <a class="nav-link" href="/user/edit" sec:authorize="isAuthenticated()">내 정보</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/logout" sec:authorize="isAuthenticated()">로그아웃</a>
                     </li>
                 </ul>
 
@@ -47,3 +85,14 @@
 </header>
 
 </html>
+
+<li class="nav-item dropdown">
+    <a class="nav-link dropdown-toggle active" data-bs-toggle="dropdown" href="#"
+        sec:authorize="isAuthenticated()">
+        <span sec:authentication="name"> username </span>
+    </a>
+    <ul class="dropdown-menu">
+        <li><a class="dropdown-item" href="/user/edit"> 내 정보 </a></li>
+        <li><a class="dropdown-item" href="/logout"> 로그아웃 </a></li>
+    </ul>
+</li>

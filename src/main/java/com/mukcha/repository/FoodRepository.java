@@ -1,6 +1,7 @@
 package com.mukcha.repository;
 
 import java.util.List;
+import java.util.Optional;
 
 import com.mukcha.domain.Category;
 import com.mukcha.domain.Food;
@@ -14,5 +15,7 @@ public interface FoodRepository extends JpaRepository<Food, Long> {
     List<String> getAllCategories();
 
     List<Food> findAllByCategory(Category category);
-    
+
+    Optional<Food> findByName(String foodName);
+
 }

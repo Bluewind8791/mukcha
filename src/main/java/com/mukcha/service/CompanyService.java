@@ -25,13 +25,22 @@ public class CompanyService {
         this.companyRepository = companyRepository;
     }
 
+
     public Company save(Company company) {
         return companyRepository.save(company);
     }
-
     public Optional<Company> findCompany(Long companyId) {
         return companyRepository.findById(companyId);
     }
+    public Optional<Company> findByName(String companyName) {
+        return companyRepository.findByName(companyName);
+    }
+    public List<Company> findAll() {
+        return companyRepository.findAll();
+    }
+
+
+
 
     public void companyAddFood(Long companyId ,Food food) {
         // find company
@@ -63,6 +72,10 @@ public class CompanyService {
             companyRepository.save(company);
         }
     }
+
+    
+
+
 
 
 }

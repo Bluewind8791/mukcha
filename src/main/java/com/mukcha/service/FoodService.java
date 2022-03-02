@@ -3,7 +3,6 @@ package com.mukcha.service;
 import com.mukcha.domain.Category;
 import com.mukcha.domain.Company;
 import com.mukcha.domain.Food;
-import com.mukcha.repository.CompanyRepository;
 import com.mukcha.repository.FoodRepository;
 
 import java.time.LocalDateTime;
@@ -18,7 +17,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 @Transactional
 public class FoodService {
-    
+
     private final FoodRepository foodRepository;
 
     @Autowired
@@ -26,9 +25,10 @@ public class FoodService {
         this.foodRepository = foodRepository;
     }
 
-    @Autowired private CompanyRepository companyRepository;
-    
-    
+    @Autowired
+    private CompanyService companyService;
+
+
     // 음식을 생성한다.
     public Food save(Food food) {
         if (food.getFoodId() == null) {
@@ -68,11 +68,12 @@ public class FoodService {
 
     // 음식 회사를 수정한다
     public Optional<Food> editFoodCompany(Long foodId, String companyName) {
+
         try {
-            companyRepository.findByName(companyName); 
+            companyService.findByName(companyName); 
         } catch (NullPointerException e) { // 존재하지 않는 회사라면
             Company saveCompany = Company.builder().name(companyName).build();
-            companyRepository.save(saveCompany);
+            companyService.save(saveCompany);
             return foodRepository.findById(foodId).map(food -> {
                 food.setCompany(saveCompany);
                 foodRepository.save(food);
@@ -80,7 +81,7 @@ public class FoodService {
             });
         }
         // 존재하는 회사라면
-        Company cmp = companyRepository.findByName(companyName);
+        Company cmp = companyService.findByName(companyName).get();
         return foodRepository.findById(foodId).map(food -> {
             food.setCompany(cmp);
             foodRepository.save(food);
@@ -112,14 +113,16 @@ public class FoodService {
         return foodRepository.findById(foodId);
     }
 
+    public List<Food> findAll() {
+        return foodRepository.findAll();
+    }
+
+    public Optional<Food> findByName(String foodName) {
+        return foodRepository.findByName(foodName);
+    }
 
 
 
 
-
-// - 회사 목록을 가져온다
-// - 회사별 음식 목록을 가져온다
-// - 카테고리를 가져온다
-// - 카테고리 별 음식을 가져온다
 
 }
