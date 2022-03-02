@@ -18,17 +18,10 @@
             document.getElementById('modal_btn').addEventListener('click', onClick);
             document.querySelector('.modal_close').addEventListener('click', offClick);
         };
-
-        // 회원 정보 수정 성공 alert
-        var message = [[${ resultMessage }]];
-        if (message == "success") {
-            alert("회원 정보 수정이 완료되었습니다.");
-        }
     </script>
 
     <link rel="stylesheet" href="/css/userPage.css">
 </head>
-
 
 <div layout:fragment="content">
 
@@ -76,15 +69,12 @@
                 <button class="w-100 btn btn-lg btn-danger" type="submit">회원 탈퇴</button>
             </div>
 
-
             <div class="mb-3">
                 <a type="button" class="w-100 btn btn-lg btn-secondary" onclick="window.history.back();">취소</a>
             </div>
 
         </form>
-
     </div> <!-- /container -->
-
 </div>
 
 </html>
