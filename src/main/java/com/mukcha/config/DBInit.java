@@ -9,9 +9,12 @@ import com.mukcha.domain.Category;
 import com.mukcha.domain.Company;
 import com.mukcha.domain.Food;
 import com.mukcha.domain.Gender;
+import com.mukcha.domain.Review;
+import com.mukcha.domain.Score;
 import com.mukcha.domain.User;
 import com.mukcha.service.CompanyService;
 import com.mukcha.service.FoodService;
+import com.mukcha.service.ReviewService;
 import com.mukcha.service.UserService;
 
 import org.springframework.boot.CommandLineRunner;
@@ -28,6 +31,7 @@ public class DBInit implements CommandLineRunner {
     private final UserService userService;
     private final CompanyService companyService;
     private final FoodService foodService;
+    private final ReviewService reviewService;
     private final PasswordEncoder passwordEncoder;
 
     @Override
@@ -76,7 +80,7 @@ public class DBInit implements CommandLineRunner {
             return Optional.of(companyService.save(company));
         });
 
-        // init menu
+        // init menus
         foodService.findByName("NO1.포테이토닭토닭").or(() -> {
             Food food = Food.builder()
                             .name("NO1.포테이토닭토닭")
@@ -88,6 +92,63 @@ public class DBInit implements CommandLineRunner {
             foodService.save(food);
             return Optional.of(foodService.save(food));
         });
+        foodService.findByName("아빠의제주깜슐랭").or(() -> {
+            Food food = Food.builder()
+                            .name("아빠의제주깜슐랭")
+                            .category(Category.CHICKEN)
+                            .image("http://www.chickenplus.co.kr/uploads/products/%EC%A0%9C%EC%A3%BC%EA%B9%9C%EC%8A%90%EB%9E%AD%EC%B9%98%ED%82%A8.png")
+                            .company(companyService.findByName("치킨플러스").get())
+                            .build()
+            ;
+            foodService.save(food);
+            return Optional.of(foodService.save(food));
+        });
+        foodService.findByName("원헌드RED").or(() -> {
+            Food food = Food.builder()
+                            .name("원헌드RED")
+                            .category(Category.CHICKEN)
+                            .image("http://www.chickenplus.co.kr/uploads/products/%EC%9B%90%ED%97%8C%EB%93%9C%EB%A0%88%EB%93%9C%EC%B9%98%ED%82%A8.png")
+                            .company(companyService.findByName("치킨플러스").get())
+                            .build()
+            ;
+            foodService.save(food);
+            return Optional.of(foodService.save(food));
+        });
+        foodService.findByName("신비아파트치플세트").or(() -> {
+            Food food = Food.builder()
+                            .name("신비아파트치플세트")
+                            .category(Category.CHICKEN)
+                            .image("http://www.chickenplus.co.kr/uploads/products/%EC%8B%A0%EB%B9%84%EC%95%84%ED%8C%8C%ED%8A%B8%EC%B9%98%ED%82%A8.png")
+                            .company(companyService.findByName("치킨플러스").get())
+                            .build()
+            ;
+            foodService.save(food);
+            return Optional.of(foodService.save(food));
+        });
+        foodService.findByName("치플백립").or(() -> {
+            Food food = Food.builder()
+                            .name("치플백립")
+                            .category(Category.CHICKEN)
+                            .image("http://www.chickenplus.co.kr/uploads/products/%EB%B0%B1%EB%A6%BD%EC%BD%A4%EB%B3%B4.png")
+                            .company(companyService.findByName("치킨플러스").get())
+                            .build()
+            ;
+            foodService.save(food);
+            return Optional.of(foodService.save(food));
+        });
+
+        // init review
+        reviewService.findReview(1L).or(() -> {
+            Review review = new Review();
+            review.setFood(foodService.findFood(1L).get());
+            review.setUser(userService.findByEmail("user@test.com").get());
+            review.setScore(Score.GOOD);
+            review.setComment("WOW!");
+            review.setEatenDate(LocalDate.now());
+            reviewService.save(review);
+            return Optional.of(reviewService.save(review));
+        });
+
 
     } // end of run method
 
