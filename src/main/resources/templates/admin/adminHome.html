@@ -8,7 +8,6 @@
     </div>
 
     <div class="container p-5 text-center">
-
         <button type="button" class="btn btn-primary w-50" data-bs-toggle="modal" data-bs-target="#companyModal">
             회사 추가하기
         </button>
@@ -22,17 +21,14 @@
     <div class="modal" id="companyModal">
         <div class="modal-dialog">
             <div class="modal-content">
-
                 <!-- Modal Header -->
                 <div class="modal-header">
                     <h4 class="modal-title">회사 추가</h4>
                     <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                 </div>
-
                 <form th:action="@{/admin/company}" method="POST">
                     <!-- Modal body -->
                     <div class="modal-body">
-
                         <div class="mb-3 mt-3">
                             <label>회사명</label>
                             <input class="form-control" placeholder="회사명을 적어주세요" name="companyName">
@@ -41,7 +37,6 @@
                             <label>회사 로고 이미지</label>
                             <input class="form-control" placeholder="회사 로고 URL를 넣어주세요" name="companyLogo">
                         </div>
-
                     </div>
                     <!-- Modal footer -->
                     <div class="modal-footer">
@@ -58,13 +53,11 @@
     <div class="modal" id="menuModal">
         <div class="modal-dialog">
             <div class="modal-content">
-
                 <!-- Modal Header -->
                 <div class="modal-header">
                     <h4 class="modal-title">메뉴 추가</h4>
                     <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                 </div>
-
                 <form th:action="@{/admin/menu}" method="POST">
                     <!-- Modal body -->
                     <div class="modal-body">
@@ -93,7 +86,6 @@
                             </select>
                         </div>
                     </div>
-
                     <!-- Modal footer -->
                     <div class="modal-footer">
                         <button type="submit" class="btn btn-primary">Submit</button>
@@ -106,17 +98,17 @@
 
     <!-- Food List -->
     <div class="container mt-3">
-        <h2>Food List</h2>
+        <h2><strong>Menu List</strong></h2>
         <p></p>
         <table class="table table-hover">
             <thead>
                 <tr>
                     <th>ID</th>
-                    <th>Category</th>
-                    <th>Company Name</th>
-                    <th>Name</th>
+                    <th>카테고리</th>
+                    <th>회사</th>
+                    <th>이름</th>
                     <th>Image URL</th>
-                    <th>Image</th>
+                    <th>이미지</th>
                     <th>Update Time</th>
                     <th>Create Time</th>
                 </tr>
@@ -128,7 +120,7 @@
                     <td><span th:text="${f.company.name}">companyName</span></td>
                     <td><span th:text="${f.name}">Name</span></td>
                     <td><span th:text="${f.image}">Image</span></td>
-                    <td><img th:src="${f.image}" height="30" data-bs-toggle="modal" th:data-bs-target="'#fImageModal'+${f.foodId}"></td>
+                    <td><img th:src="${f.image}" height="50" data-bs-toggle="modal" th:data-bs-target="'#fImageModal'+${f.foodId}"></td>
                     <div class="modal" th:id="'fImageModal'+${f.foodId}">
                         <div class="modal-dialog">
                             <div class="modal-content">
@@ -150,20 +142,17 @@
         </table>
     </div>
 
-    
-
-
     <!-- Company List -->
     <div class="container mt-3">
-        <h2>Company List</h2>
+        <h2><strong>Company List</strong></h2>
         <p></p>
         <table class="table table-hover">
             <thead>
                 <tr>
                     <th>ID</th>
-                    <th>Company Name</th>
+                    <th>이름</th>
                     <th>Logo Image URL</th>
-                    <th>Logo Image</th>
+                    <th>Logo</th>
                     <th>Update Time</th>
                     <th>Create Time</th>
                 </tr>
@@ -194,17 +183,6 @@
             </tbody>
         </table>
     </div>
-
-
-
-
-
-
-
-
-
-
-
 
 
 </div> <!-- end of container -->
