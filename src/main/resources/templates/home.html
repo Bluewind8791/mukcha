@@ -5,55 +5,50 @@
     xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{layout/layout}">
 
 <div layout:fragment="content">
-    <div class="container-fluid mt-3">
 
-        <h4> 카테고리 </h4>
-        <div>
-
-        </div>
-
-
-        <h4> 별점순 TOP 10 </h4>
-
-        <div class="container-fluid">
-
-            <div class="row">
-
-                <div class="col-sm bg-light p-3" style="width: 20%;">
-                    <div class="card">
-                        <img src="https://www.w3schools.com/bootstrap5/img_avatar5.png" alt="">
-                        <a href="#" class="stretched-link"></a>
-                    </div>
-                </div>
-                <div class="col-sm bg-light p-3" style="width: 20%;">
-                    <div class="card">
-                        <img src="https://www.w3schools.com/bootstrap5/img_avatar5.png" alt="">
-                        <a href="#" class="stretched-link"></a>
-                    </div>
-                </div>
-                <div class="col-sm bg-light p-3" style="width: 20%;">
-                    <div class="card">
-                        <img src="https://www.w3schools.com/bootstrap5/img_avatar5.png" alt="">
-                        <a href="#" class="stretched-link"></a>
-                    </div>
-                </div>
-                <div class="col-sm bg-light p-3" style="width: 20%;">
-                    <div class="card">
-                        <img src="https://www.w3schools.com/bootstrap5/img_avatar5.png" alt="">
-                        <a href="#" class="stretched-link"></a>
-                    </div>
-                </div>
-                <div class="col-sm bg-light p-3" style="width: 20%;">
-                    <div class="card">
-                        <img src="https://www.w3schools.com/bootstrap5/img_avatar5.png" alt="">
-                        <a href="#" class="stretched-link"></a>
-                    </div>
-                </div>
-
+    <div class="container mt-5">
+        <h4><strong>카테고리</strong></h4>
+        <div class="row">
+            <div class="col-sm bg-light p-3">
+                치킨
+            </div>
+            <div class="col-sm bg-light p-3">
+                피자
+            </div>
+            <div class="col-sm bg-light p-3">
+                햄버거
             </div>
         </div>
-
     </div>
+
+
+    <div class="container mt-5">
+        <h4><strong>별점순 TOP 10</strong></h4>
+
+        <div class="row">
+            <div class="col-sm" style="width: 25%;" th:each="f : ${foodList}">
+                <a style="text-decoration: none;" th:title="${f.name}" th:href="'/menu/'+${f.foodId}">
+                    <img class="img-fluid mb-2" th:src="${f.image}">
+                    <div>
+                        <div class="text-muted small" th:text="${f.company.name}">company name</div>
+                        <h6 class="menu-name text-dark" th:text="${f.name}">menu name</h6>
+                        <strong>
+                            <div class="small" style="color: tomato;">
+                                <div class="me-1" style="float: left;">
+                                    평균 별점 ★
+                                </div>
+                                <div style="float: left;">4.5</div>
+                            </div>
+                            
+                        </strong>
+                    </div>
+                </a>
+            </div>
+
+            
+        </div> <!-- end of row -->
+    </div> <!-- end of container -->
+
 </div>
 
 </html>

@@ -49,8 +49,6 @@
                 <!-- 아래의 항목을 뒤로 땡김 -->
                 <ul class="navbar-nav me-auto"></ul>
 
-                
-
                 <!-- welcome message -->
                 <div class="header_welcome text-white" sec:authorize="isAuthenticated()" id="header_welcome">
                     <a><span sec:authentication="name">username</span> 님 환영합니다!</a>
@@ -85,14 +83,3 @@
 </header>
 
 </html>
-
-<li class="nav-item dropdown">
-    <a class="nav-link dropdown-toggle active" data-bs-toggle="dropdown" href="#"
-        sec:authorize="isAuthenticated()">
-        <span sec:authentication="name"> username </span>
-    </a>
-    <ul class="dropdown-menu">
-        <li><a class="dropdown-item" href="/user/edit"> 내 정보 </a></li>
-        <li><a class="dropdown-item" href="/logout"> 로그아웃 </a></li>
-    </ul>
-</li>

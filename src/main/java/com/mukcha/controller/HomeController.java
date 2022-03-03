@@ -1,5 +1,7 @@
 package com.mukcha.controller;
 
+import com.mukcha.service.FoodService;
+
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -12,9 +14,12 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class HomeController {
 
+    private final FoodService foodService;
+
     // root page
-    @GetMapping("/")
-    public String home() {
+    @GetMapping(value = {"/", ""})
+    public String home(Model model) {
+        model.addAttribute("foodList", foodService.findAll());
         return "home";
     }
 
@@ -22,7 +27,8 @@ public class HomeController {
     @GetMapping("/login")
     public String login(
             @RequestParam(value = "error", defaultValue = "false") Boolean error,
-            Model model) {
+            Model model
+        ) {
         model.addAttribute("error", error);
         return "user/loginForm";
     }
