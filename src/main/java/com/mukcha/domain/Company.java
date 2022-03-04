@@ -11,6 +11,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.persistence.CascadeType;
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
@@ -32,6 +33,7 @@ import javax.persistence.Table;
 public class Company extends BaseTimeEntity {
 
     @Id
+    @Column(name = "company_id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long companyId;
 

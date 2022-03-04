@@ -13,6 +13,7 @@ import java.util.List;
 import java.util.Set;
 
 import javax.persistence.CascadeType;
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
@@ -23,6 +24,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
+import javax.persistence.Table;
 
 import org.hibernate.annotations.Where;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -33,13 +35,14 @@ import org.springframework.security.core.userdetails.UserDetails;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-// @Table(name = "user")
+@Table(name = "user")
 @ToString(callSuper = true)
 @Where(clause = "enabled = true")
 @EqualsAndHashCode(callSuper = true)
 public class User extends BaseTimeEntity implements UserDetails {
 
     @Id
+    @Column(name = "user_id")
     @GeneratedValue(strategy = GenerationType.IDENTITY) // 순차적으로 증가
     private Long userId;
 
@@ -70,22 +73,18 @@ public class User extends BaseTimeEntity implements UserDetails {
     public String getUsername() {
         return email; // username email 로 사용
     }
-
     @Override
     public boolean isAccountNonExpired() {
         return enabled;
     }
-
     @Override
     public boolean isAccountNonLocked() {
         return enabled;
     }
-
     @Override
     public boolean isCredentialsNonExpired() {
         return enabled;
     }
-
     @Override
     public boolean isEnabled() {
         return enabled;

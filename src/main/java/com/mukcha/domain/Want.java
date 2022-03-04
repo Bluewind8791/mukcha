@@ -1,9 +1,11 @@
 package com.mukcha.domain;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.Table;
 
 import lombok.Data;
 import lombok.Builder;
@@ -16,11 +18,15 @@ import lombok.AllArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
+@Table(name = "want")
 public class Want {
     
     @Id
+    @Column(name = "want_id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long wantId;
 
-    private Long food_id;
+    @Column(name = "food_id")
+    private Long foodId;
+
 }
