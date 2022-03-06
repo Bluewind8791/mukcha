@@ -82,4 +82,54 @@
 * 리뷰의 점수, 코멘트, 먹은날짜를 수정한다.
 * 점수를 삭제하면 리뷰가 삭제된다.
 
+---
 
+## Entity Relationship
+
+한 유저는 여러 리뷰를 쓸 수 있으며, 그 리뷰는 한 유저로부터만 쓰일 수 있다. -> 다대일 일대다 관계
+
+### user -> review
+
+- OneToMany - 한 유저는 여러개의 리뷰를 쓸 수 있다.
+- 유저의 리뷰는 존재하지 않을 수 있다.
+- 리뷰 보기를 눌러야 모든 리뷰가 뜬다. (lazy)
+
+### review -> user
+
+- ManyToOne
+- 연관관계 주인
+- 리뷰에서는 user는 반드시 존재한다. (nullable = false)
+- 리뷰를 클릭하면 user.nickname과 user.profile_image가 뜬다.
+
+
+한 음식에는 여러가지 리뷰가 달릴 수 있다. 하지만 리뷰의 한개의 컬럼은 한개의 음식 컬럼에만 매핑된다. -> 다대일 일대다 관계
+
+### food -> review
+
+- OneToMany - 한 메뉴는 여러개의 리뷰가 달릴 수 있다.
+- 리뷰는 존재하지 않을 수 있다
+- 한 음식을 누르면 여러개의 review.score 과 review.comment 가 표시된다.
+
+### review -> food
+
+- ManyToOne
+- 연관관계 주인
+- 리뷰를 누르면 food.name과 food.image가 뜬다.
+- 리뷰에서는 food가 반드시 존재한다 (nullable = false)
+
+
+한 회사에는 여러 음식이 존재하며, 한 음식에는 한 회사만이 존재할 수 있다. -> 일대다 다대일 관계
+
+### company -> food
+
+- OneToMany - 한 회사에는 여러 메뉴가 존재한다.
+- 한 회사에는 메뉴가 존재하지 않을 수 있다.
+- 회사를 누르면 그 회사의 제품 리스트가 나온다.
+
+### food -> company
+
+- ManyToOne
+- 연관관계 주인
+- 여러개의 메뉴는 한 회사에 존재한다.
+- 모든 메뉴에는 회사의 정보가 반드시 존재한다. (nullable = false)
+- 메뉴를 누르면 company.name 이 뜬다
