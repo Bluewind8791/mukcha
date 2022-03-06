@@ -8,8 +8,6 @@ import lombok.NoArgsConstructor;
 import lombok.ToString;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Set;
 
 import javax.persistence.CascadeType;
@@ -37,7 +35,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 @AllArgsConstructor
 @Table(name = "user")
 @ToString(callSuper = true)
-@Where(clause = "enabled = true")
+@Where(clause = "enabled=true")
 @EqualsAndHashCode(callSuper = true)
 public class User extends BaseTimeEntity implements UserDetails {
 
@@ -46,12 +44,15 @@ public class User extends BaseTimeEntity implements UserDetails {
     @GeneratedValue(strategy = GenerationType.IDENTITY) // 순차적으로 증가
     private Long userId;
 
+    @Column(unique = true)
     private String email;
 
     private String password;
 
+    @Column(unique = true)
     private String nickname;
 
+    @Column(name = "profile_image")
     private String profileImage;
 
     private LocalDate birthday;
@@ -61,14 +62,32 @@ public class User extends BaseTimeEntity implements UserDetails {
 
     private boolean enabled;
 
-    @OneToMany(fetch = FetchType.EAGER)
-    @Builder.Default
-    private List<Want> wantList = new ArrayList<>();
-
-    @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    // user -> authority
     @JoinColumn(foreignKey = @ForeignKey(name = "userId"))
+    @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     private Set<Authority> authorities;
-    
+
+
+
+
+
+
+
+
+    // user -> review (readOnly)
+    // @JsonIgnore fetch = FetchType.EAGER, , orphanRemoval = true
+    // @Builder.Default
+    // @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    // private List<Review> reviews = new ArrayList<>();
+
+
+    // add review method
+    // public void addReview(Review review) {
+    //     this.getReviews().add(review);
+    //     review.setUser(this);
+    // }
+
+
     @Override
     public String getUsername() {
         return email; // username email 로 사용
@@ -98,7 +117,6 @@ public class User extends BaseTimeEntity implements UserDetails {
             return null;
         }
     }
-
     public Integer getBirthMonth() {
         try {
             return birthday.getMonthValue();
@@ -106,7 +124,6 @@ public class User extends BaseTimeEntity implements UserDetails {
             return null;
         }
     }
-
     public Integer getBirthDayOfMonth() {
         try {
             return birthday.getDayOfMonth();
@@ -114,14 +131,12 @@ public class User extends BaseTimeEntity implements UserDetails {
             return null;
         } 
     }
-
     public String getStringGender() {
         try {
             return gender.toString();
         } catch (NullPointerException e) {
             return "";
         }
-        
     }
 
 
