@@ -45,8 +45,8 @@ public class CompanyServiceTest {
         food2 = foodTestHelper.createFood("food2", company, Category.PIZZA, null);
     }
 
+    @Test // 22.3.6
     @DisplayName("1. 회사를 생성한다.")
-    @Test
     void test_1() {
         // Company company = companyTestHelper.createCompany("test company", "companyLogo");
         Company savedCompany = companyService.findCompany(company.getCompanyId()).orElseThrow(() -> 
@@ -55,8 +55,8 @@ public class CompanyServiceTest {
         companyTestHelper.assertCompany(savedCompany, "test company", "companyLogo");
     }
 
+    @Test // 22.3.6
     @DisplayName("2. 회사의 음식/메뉴를 추가한다.")
-    @Test
     void test_2() {
         companyService.companyAddFood(company.getCompanyId(), food1);
         assertEquals(1, company.getFoods().size());
@@ -67,8 +67,8 @@ public class CompanyServiceTest {
         assertEquals("food2", company.getFoods().get(1).getName());
     }
 
+    @Test // 22.3.6
     @DisplayName("3. 회사의 음식/메뉴는 중복하여 들어가지 않는다.")
-    @Test
     void test_3() {
         companyService.companyAddFood(company.getCompanyId(), food1);
         companyService.companyAddFood(company.getCompanyId(), food1);
@@ -76,8 +76,8 @@ public class CompanyServiceTest {
         assertEquals("food1", company.getFoods().iterator().next().getName());
     }
 
+    @Test // 22.3.6
     @DisplayName("4. 회사의 이름, 이미지URL를 수정한다.")
-    @Test
     void test_4() {
         companyService.updateCompanyName(company.getCompanyId(), "ChickenPlus");
         companyService.updateCompanyImage(company.getCompanyId(), "NewCompanyLogo");
@@ -88,8 +88,8 @@ public class CompanyServiceTest {
         assertEquals("NewCompanyLogo", savedCompany.getImage());
     }
 
+    @Test // 22.3.6
     @DisplayName("5. 회사의 음식을 삭제한다.")
-    @Test
     void test_5() {
         companyService.companyAddFood(company.getCompanyId(), food1);
         companyService.companyAddFood(company.getCompanyId(), food2);
@@ -109,11 +109,3 @@ public class CompanyServiceTest {
 
 
 }
-
-/**
- * 회사를 생성한다
- * 회사의 음식/메뉴들을 추가한다.
- * 회사의 음식/메뉴들, 이미지URL를 수정한다.
- * 회사의 음식을 삭제한다.
- * 회사의 메뉴들을 조회한다.
- */
