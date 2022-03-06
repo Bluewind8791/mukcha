@@ -9,12 +9,9 @@ import com.mukcha.domain.Category;
 import com.mukcha.domain.Company;
 import com.mukcha.domain.Food;
 import com.mukcha.domain.Gender;
-import com.mukcha.domain.Review;
-import com.mukcha.domain.Score;
 import com.mukcha.domain.User;
 import com.mukcha.service.CompanyService;
 import com.mukcha.service.FoodService;
-import com.mukcha.service.ReviewService;
 import com.mukcha.service.UserService;
 
 import org.springframework.boot.CommandLineRunner;
@@ -31,7 +28,6 @@ public class DBInit implements CommandLineRunner {
     private final UserService userService;
     private final CompanyService companyService;
     private final FoodService foodService;
-    private final ReviewService reviewService;
     private final PasswordEncoder passwordEncoder;
 
     @Override
@@ -137,20 +133,9 @@ public class DBInit implements CommandLineRunner {
             return Optional.of(foodService.save(food));
         });
 
-        // init review
-        reviewService.findReview(1L).or(() -> {
-            Review review = new Review();
-            review.setFood(foodService.findFood(1L).get());
-            review.setUser(userService.findByEmail("user@test.com").get());
-            review.setScore(Score.GOOD);
-            review.setComment("WOW!");
-            review.setEatenDate(LocalDate.now());
-            reviewService.save(review);
-            return Optional.of(reviewService.save(review));
-        });
+
 
 
     } // end of run method
-
 
 }
