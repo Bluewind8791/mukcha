@@ -41,4 +41,7 @@ spring:
     ansi:
       enabled: always # console color
 
+logging:
+  level: 
+    org.springframework.web: trace # controller 가 제대로 서버에 뜨고잇는지 로그 확인
 
