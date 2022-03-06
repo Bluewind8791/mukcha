@@ -40,7 +40,7 @@ public class WithReviewTest {
         this.foodTestHelper = new FoodTestHelper(this.foodService);
         this.companyTestHelper = new CompanyTestHelper(this.companyService);
         this.userTestHelper = new UserTestHelper(userService, passwordEncoder);
-        this.reviewTestHelper = new ReviewTestHelper();
+        this.reviewTestHelper = new ReviewTestHelper(reviewRepository);
 
         this.company = this.companyTestHelper.createCompany("test company", "companyLogo");
         this.food = this.foodTestHelper.createFood("test food", company, Category.CHICKEN, "menuImage");

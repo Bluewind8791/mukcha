@@ -28,49 +28,53 @@ public class UserServiceTest extends WithUserTest {
     }
 
 
+    @Test // 22.3.5
     @DisplayName("1. 사용자 생성 테스트")
-    @Test
     void test_1() {
-        User user = userTestHelper.createUser("ben@test.com", "ben");
+        // create
+        User user = userTestHelper.createUser("ben@user.test", "TestUser");
+        // find
         User savedUser = userService.findUser(user.getUserId()).get();
-
-        assertEquals("ben@test.com", savedUser.getEmail());
-        assertEquals("ben", savedUser.getNickname());
+        // test
+        assertEquals("ben@user.test", savedUser.getEmail());
+        assertEquals("TestUser", savedUser.getNickname());
     }
 
+    @Test // 22.3.5
     @DisplayName("2. 닉네임은 중복될 수 없다")
-    @Test
     void test_2() {
-        userTestHelper.createUser("ben@test.com", "ben");
-        assertThrows(DataIntegrityViolationException.class, () -> userTestHelper.createUser("ben2@test.com", "ben"));
+        userTestHelper.createUser("test1@test.com", "TestUser");
+        assertThrows(DataIntegrityViolationException.class, () -> userTestHelper.createUser("test2@test.com", "TestUser"));
     }
 
+    @Test // 22.3.5
     @DisplayName("3. 이메일은 중복될 수 없다")
-    @Test
     void test_3() {
-        userTestHelper.createUser("ben@test.com", "ben");
-        assertThrows(DataIntegrityViolationException.class, () -> userTestHelper.createUser("ben@test.com", "ben2"));
+        userTestHelper.createUser("test1@test.com", "TestUser1");
+        assertThrows(DataIntegrityViolationException.class, () -> userTestHelper.createUser("test1@test.com", "TestUser2"));
     }
 
     @DisplayName("4. nickname, profileImage, birthday, gender 수정")
     @Test
     void test_4() {
-        User user = userTestHelper.createUser("ben@test.com", "ben");
-        userService.updateNickname(user.getUserId(), "testname");
-        userService.updateProfileImage(user.getUserId(), "testImage");
-        userService.updateBirthday(user.getUserId(), LocalDate.of(1991, 12, 14));
-        userService.updateGender(user.getUserId(), Gender.MALE);
+        userTestHelper.createUser("test@user.test", "UserTest");
+        User savedUser = userService.findByEmail("test@user.test").get();
 
-        User savedUser = userService.findUser(user.getUserId()).get();
+        userService.updateNickname(savedUser.getUserId(), "testname");
+        userService.updateProfileImage(savedUser.getUserId(), "testImage");
+        userService.updateBirthday(savedUser.getUserId(), LocalDate.of(1991, 12, 14));
+        userService.updateGender(savedUser.getUserId(), Gender.MALE);
 
-        assertEquals("testname", savedUser.getNickname());
-        assertEquals("testImage", savedUser.getProfileImage());
-        assertEquals(LocalDate.of(1991, 12, 14), savedUser.getBirthday());
-        assertEquals(Gender.MALE, savedUser.getGender());
+        User editedUser = userService.findByEmail("test@user.test").get();
+
+        assertEquals("testname", editedUser.getNickname());
+        assertEquals("testImage", editedUser.getProfileImage());
+        assertEquals(LocalDate.of(1991, 12, 14), editedUser.getBirthday());
+        assertEquals(Gender.MALE, editedUser.getGender());
     }
 
+    @Test // 22.3.5
     @DisplayName("5. ADMIN 권한 부여")
-    @Test
     void test_5() {
         User user = userTestHelper.createUserWithAuth("ben@test.com", "ben", Authority.ROLE_USER); // make user
         userService.addAuthority(user.getUserId(), Authority.ROLE_ADMIN); // add authority
@@ -78,8 +82,8 @@ public class UserServiceTest extends WithUserTest {
         userTestHelper.assertUser(savedUser, "ben@test.com", "ben", Authority.ROLE_USER, Authority.ROLE_ADMIN);
     }
 
+    @Test  // 22.3.5
     @DisplayName("6. ADMIN 권한 취소")
-    @Test
     void test_6() {
         User user = userTestHelper.createUserWithAuth("ben@test.com", "ben", Authority.ROLE_USER, Authority.ROLE_ADMIN);
         userService.removeAuthority(user.getUserId(), Authority.ROLE_ADMIN);
@@ -90,15 +94,15 @@ public class UserServiceTest extends WithUserTest {
     @DisplayName("7. UserSecurityService의 email로 검색할 수 있다")
     @Test
     void test_7() {
-        userTestHelper.createUser("ben@test.com", "ben");
-        User savedUser = (User) userSecurityService.loadUserByUsername("ben@test.com");
-        userTestHelper.assertUser(savedUser, "ben@test.com", "ben");
+        userTestHelper.createUser("test@user.test", "TestUser");
+        User savedUser = (User) userSecurityService.loadUserByUsername("test@user.test");
+        userTestHelper.assertUser(savedUser, "test@user.test", "TestUser");
     }
 
     @DisplayName("8. 패스워드를 수정할 수 있다.")
     @Test
     void test_8() {
-        User user = userTestHelper.createUser("ben@test.com", "ben", "123456"); // make user
+        User user = userTestHelper.createUser("test@user.test", "TestUser", "123456"); // make user
         userService.updatePassword(user.getUserId(), "111111"); // update password
         User savedUser = userService.findUser(user.getUserId()).get(); // find user
         assertEquals("111111", savedUser.getPassword()); // assert
@@ -107,11 +111,11 @@ public class UserServiceTest extends WithUserTest {
     @Test
     @DisplayName("9. 회원 탈퇴를 진행한다.")
     void test_9() {
-        User user = userTestHelper.createUser("test1@test.com", "test1");
-        User user2 = userTestHelper.createUser("test2@test.com", "test2");
-        userService.disableUser(user.getUserId());
+        User user1 = userTestHelper.createUser("test1@user.test", "test1");
+        User user2 = userTestHelper.createUser("test2@user.test", "test2");
+        userService.disableUser(user1.getUserId());
         userService.disableUser(user2.getUserId());
-        assertEquals(Optional.empty(), userService.findUser(user.getUserId()));
+        assertEquals(Optional.empty(), userService.findUser(user1.getUserId()));
         assertEquals(Optional.empty(), userService.findUser(user2.getUserId()));
     }
 
