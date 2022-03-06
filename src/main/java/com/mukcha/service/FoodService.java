@@ -5,7 +5,6 @@ import com.mukcha.domain.Company;
 import com.mukcha.domain.Food;
 import com.mukcha.repository.FoodRepository;
 
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -31,11 +30,6 @@ public class FoodService {
 
     // 음식을 생성한다.
     public Food save(Food food) {
-        if (food.getFoodId() == null) {
-            food.setCreatedAt(LocalDateTime.now());
-        }
-        food.setUpdatedAt(LocalDateTime.now());
-
         return foodRepository.save(food);
     }
 
@@ -123,6 +117,9 @@ public class FoodService {
 
 
 
+    // public Page<Food> listOrderByScore(int pageNum, int size) {
+        // return foodReviewInfoRepository.(PageRequest.of(pageNum, size));
+    // }
 
 
 }

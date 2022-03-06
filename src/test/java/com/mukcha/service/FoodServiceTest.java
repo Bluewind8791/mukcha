@@ -63,17 +63,13 @@ public class FoodServiceTest extends WithFoodTest {
         assertEquals(7, list.size());
     }
 
-    @Test
+    @Test // 22.3.6
     @DisplayName("5. 음식의 평균 별점을 가져온다")
     void test_5() {
         reviewTestHelper.createReviewWithScore(food, user, Score.BAD);
-        // assertEquals((4+1)/2, reviewService.findReviewAverageScoreByFoodId(food.getFoodId()));
-        
         Food savedFood = foodService.findByName("testFood").get();
-        
-        System.out.println(">>> find all review: "+reviewRepository.findAll());
-        System.out.println(">>> food.getReviews: "+savedFood.getReviews());
-        // System.out.println(">>> food.getAvgScore: "+savedFood.getAverageScore());
+        // (4+1)/2
+        assertEquals(2.5F, savedFood.getAverageScore());
     }
 
 

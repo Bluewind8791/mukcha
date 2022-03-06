@@ -17,7 +17,7 @@ UserDetailsService
 @Transactional
 @RequiredArgsConstructor
 public class UserSecurityService implements UserDetailsService {
-    
+
     private final UserRepository userRepository;
 
     @Override
@@ -25,5 +25,5 @@ public class UserSecurityService implements UserDetailsService {
         return userRepository.findByEmail(username).orElseThrow(() -> new IllegalArgumentException(username + "는(은) 존재하지 않는 사용자입니다."));
     }
 
-    
+
 }

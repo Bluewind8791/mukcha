@@ -1,6 +1,7 @@
 package com.mukcha.service;
 
 import java.time.LocalDate;
+import java.util.List;
 import java.util.Optional;
 
 import com.mukcha.domain.Score;
@@ -27,9 +28,18 @@ public class ReviewService {
         return reviewRepository.save(review);
     }
 
+    // find methods
     public Optional<Review> findReview(Long reviewId) {
         return reviewRepository.findById(reviewId);
     }
+    // 해당 음식의 모든 리뷰 찾기
+    public List<Review> findReviewByFoodId(Long foodId) {
+        return reviewRepository.findAllByFoodId(foodId);
+    }
+    public List<Review> findAll() {
+        return reviewRepository.findAll();
+    }
+
 
     public void setReviewComment(Review review, String comment) {
         if (review.getScore() == null) {
@@ -45,21 +55,17 @@ public class ReviewService {
         review.setEatenDate(eatenDate);
     }
 
-
     public void editReviewScore(Review review, Score score) {
         review.setScore(score);
     }
-
 
     public void editReviewComment(Review review, String comment) {
         review.setComment(comment);
     }
 
-
     public void editReviewEatenDate(Review review, LocalDate eatenDate) {
         review.setEatenDate(eatenDate);
     }
-
 
     public void deleteScore(Review review) {
         reviewRepository.deleteById(review.getReviewId());

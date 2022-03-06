@@ -21,8 +21,8 @@ public class FoodRepositoryTest {
 
     private RepositoryTestHelper repositoryTestHelper;
 
-    private Company company;
-    private Food food;
+    Company company;
+    Food food;
 
     @BeforeEach
     void before() {

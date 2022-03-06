@@ -2,6 +2,7 @@ package com.mukcha.domain;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -71,14 +72,15 @@ public class Food extends BaseTimeEntity {
     //     }
     // }
 
-    // public float setAverageScore() {
-    //     getReviews();
-    //     List<Integer> scoreList = reviews.stream().map(r -> r.getScore().value).collect(
-    //         Collectors.toList()
-    //     );
-    //     int total = scoreList.stream().mapToInt(Integer::intValue).sum();
-    //     return total / scoreList.size();
-    // }
+    public float getAverageScore() {
+        List<Integer> scoreList = getReviews().stream().map(r -> r.getScore().value).collect(Collectors.toList());
+        if (scoreList.isEmpty()) {
+            return 0;
+        }
+        int total = scoreList.stream().mapToInt(Integer::intValue).sum();
+        return (total / (float)scoreList.size());
+    }
+
 
 
 
