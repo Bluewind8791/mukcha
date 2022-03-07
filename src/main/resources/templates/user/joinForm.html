@@ -98,11 +98,11 @@
 
                 <div class="col">
                     <span class="ps_box input-group">
-                        <input type="text" class="form-control" id="birthDay" name="birthDay"
-                            placeholder="숫자만 적어주세요 (2자)" maxlength="2" th:value="${form.birthDay}">
+                        <input type="text" class="form-control" id="birthDayOfMonth" name="birthDayOfMonth"
+                            placeholder="숫자만 적어주세요 (2자)" maxlength="2" th:value="${form.birthDayOfMonth}">
                         <span class="input-group-text">일</span>
                     </span>
-                    <span th:if="${birthDay != null}" style="color:tomato" th:text="${valid_birthDay}"></span>
+                    <span th:if="${birthDayOfMonth != null}" style="color:tomato" th:text="${valid_birthDayOfMonth}"></span>
                 </div>
             </div>
 

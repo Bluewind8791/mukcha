@@ -5,8 +5,6 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 
-import org.springframework.lang.Nullable;
-
 import lombok.Getter;
 import lombok.Setter;
 
@@ -34,11 +32,6 @@ public class UserDto {
     
     private String gender;
 
-    // @Pattern(
-    //     regexp = "([0-9]+).{4}",
-    //     message = "숫자만 입력해주세요. (4자)"
-    // )
-    @Nullable
     private String birthYear;
 
     private String birthMonth;
