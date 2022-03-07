@@ -68,24 +68,11 @@ public class User extends BaseTimeEntity implements UserDetails {
     private Set<Authority> authorities;
 
 
-
-
-
-
-
-
     // user -> review (readOnly)
-    // @JsonIgnore fetch = FetchType.EAGER, , orphanRemoval = true
     // @Builder.Default
-    // @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    // @OneToMany(mappedBy = "user", fetch = FetchType.EAGER)
     // private List<Review> reviews = new ArrayList<>();
 
-
-    // add review method
-    // public void addReview(Review review) {
-    //     this.getReviews().add(review);
-    //     review.setUser(this);
-    // }
 
 
     @Override

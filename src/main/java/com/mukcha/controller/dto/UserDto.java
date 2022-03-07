@@ -8,7 +8,7 @@ import javax.validation.constraints.Size;
 import lombok.Data;
 
 @Data
-public class UserForm {
+public class UserDto {
 
     @Email(message = "이메일 형식에 맞지 않습니다.")
     @NotBlank(message = "이메일은 필수 입력 값입니다.")

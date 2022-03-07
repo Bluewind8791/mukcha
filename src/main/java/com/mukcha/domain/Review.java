@@ -30,7 +30,7 @@ import lombok.AllArgsConstructor;
 @ToString(callSuper = true)
 @EqualsAndHashCode(callSuper = true)
 public class Review extends BaseTimeEntity {
-    
+
     @Id
     @Column(name = "review_id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -57,6 +57,18 @@ public class Review extends BaseTimeEntity {
     private User user;
 
 
+    public void setFoodToNull() {
+        this.food = null;
+    }
+
+    public void setUserToNull() {
+        this.user = null;
+    }
+
+}
+
+
+/**
     public void setFood(Food food) {
         // 기존 리뷰와의 관계 제거
         if (this.food != null) {
@@ -65,5 +77,4 @@ public class Review extends BaseTimeEntity {
         this.food = food;
         food.getReviews().add(this);
     }
-
-}
+*/

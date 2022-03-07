@@ -50,7 +50,7 @@ public class WithFoodTest {
         this.foodTestHelper = new FoodTestHelper(this.foodService);
         this.companyTestHelper = new CompanyTestHelper(this.companyService);
         this.userTestHelper = new UserTestHelper(userService, NoOpPasswordEncoder.getInstance());
-        this.reviewTestHelper = new ReviewTestHelper(reviewRepository);
+        this.reviewTestHelper = new ReviewTestHelper(reviewService);
         // domain
         this.company = this.companyTestHelper.createCompany("testCompany", "companyLogo");
         this.food = this.foodTestHelper.createFood("testFood", company, Category.CHICKEN, "menuImage");

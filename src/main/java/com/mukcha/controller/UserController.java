@@ -6,7 +6,7 @@ import java.util.Map;
 import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 
-import com.mukcha.controller.dto.UserForm;
+import com.mukcha.controller.dto.UserDto;
 import com.mukcha.domain.Gender;
 import com.mukcha.domain.User;
 import com.mukcha.service.UserService;
@@ -54,7 +54,7 @@ public class UserController {
 
     @PostMapping(value = "/edit")
     public String updateUserInfo(
-            @Valid @ModelAttribute UserForm form, // requestbody = json data
+            @Valid @ModelAttribute UserDto form, // requestbody = json data
             BindingResult bindingResult,
             Model model,
             Errors errors,
@@ -118,7 +118,7 @@ public class UserController {
 
     @PostMapping(value = "/delete")
     public String disableUser(
-            @ModelAttribute UserForm form,
+            @ModelAttribute UserDto form,
             Model model,
             @AuthenticationPrincipal User user,
             HttpSession httpSession

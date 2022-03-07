@@ -33,6 +33,7 @@ public class FoodService {
         return foodRepository.save(food);
     }
 
+
     // 음식 이름을 수정한다
     public Optional<Food> editFoodName(Long foodId, String name) {
         return foodRepository.findById(foodId).map(food -> {
@@ -41,7 +42,6 @@ public class FoodService {
             return food;
         });
     }
-    
     // 음식 이미지 url 을 수정한다
     public Optional<Food> editFoodImage(Long foodId, String imageUrl) {
         return foodRepository.findById(foodId).map(food -> {
@@ -50,7 +50,6 @@ public class FoodService {
             return food;
         });
     }
-
     // 음식 카테고리를 수정한다
     public Optional<Food> editFoodCategory(Long foodId, Category category) {
         return foodRepository.findById(foodId).map(food -> {
@@ -59,10 +58,8 @@ public class FoodService {
             return food;
         });
     }
-
     // 음식 회사를 수정한다
     public Optional<Food> editFoodCompany(Long foodId, String companyName) {
-
         try {
             companyService.findByName(companyName); 
         } catch (NullPointerException e) { // 존재하지 않는 회사라면
@@ -84,10 +81,11 @@ public class FoodService {
     }
 
 
+
     // food 에서 company 와의 연관관계를 끊는다. (null 처리)
     public void FoodRemoveCompany(Long foodId) {
         Food targetFood = foodRepository.findById(foodId).orElseThrow(() -> 
-        new IllegalArgumentException("해당 음식/메뉴를 찾을 수 없습니다.")
+            new IllegalArgumentException("해당 음식/메뉴를 찾을 수 없습니다.")
         );
         targetFood.setCompany(null);
         foodRepository.save(targetFood);
@@ -95,25 +93,36 @@ public class FoodService {
 
 
 
+
+
+    // find methods
+    public Optional<Food> findFood(Long foodId) {
+        return foodRepository.findById(foodId);
+    }
+    public List<Food> findAll() {
+        return foodRepository.findAll();
+    }
+    public Optional<Food> findByName(String foodName) {
+        return foodRepository.findByName(foodName);
+    }
     public List<String> categories() {
         return foodRepository.getAllCategories();
     }
-
     public List<Food> findAllByCategory(Category category) {
         return foodRepository.findAllByCategory(category);
     }
 
-    public Optional<Food> findFood(Long foodId) {
-        return foodRepository.findById(foodId);
+
+    /* GET mapping methods */
+    @Transactional(readOnly = true)
+    public Food viewFoodDetail(Long foodId) {
+        return foodRepository.findById(foodId).orElseThrow(() -> {
+            return new IllegalArgumentException("해당 메뉴를 찾을 수 없습니다.");
+        });
     }
 
-    public List<Food> findAll() {
-        return foodRepository.findAll();
-    }
 
-    public Optional<Food> findByName(String foodName) {
-        return foodRepository.findByName(foodName);
-    }
+
 
 
 

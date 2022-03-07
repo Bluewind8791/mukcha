@@ -6,7 +6,7 @@ import lombok.Data;
 
 
 @Data
-public class FoodForm {
+public class FoodDto {
 
     @NotBlank(message = "메뉴 이름은 필수 입력 값입니다.")
     private String foodName;

@@ -7,7 +7,7 @@ import com.mukcha.domain.Food;
 import com.mukcha.domain.Review;
 import com.mukcha.domain.Score;
 import com.mukcha.domain.User;
-import com.mukcha.repository.ReviewRepository;
+import com.mukcha.service.ReviewService;
 
 import lombok.RequiredArgsConstructor;
 
@@ -15,7 +15,7 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class ReviewTestHelper {
     
-    private final ReviewRepository reviewRepository;
+    private final ReviewService reviewService;
 
     public Review makeReview(Food food, User user) {
         Review review = new Review();
@@ -28,13 +28,15 @@ public class ReviewTestHelper {
     }
 
     public Review createReview(Food food, User user) {
-        return reviewRepository.save(makeReview(food, user));
+        return reviewService.save(makeReview(food, user));
     }
 
     public Review createReviewWithScore(Food food, User user, Score score) {
-        Review review = makeReview(food, user);
+        Review review = new Review();
+        review.setFood(food);
+        review.setUser(user);
         review.setScore(score);
-        return reviewRepository.save(review);
+        return reviewService.save(review);
     }
 
 

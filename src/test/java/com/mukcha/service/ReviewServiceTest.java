@@ -4,6 +4,7 @@ package com.mukcha.service;
 import static org.junit.jupiter.api.Assertions.*;
 
 import java.time.LocalDate;
+import java.util.List;
 
 import com.mukcha.domain.Category;
 import com.mukcha.domain.Company;
@@ -60,7 +61,7 @@ public class ReviewServiceTest {
         this.userTestHelper = new UserTestHelper(userService, NoOpPasswordEncoder.getInstance());
         this.companyTestHelper = new CompanyTestHelper(companyService);
         this.foodTestHelper = new FoodTestHelper(foodService);
-        this.reviewTestHelper = new ReviewTestHelper(reviewRepository);
+        this.reviewTestHelper = new ReviewTestHelper(reviewService);
 
         this.company = companyTestHelper.createCompany("test company", "companyLogo");
         this.food = foodTestHelper.createFood("ReviewTestFood", company, Category.CHICKEN, null);
@@ -128,11 +129,33 @@ public class ReviewServiceTest {
     @Test // 22.3.5
     @DisplayName("4. 점수를 삭제하면 리뷰가 삭제된다.")
     void test_4() {
-        Review review = reviewTestHelper.createReview(food, user);
-        reviewService.deleteScore(review);
+        reviewTestHelper.createReview(food, user);
 
-        assertFalse(reviewService.findReview(review.getReviewId()).isPresent());
+        Food targetFood = foodService.findFood(food.getFoodId()).orElseThrow(() -> 
+            new IllegalArgumentException("해당 메뉴를 찾을 수 없습니다.")
+        );
+        // 현재 로그인한 유저가 작성한 해당 음식의 리뷰를 찾는다.
+        Review targetReview = reviewService.findReviewByFoodIdAndUserId(targetFood.getFoodId(), user.getUserId());
+        // delete
+        reviewService.deleteReview(targetReview);
+
+        assertFalse(reviewService.findReview(targetReview.getReviewId()).isPresent());
     }
+
+    @Test // 22.3.7
+    @DisplayName("5. findReviewByFoodId")
+    void test_5() {
+        Food food1 = foodService.findFood(1L).get();
+        Food food2 = foodService.findFood(2L).get();
+        reviewTestHelper.createReview(food1, user);
+        reviewTestHelper.createReview(food2, user);
+
+        List<Review> reviews = reviewService.findReviewByFoodId(1L);
+
+        assertEquals(1L, reviews.get(0).getFood().getFoodId());
+    }
+
+    
 
 
 

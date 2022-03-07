@@ -2,8 +2,8 @@ package com.mukcha.controller;
 
 import java.util.List;
 
-import com.mukcha.controller.dto.CompanyForm;
-import com.mukcha.controller.dto.FoodForm;
+import com.mukcha.controller.dto.CompanyDto;
+import com.mukcha.controller.dto.FoodDto;
 import com.mukcha.domain.Category;
 import com.mukcha.domain.Company;
 import com.mukcha.domain.Food;
@@ -49,13 +49,13 @@ public class AdminController {
     // 회사 추가하기
     @PostMapping(value = "/company")
     public String addCompany(
-            @ModelAttribute CompanyForm form,
+            @ModelAttribute CompanyDto companyDto,
             Model model,
             RedirectAttributes redirectAttributes
     ) {
         Company company = Company.builder()
-                            .name(form.getCompanyName())
-                            .image(form.getCompanyLogo())
+                            .name(companyDto.getCompanyName())
+                            .image(companyDto.getCompanyLogo())
                             .foods(null)
                             .build()
         ;
@@ -68,15 +68,15 @@ public class AdminController {
     // 메뉴 추가하기
     @PostMapping(value = "/menu")
     public String addMenu(
-            @ModelAttribute FoodForm form,
+            @ModelAttribute FoodDto foodDto,
             Model model,
             RedirectAttributes redirectAttributes
     ) {
         Food food = Food.builder()
-                        .name(form.getFoodName())
-                        .image(form.getFoodImage())
-                        .category(transCategory(form.getCategory()))
-                        .company(transCompany(form.getCompany()))
+                        .name(foodDto.getFoodName())
+                        .image(foodDto.getFoodImage())
+                        .category(transCategory(foodDto.getCategory()))
+                        .company(transCompany(foodDto.getCompany()))
                         .build()
         ;
         Food savedFood = foodService.save(food);
