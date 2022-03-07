@@ -5,9 +5,13 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 
-import lombok.Data;
+import org.springframework.lang.Nullable;
 
-@Data
+import lombok.Getter;
+import lombok.Setter;
+
+@Getter
+@Setter
 public class UserDto {
 
     @Email(message = "이메일 형식에 맞지 않습니다.")
@@ -34,6 +38,7 @@ public class UserDto {
     //     regexp = "([0-9]+).{4}",
     //     message = "숫자만 입력해주세요. (4자)"
     // )
+    @Nullable
     private String birthYear;
 
     private String birthMonth;

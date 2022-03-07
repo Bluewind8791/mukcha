@@ -1,15 +1,20 @@
 package com.mukcha.controller.dto;
 
+import javax.validation.constraints.NotBlank;
+
 import com.mukcha.domain.Score;
 
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
 
-@Data
+@Getter
+@Setter
 public class ReviewDto {
 
     private String comment;
 
+    @NotBlank(message = "점수 평가는 필수 항목입니다.")
     private String rating;
 
     public Score getScore() {
