@@ -31,7 +31,7 @@ spring:
     open-in-view: false # Explicitly configure spring.jpa.open-in-view to disable this warning
     generate-ddl: false # 구현체와 상관없이 자동화된 ddl 을 설정하는 값
     hibernate:
-      ddl-auto: create
+      ddl-auto: update
     show-sql: true # 콘솔에 jpa 실행쿼리
     properties:
       hibernate:
