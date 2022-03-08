@@ -5,49 +5,31 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import com.mukcha.domain.Category;
 import com.mukcha.domain.Company;
 import com.mukcha.domain.Food;
-import com.mukcha.repository.CompanyRepository;
-import com.mukcha.repository.FoodRepository;
-import com.mukcha.repository.ReviewRepository;
-import com.mukcha.service.helper.CompanyTestHelper;
-import com.mukcha.service.helper.FoodTestHelper;
+import com.mukcha.service.helper.WithTest;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
 
 
 @Transactional
-@SpringBootTest
-public class CompanyServiceTest {
+@SpringBootTest // 22.3.8
+public class CompanyServiceTest extends WithTest {
 
-    @Autowired private CompanyRepository companyRepository;
-    @Autowired private FoodRepository foodRepository;
-    @Autowired private ReviewRepository reviewRepository;
-
-    private CompanyTestHelper companyTestHelper;
-    private FoodTestHelper foodTestHelper;
-    private CompanyService companyService;
-    private FoodService foodService;
-    private ReviewService reviewService;
     Company company;
     Food food1;
     Food food2;
 
     @BeforeEach
-    void before() {
-        this.companyService = new CompanyService(companyRepository);
-        this.reviewService = new ReviewService(reviewRepository);
-        this.foodService = new FoodService(foodRepository, companyService, reviewService);
-
-        this.companyTestHelper = new CompanyTestHelper(companyService);
-        this.foodTestHelper = new FoodTestHelper(foodService);
+    protected void before() {
+        prepareTest();
         company = companyTestHelper.createCompany("test company", "companyLogo");
         food1 = foodTestHelper.createFood("food1", company, Category.CHICKEN, null);
         food2 = foodTestHelper.createFood("food2", company, Category.PIZZA, null);
     }
+
 
     @Test // 22.3.6
     @DisplayName("1. 회사를 생성한다.")

@@ -36,22 +36,24 @@
         <div class="text-muted h5" th:text="${food.company}">company name</div>
         <div class="h2 fw-bold" th:text="${food.foodName}">food name</div>
         <strong>
-            <div class="small" style="color: tomato;">
+            <div class="small mb-3" style="color: tomato;">
                 <span class="me-1">평균 별점 ★</span>
                 <span th:text="${food.averageScore}">0.0</span>
             </div>
         </strong>
 
-        <!-- 이미 리뷰를 적은 로그인 사용자 -->
-
-        <!-- 리뷰를 적지 않은 로그인 사용자만 접근 -->
+        <!-- 로그인 사용자만 접근 -->
         <div sec:authorize="isAuthenticated()">
-            <form th:action="@{/menu/api/score/}+${food.foodId}" method="POST">
-                <!-- Button to Open the Modal -->
+            <form th:action="@{/menu/api/review/}+${food.foodId}" method="POST">
+                <!-- 이미 리뷰를 적은 로그인 사용자 -->
                 <button type="button" class="btn btn-secondary w-50 mt-5 mb-5" data-bs-toggle="modal"
-                    data-bs-target="#reviewModal">
-                    평가하기
+                    data-bs-target="#reviewModal" th:if="${isReviewed == 'true'}">평가 수정하기
                 </button>
+                <!-- 리뷰를 적지 않은 사용자 -->
+                <button type="button" class="btn btn-secondary w-50 mt-5 mb-5" data-bs-toggle="modal"
+                    data-bs-target="#reviewModal" th:if="${isReviewed == 'false'}">평가하기
+                </button>
+
                 <!-- The Modal -->
                 <div class="modal" id="reviewModal">
                     <div class="modal-dialog">
@@ -64,7 +66,8 @@
                             <!-- Modal body -->
                             <div class="modal-body">
                                 <div class="container d-flex justify-content-center mt-1">
-                                    <div class="star_rate_card">
+                                    <!-- 작성한 리뷰가 없는 경우 -->
+                                    <div class="star_rate_card" th:if="${isReviewed == 'false'}">
                                         <div class="card-body text-center"> <span class="myratings"></span>
                                             <fieldset class="rating">
                                                 <input type="radio" id="star5" name="rating" value="인생 메뉴에요!" />
@@ -81,10 +84,46 @@
                                             </fieldset>
                                         </div>
                                     </div> <!-- card end -->
+                                    <!-- 작성한 리뷰가 있는 경우 th:text="${writtenReview.score.value}" -->
+                                    <div class="star_rate_card" th:if="${isReviewed == 'true'}">
+                                        <div class="card-body text-center"> <span class="myratings"></span>
+                                            <fieldset class="rating">
+                                                <input type="radio" id="star5" name="rating" value="인생 메뉴에요!" 
+                                                th:if="${writtenReview.score.value == 5}" checked/>
+                                                <input type="radio" id="star5" name="rating" value="인생 메뉴에요!" />
+                                                <label class="full" for="star5" title="인생 메뉴에요!"></label>
+
+                                                <input type="radio" id="star4" name="rating" value="또 먹고 싶어요" 
+                                                th:if="${writtenReview.score.value == 4}" checked/>
+                                                <input type="radio" id="star4" name="rating" value="또 먹고 싶어요" />
+                                                <label class="full" for="star4" title="또 먹고 싶어요"></label>
+                                                
+                                                <input type="radio" id="star3" name="rating" value="한 번은 먹을만해요" 
+                                                th:if="${writtenReview.score.value == 3}" checked/>
+                                                <input type="radio" id="star3" name="rating" value="한 번은 먹을만해요" />
+                                                <label class="full" for="star3" title="한 번은 먹을만해요"></label>
+                                                
+                                                <input type="radio" id="star2" name="rating" value="추천하고 싶지 않아요" 
+                                                th:if="${writtenReview.score.value == 2}" checked/>
+                                                <input type="radio" id="star2" name="rating" value="추천하고 싶지 않아요" />
+                                                <label class="full" for="star2" title="추천하고 싶지 않아요"></label>
+
+                                                <input type="radio" id="star1" name="rating" value="완전 별로였어요" 
+                                                th:if="${writtenReview.score.value == 1}" checked/>
+                                                <input type="radio" id="star1" name="rating" value="완전 별로였어요" />
+                                                <label class="full" for="star1" title="완전 별로였어요"></label>
+
+                                                <input type="radio" class="reset-option" name="rating" value="reset" />
+                                            </fieldset>
+                                        </div>
+                                    </div> <!-- card end -->
                                 </div>
-                                <label for="comment"></label>
-                                <textarea class="form-control" rows="5" id="comment" name="comment" placeholder="먹어본 소감을 자유롭게 알려주세요"></textarea>
-                            </div> <!-- Modal body end -->
+                                <textarea class="form-control" rows="5" placeholder="먹어본 소감을 자유롭게 알려주세요"
+                                    id="comment" name="comment" th:if="${isReviewed == 'false'}"></textarea>
+                                <textarea class="form-control" rows="5" placeholder="먹어본 소감을 자유롭게 알려주세요"
+                                    id="comment" name="comment" 
+                                    th:text="${writtenReview.comment}" th:if="${isReviewed == 'true'}"></textarea>
+                            </div> <!-- Modal body end --> 
                             <!-- Modal footer -->
                             <div class="modal-footer">
                                 <div class="mt-2">
@@ -112,7 +151,7 @@
                     </div>
                 </div>
                 <div class="card-body d-flex">
-                    <div th:text="${r.comment}">comment</div>
+                    <div class="align-content-start" th:text="${r.comment}">comment</div>
                 </div>
                 <div class="card-footer d-flex"></div>
                 <!-- <div class="card-footer d-flex">❤</div> -->

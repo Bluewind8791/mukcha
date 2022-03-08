@@ -25,47 +25,48 @@ import lombok.extern.slf4j.Slf4j;
 @RequestMapping(value = "/menu")
 public class FoodController {
 
-    @Autowired
-    private FoodService foodService;
-
-    @Autowired
-    private ReviewService reviewService;
+    @Autowired private FoodService foodService;
+    @Autowired private ReviewService reviewService;
 
 
     @GetMapping(value = "/{foodId}")
     public String getFoodInfo(
             @PathVariable Long foodId,
-            Model model
+            Model model,
+            @AuthenticationPrincipal User user
         ) {
 
-        model.addAttribute("food", foodService.viewFoodDetail(foodId));
-        // 모든 리뷰 보기
-        model.addAttribute("reviewList", reviewService.findAllReviewByFoodId(foodId));
+        model.addAttribute("food", foodService.viewFoodDetail(foodId)); // food info
+        model.addAttribute("reviewList", reviewService.findAllReviewByFoodId(foodId)); // 모든 리뷰 보기 page로 변경요망
 
-        System.out.println(">>> getReviewList: "+reviewService.findAllReviewByFoodId(foodId));
+        try {
+            Review writtenReview = reviewService.findReviewByFoodIdAndUserId(foodId, user.getUserId());
+            log.info("writtenReview: "+writtenReview);
+            model.addAttribute("isReviewed", "true");
+            model.addAttribute("writtenReview", writtenReview);
+        } catch (Exception e) {
+            model.addAttribute("isReviewed", "false");
+        }
+
         return "food/detail";
     }
 
 
-    @PostMapping(value = "/api/score/{foodId}")
-    public String setScore(
+    @PostMapping(value = "/api/review/{foodId}")
+    public String setReview(
             @PathVariable Long foodId,
             Model model,
             ReviewDto reviewDto,
             @AuthenticationPrincipal User user
     ) {
-
         Food food = foodService.findFood(foodId).get();
-        System.out.println(">>> reviewDto: "+reviewDto);
-
         Review review = reviewService.saveReview(reviewDto.getScore(), reviewDto.getComment(), food, user);
-
         log.info(">>> Review Saved! "+review.toString());
         return "redirect:/menu/"+foodId;
     }
 
 
-    @DeleteMapping(value = "/score/{foodId}")
+    @DeleteMapping(value = "/review/{foodId}")
     public String deleteScore(@PathVariable Long foodId, @AuthenticationPrincipal User user) {
 
         Food targetFood = foodService.findFood(foodId).orElseThrow(() -> 

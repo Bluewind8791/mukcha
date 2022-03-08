@@ -8,6 +8,8 @@ import lombok.NoArgsConstructor;
 import lombok.ToString;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Set;
 
 import javax.persistence.CascadeType;
@@ -26,6 +28,7 @@ import javax.persistence.Table;
 
 import org.hibernate.annotations.Where;
 import org.springframework.security.core.userdetails.UserDetails;
+
 
 
 @Data
@@ -69,9 +72,10 @@ public class User extends BaseTimeEntity implements UserDetails {
 
 
     // user -> review (readOnly)
-    // @Builder.Default
-    // @OneToMany(mappedBy = "user", fetch = FetchType.EAGER)
-    // private List<Review> reviews = new ArrayList<>();
+    @Builder.Default
+    @ToString.Exclude
+    @OneToMany(mappedBy = "user", fetch = FetchType.EAGER)
+    private List<Review> reviews = new ArrayList<>();
 
 
 

@@ -75,11 +75,18 @@ public class ReviewService {
 
     // 점수 평가
     public Review saveReview(Score score, String comment, Food food, User user) {
-        Review review = new Review();
-        review.setFood(food);
-        review.setUser(user);
-        review.setScore(score);
-        review.setComment(comment);
+        Review review;
+        try {
+            review = findReviewByFoodIdAndUserId(food.getFoodId(), user.getUserId());
+            review.setScore(score);
+            review.setComment(comment);
+        } catch (Exception e) {
+            review = new Review();
+            review.setFood(food);
+            review.setUser(user);
+            review.setScore(score);
+            review.setComment(comment);
+        }
         save(review);
         return review;
     }

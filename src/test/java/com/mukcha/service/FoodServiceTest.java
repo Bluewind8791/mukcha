@@ -24,15 +24,17 @@ import org.springframework.transaction.annotation.Transactional;
 public class FoodServiceTest extends WithTest {
 
     Food food;
-    Company company;
     Review review;
     User user;
+    Company company;
+    Company company1;
 
     @BeforeEach
     void before() {
         prepareTest();
         // domain
         this.company = this.companyTestHelper.createCompany("testCompany", "companyLogo");
+        this.company1 = this.companyTestHelper.createCompany("testCompany2", "companyLogo2");
         this.food = this.foodTestHelper.createFood("testFood", company, Category.CHICKEN, "menuImage");
         this.user = this.userTestHelper.createUser("testuser@test.com", "testuser");
         this.review = this.reviewTestHelper.createReview(food, user);
@@ -56,14 +58,14 @@ public class FoodServiceTest extends WithTest {
         foodService.editFoodName(food.getFoodId(), "test2 food");
         foodService.editFoodImage(food.getFoodId(), "imageUrl2");
         foodService.editFoodCategory(food.getFoodId(), Category.PIZZA);
-        foodService.editFoodCompany(food.getFoodId(), "치킨마이너스");
+        foodService.editFoodCompany(food.getFoodId(), "testCompany2");
 
         Food savedFood = foodService.findFood(food.getFoodId()).get();
 
         assertEquals("test2 food", savedFood.getName());
         assertEquals("imageUrl2", savedFood.getImage());
         assertEquals(Category.PIZZA, savedFood.getCategory());
-        assertEquals("치킨마이너스", savedFood.getCompany().getName());
+        assertEquals("testCompany2", savedFood.getCompany().getName());
     }
 
     @Test // 22.3.6

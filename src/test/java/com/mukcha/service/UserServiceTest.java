@@ -3,6 +3,7 @@ package com.mukcha.service;
 import static org.junit.jupiter.api.Assertions.*;
 
 import java.time.LocalDate;
+import java.util.NoSuchElementException;
 import java.util.Optional;
 
 import com.mukcha.domain.Authority;
@@ -126,9 +127,16 @@ public class UserServiceTest extends WithTest {
     @DisplayName("10. 유저가 해당 메뉴에 리뷰를 썼는지 알아본다.")
     void test_10() {
         User user = userTestHelper.createUser("test1@user.test", "test1");
+        User user2 = userTestHelper.createUser("test2@user.test", "test2");
         Company company = companyTestHelper.createCompany("testcompany", "imageUrl");
         Food food = foodTestHelper.createFood("testfood", company, Category.CHICKEN, "image");
         reviewTestHelper.createReview(food, user);
+
+        assertDoesNotThrow(() -> reviewService.findReviewByFoodIdAndUserId(food.getFoodId(), user.getUserId()));
+        assertNotNull(reviewService.findReviewByFoodIdAndUserId(food.getFoodId(), user.getUserId()));
+        assertThrows(NoSuchElementException.class, 
+            () -> reviewService.findReviewByFoodIdAndUserId(food.getFoodId(), user2.getUserId())
+        );
     }
 
 

@@ -50,7 +50,7 @@ public class UserService {
     }
 
 
-    // finding services
+    /* FINDING SERVICES */
     public Optional<User> findUser(Long userId) {
         return userRepository.findById(userId);
     }
@@ -62,7 +62,7 @@ public class UserService {
     }
 
 
-    // update 서비스
+    /* UPDATE SERVICES */
     public void updateEmail(Long userId, String email) {
         userRepository.updateEmail(userId, email);
     }
@@ -101,7 +101,7 @@ public class UserService {
             }
         });
     }
-
+    // 권한 제거
     public void removeAuthority(Long userId, String authority) {
         userRepository.findById(userId).ifPresent(user -> {
             Authority targetRole = new Authority(user.getUserId(), authority); // target role 생성
@@ -132,11 +132,7 @@ public class UserService {
 
 
 
-
-
-
-
-
+}
 
     // email 중복 검사
     // private void validateDuplicateEmail(User user) {
@@ -161,7 +157,3 @@ public class UserService {
     //             throw new IllegalStateException("이미 사용중인 아이디입니다.");
     //         });
     // }
-
-
-
-}

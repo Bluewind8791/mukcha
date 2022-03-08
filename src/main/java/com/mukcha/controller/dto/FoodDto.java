@@ -23,6 +23,6 @@ public class FoodDto {
 
     private String foodImage;
 
-    private float averageScore;
+    private double averageScore;
 
 }

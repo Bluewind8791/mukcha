@@ -5,32 +5,30 @@ import com.mukcha.domain.Category;
 import com.mukcha.domain.Company;
 import com.mukcha.domain.Food;
 import com.mukcha.domain.Review;
+import com.mukcha.repository.CompanyRepository;
 import com.mukcha.repository.FoodRepository;
+import com.mukcha.repository.ReviewRepository;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import lombok.RequiredArgsConstructor;
 
 
 @Service
 @Transactional
+@RequiredArgsConstructor
 public class FoodService {
 
-    private FoodRepository foodRepository;
-    private CompanyService companyService;
-    private ReviewService reviewService;
+    private final FoodRepository foodRepository;
+    private final CompanyRepository companyRepository;
+    private final ReviewRepository reviewRepository;
 
-    @Autowired
-    public FoodService(FoodRepository foodRepository, CompanyService companyService, ReviewService reviewService) {
-        this.foodRepository = foodRepository;
-        this.companyService = companyService;
-        this.reviewService = reviewService;
-    }
 
 
     // 음식을 생성한다.
@@ -39,6 +37,7 @@ public class FoodService {
     }
 
 
+    /* EDIT METHODS */
     // 음식 이름을 수정한다
     public Optional<Food> editFoodName(Long foodId, String name) {
         return foodRepository.findById(foodId).map(food -> {
@@ -65,26 +64,25 @@ public class FoodService {
     }
     // 음식 회사를 수정한다
     public Optional<Food> editFoodCompany(Long foodId, String companyName) {
-        try {
-            companyService.findByName(companyName); 
-        } catch (NullPointerException e) { // 존재하지 않는 회사라면
+        if (companyRepository.findByName(companyName).isPresent()) {
+            // 존재하는 회사라면
+            Company cmp = companyRepository.findByName(companyName).get();
+            return foodRepository.findById(foodId).map(food -> {
+                food.setCompany(cmp);
+                foodRepository.save(food);
+                return food;
+            });
+        } else {
+            // 존재하지 않는 회사라면 새로 만들기
             Company saveCompany = Company.builder().name(companyName).build();
-            companyService.save(saveCompany);
+            companyRepository.save(saveCompany);
             return foodRepository.findById(foodId).map(food -> {
                 food.setCompany(saveCompany);
                 foodRepository.save(food);
                 return food;
             });
         }
-        // 존재하는 회사라면
-        Company cmp = companyService.findByName(companyName).get();
-        return foodRepository.findById(foodId).map(food -> {
-            food.setCompany(cmp);
-            foodRepository.save(food);
-            return food;
-        });
     }
-
 
 
     // food 에서 company 와의 연관관계를 끊는다. (null 처리)
@@ -134,15 +132,12 @@ public class FoodService {
         return foodDto;
     }
 
-
     // foodDto로 return 받는 find all food
     @Transactional(readOnly = true)
     public List<FoodDto> findAllWithAverageScore() {
-
         // food list를 가져와서
         List<Food> foods = foodRepository.findAll();
         List<FoodDto> foodDtos = new ArrayList<>();
-
         // FoodDto 로 변환
         foods.stream().forEach(food -> {
             FoodDto foodDto = new FoodDto();
@@ -158,9 +153,10 @@ public class FoodService {
     }
 
 
-    public float getAverageScoreByFoodId(Long foodId) {        
+    public double getAverageScoreByFoodId(Long foodId) {        
 
-        List<Review> reviewList = reviewService.findAllReviewByFoodId(foodId);
+        // List<Review> reviewList = reviewService.findAllReviewByFoodId(foodId);
+        List<Review> reviewList = reviewRepository.findAllByFoodId(foodId);
         List<Integer> scoreList = reviewList.stream().map(
             r -> r.getScore().value).collect(Collectors.toList()
         );
@@ -168,7 +164,8 @@ public class FoodService {
             return 0;
         }
         int total = scoreList.stream().mapToInt(Integer::intValue).sum();
-        return (total / (float)scoreList.size());
+        float avgScore = (total / (float)scoreList.size());
+        return Math.round(avgScore*100)/100.0;
     }
 
 
