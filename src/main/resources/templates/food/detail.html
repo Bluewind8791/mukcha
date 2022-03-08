@@ -46,8 +46,8 @@
 
         <!-- 먹은 날짜 -->
         <div sec:authorize="isAuthenticated()" th:if="${isReviewed == 'true'}">
-            <span class="small text-muted">먹은 날짜</span>
-            <span class="small text-muted" th:text="${writtenReview.eatenDate}"></span>
+            <span class="small text-muted" th:if="${writtenReview.eatenDate != null}" >먹은 날짜</span>
+            <span class="small text-muted" th:text="${writtenReview.eatenDate}" ></span>
         </div>
 
         <!-- 로그인 사용자만 접근 -->
@@ -178,6 +178,9 @@
                 <!-- <div class="card-footer d-flex">❤</div> -->
             </div>
         </ul>
+
+        <!-- 더보기 -->
+        <a type="button" class="btn btn-light text-secondary w-50" th:href="@{/menu/reviews/}+${food.foodId}" >더보기</a>
 
 
 
