@@ -39,15 +39,9 @@ public class ReviewServiceTest extends WithTest {
 
 
     @Test // 22.3.5
-    @DisplayName("1. 리뷰를 생성한다.")
+    @DisplayName("1. 유저가 해당 음식에 점수와 코멘트를 매긴다.")
     void test_1() {
-        Review review = new Review();
-        review.setFood(food);
-        review.setUser(user);
-        review.setScore(Score.BEST);
-        reviewService.setReviewEatenDate(review, LocalDate.now());
-        reviewService.setReviewComment(review, "ReviewTestComment");
-        reviewService.save(review);
+        Review review = reviewService.saveReview(Score.BEST, "comment", food, user);
 
         Review savedReview = reviewService.findReview(review.getReviewId()).orElseThrow(() -> 
             new IllegalArgumentException("해당 리뷰를 찾을 수 없습니다.")
@@ -55,27 +49,21 @@ public class ReviewServiceTest extends WithTest {
 
         assertEquals("ReviewTestFood", savedReview.getFood().getName());
         assertEquals("reviewTestUser", savedReview.getUser().getNickname());
-        assertEquals("ReviewTestComment", savedReview.getComment());
+        assertEquals("comment", savedReview.getComment());
         assertEquals(Score.BEST, savedReview.getScore());
-        assertEquals(LocalDate.now(), savedReview.getEatenDate());
     }
 
     @Test // 22.3.5
-    @DisplayName("2. 점수를 매기지 않고 먹은날짜 설정과 코멘트를 달 수 없다.")
+    @DisplayName("2. 점수와 코멘트를 단 리뷰에 추가적으로 먹은날짜를 기록한다.")
     void test_2() {
-        Review review = new Review();
-        review.setFood(food);
-        review.setUser(user);
+        Review review = reviewTestHelper.createReview(food, user);
+        reviewService.saveEatenDate("1991-12-14", food, user);
 
-        assertThrows(
-            IllegalArgumentException.class, 
-            () -> reviewService.setReviewComment(review, "test comment"),
-            "점수를 먼저 매겨주세요!");
+        Review savedReview = reviewService.findReview(review.getReviewId()).orElseThrow(() -> 
+            new IllegalArgumentException("해당 리뷰를 찾을 수 없습니다.")
+        );
 
-        assertThrows(
-            IllegalArgumentException.class, 
-            () -> reviewService.setReviewEatenDate(review, LocalDate.now()),
-            "점수를 먼저 매겨주세요!");
+        assertEquals(LocalDate.of(1991, 12, 14), savedReview.getEatenDate());
     }
 
     @Test // 22.3.5

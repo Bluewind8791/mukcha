@@ -17,6 +17,8 @@ public class ReviewDto {
     @NotBlank(message = "점수 평가는 필수 항목입니다.")
     private String rating;
 
+    private String eatenDate;
+
     public Score getScore() {
         switch (this.rating) {
             case "인생 메뉴에요!":

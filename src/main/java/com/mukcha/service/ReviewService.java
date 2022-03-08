@@ -73,6 +73,7 @@ public class ReviewService {
         reviewRepository.deleteById(review.getReviewId());
     }
 
+
     // 점수 평가
     public Review saveReview(Score score, String comment, Food food, User user) {
         Review review;
@@ -91,24 +92,34 @@ public class ReviewService {
         return review;
     }
 
-    public void setReviewComment(Review review, String comment) {
-        if (review.getScore() == null) {
-            throw new IllegalArgumentException("점수를 먼저 매겨주세요!");
+    // 먹은 날짜
+    public Review saveEatenDate(String eatenDate, Food food, User user) {
+        // String eatenDate -> LocalDate 로 변환 (yyyy-mm-dd)
+        String[] date = eatenDate.split("-");
+        LocalDate eatenDateLD = LocalDate.of(Integer.parseInt(date[0]), Integer.parseInt(date[1]), Integer.parseInt(date[2]));
+        Review review;
+        try {
+            review = findReviewByFoodIdAndUserId(food.getFoodId(), user.getUserId());
+            review.setEatenDate(eatenDateLD);
+            save(review);
+            return review;
+        } catch (Exception e) {
+            throw new IllegalArgumentException("해당 리뷰를 찾을 수 없습니다.");
         }
-        review.setComment(comment);
-    }
-    public void setReviewEatenDate(Review review, LocalDate eatenDate) {
-        if (review.getScore() == null) {
-            throw new IllegalArgumentException("점수를 먼저 매겨주세요!");
-        }
-        review.setEatenDate(eatenDate);
     }
 
-
-
-
-
-
+    // public void setReviewComment(Review review, String comment) {
+    //     if (review.getScore() == null) {
+    //         throw new IllegalArgumentException("점수를 먼저 매겨주세요!");
+    //     }
+    //     review.setComment(comment);
+    // }
+    // public void setReviewEatenDate(Review review, LocalDate eatenDate) {
+    //     if (review.getScore() == null) {
+    //         throw new IllegalArgumentException("점수를 먼저 매겨주세요!");
+    //     }
+    //     review.setEatenDate(eatenDate);
+    // }
 
 
 

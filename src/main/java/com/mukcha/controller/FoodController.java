@@ -51,7 +51,7 @@ public class FoodController {
         return "food/detail";
     }
 
-
+    // REVIEW 점수와 코멘트
     @PostMapping(value = "/api/review/{foodId}")
     public String setReview(
             @PathVariable Long foodId,
@@ -61,6 +61,20 @@ public class FoodController {
     ) {
         Food food = foodService.findFood(foodId).get();
         Review review = reviewService.saveReview(reviewDto.getScore(), reviewDto.getComment(), food, user);
+        log.info(">>> Review Saved! "+review.toString());
+        return "redirect:/menu/"+foodId;
+    }
+
+    // REVIEW 먹은 날짜
+    @PostMapping(value = "/api/eaten/{foodId}")
+    public String setEatenDate(
+            @PathVariable Long foodId,
+            Model model,
+            ReviewDto reviewDto,
+            @AuthenticationPrincipal User user
+    ) {
+        Food food = foodService.findFood(foodId).get();
+        Review review = reviewService.saveEatenDate(reviewDto.getEatenDate(), food, user);
         log.info(">>> Review Saved! "+review.toString());
         return "redirect:/menu/"+foodId;
     }

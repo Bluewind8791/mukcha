@@ -1,8 +1,6 @@
 package com.mukcha.service.helper;
 
 
-import java.time.LocalDate;
-
 import com.mukcha.domain.Food;
 import com.mukcha.domain.Review;
 import com.mukcha.domain.Score;
@@ -21,9 +19,7 @@ public class ReviewTestHelper {
         Review review = new Review();
         review.setFood(food);
         review.setUser(user);
-        review.setComment("wow!");
-        review.setScore(Score.GOOD);
-        review.setEatenDate(LocalDate.now());
+        review.setScore(Score.BAD);
         return review;
     }
 
@@ -32,9 +28,7 @@ public class ReviewTestHelper {
     }
 
     public Review createReviewWithScore(Food food, User user, Score score) {
-        Review review = new Review();
-        review.setFood(food);
-        review.setUser(user);
+        Review review = makeReview(food, user);
         review.setScore(score);
         return reviewService.save(review);
     }

@@ -4,12 +4,16 @@
 
 
 <head>
+    <!-- DATE PICKER -->
+    <link href="/css/datepicker.min.css" rel="stylesheet" type="text/css">
+    <script src="/js/datepicker.js"></script>
+    <script src="/js/datepicker.ko.js"></script>
+    <!-- STAR-RATE -->
     <link href="/css/starRate.css" rel="stylesheet" type="text/css">
     <script type="text/javascript">
         $(document).ready(function () {
             $("input[type='radio']").click(function () {
                 var sim = $("input[type='radio']:checked").val();
-                //alert(sim);
                 if (sim < 3) {
                     $('.myratings').css('color', 'red');
                     $(".myratings").text(sim);
@@ -20,8 +24,6 @@
             });
         });
     </script>
-
-
 </head>
 
 <div layout:fragment="content">
@@ -42,19 +44,39 @@
             </div>
         </strong>
 
+        <!-- 먹은 날짜 -->
+        <div sec:authorize="isAuthenticated()" th:if="${isReviewed == 'true'}">
+            <span class="small text-muted">먹은 날짜</span>
+            <span class="small text-muted" th:text="${writtenReview.eatenDate}"></span>
+        </div>
+
         <!-- 로그인 사용자만 접근 -->
         <div sec:authorize="isAuthenticated()">
+            <!-- 이미 리뷰를 적은 로그인 사용자 -->
+            <div th:if="${isReviewed == 'true'}">
+                <button type="button" class="btn btn-secondary w-25 mt-5 mb-3" data-bs-toggle="modal"
+                data-bs-target="#reviewModal">평가 수정하기</button>
+                <button type="button" class="btn btn-success w-25 mt-5 mb-3" data-bs-toggle="collapse"
+                data-bs-target="#openEatenDate">먹은 날짜</button>
+            </div>
+            
+            <form th:action="@{/menu/api/eaten/}+${food.foodId}" method="POST">
+                <div id="openEatenDate" class="collapse mt-3 mb-5" >
+                    <div class="d-flex justify-content-center">
+                        <!-- DATE PICKER -->
+                        <input class="form-control w-25 text-center" id="datepicker" name="eatenDate" type="text" placeholder="먹은 날짜를 추가해주세요" >
+                        <input class="btn btn-primary ms-1" type="submit" value="확인" >
+                    </div>
+                </div>
+            </form>
+            
+            <!-- 리뷰를 적지 않은 로그인 사용자 -->
+            <button type="button" class="btn btn-secondary w-50 mt-5 mb-5" data-bs-toggle="modal"
+                data-bs-target="#reviewModal" th:if="${isReviewed == 'false'}">평가하기
+            </button>
+        
             <form th:action="@{/menu/api/review/}+${food.foodId}" method="POST">
-                <!-- 이미 리뷰를 적은 로그인 사용자 -->
-                <button type="button" class="btn btn-secondary w-50 mt-5 mb-5" data-bs-toggle="modal"
-                    data-bs-target="#reviewModal" th:if="${isReviewed == 'true'}">평가 수정하기
-                </button>
-                <!-- 리뷰를 적지 않은 사용자 -->
-                <button type="button" class="btn btn-secondary w-50 mt-5 mb-5" data-bs-toggle="modal"
-                    data-bs-target="#reviewModal" th:if="${isReviewed == 'false'}">평가하기
-                </button>
-
-                <!-- The Modal -->
+                <!-- Review Modal -->
                 <div class="modal" id="reviewModal">
                     <div class="modal-dialog">
                         <div class="modal-content">
@@ -132,9 +154,8 @@
                             </div>
                         </div>
                     </div>
-                </form>
-            </div>
-            
+                </div><!-- Review Modal end-->
+            </form>
         </div> <!-- authorize end -->
 
         <!-- REVIEW LIST -->
@@ -159,12 +180,20 @@
         </ul>
 
 
-        <!-- <button type="button" class="btn btn-secondary w-50 mt-5 mb-5" data-bs-toggle="collapse" data-bs-target="#openReview">
-            모든 리뷰 보기
-        </button>
-        <div id="openReview" class="collapse">
-        </div> -->
 
 </div>
+
+<script>
+    var start = new Date(); // 현재 날짜를 시작 날짜로
+    var min_date = new Date(2019, 12, 1);
+
+    $("#datepicker").datepicker({
+        language: 'ko',
+        startDate: start,
+        inline: false,
+        maxDate: start,
+        minDate: min_date
+    }); 
+</script>
 
 </html>
