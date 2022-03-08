@@ -5,9 +5,12 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import java.util.List;
 
 import com.mukcha.domain.Category;
+import com.mukcha.domain.Company;
 import com.mukcha.domain.Food;
+import com.mukcha.domain.Review;
 import com.mukcha.domain.Score;
-import com.mukcha.service.helper.WithFoodTest;
+import com.mukcha.domain.User;
+import com.mukcha.service.helper.WithTest;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -18,11 +21,21 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Transactional
 @SpringBootTest
-public class FoodServiceTest extends WithFoodTest {
+public class FoodServiceTest extends WithTest {
+
+    Food food;
+    Company company;
+    Review review;
+    User user;
 
     @BeforeEach
     void before() {
-        prepareFoodTest();
+        prepareTest();
+        // domain
+        this.company = this.companyTestHelper.createCompany("testCompany", "companyLogo");
+        this.food = this.foodTestHelper.createFood("testFood", company, Category.CHICKEN, "menuImage");
+        this.user = this.userTestHelper.createUser("testuser@test.com", "testuser");
+        this.review = this.reviewTestHelper.createReview(food, user);
     }
 
     @Test // 22.3.6
@@ -43,14 +56,14 @@ public class FoodServiceTest extends WithFoodTest {
         foodService.editFoodName(food.getFoodId(), "test2 food");
         foodService.editFoodImage(food.getFoodId(), "imageUrl2");
         foodService.editFoodCategory(food.getFoodId(), Category.PIZZA);
-        foodService.editFoodCompany(food.getFoodId(), "치킨플러스");
+        foodService.editFoodCompany(food.getFoodId(), "치킨마이너스");
 
         Food savedFood = foodService.findFood(food.getFoodId()).get();
 
         assertEquals("test2 food", savedFood.getName());
         assertEquals("imageUrl2", savedFood.getImage());
         assertEquals(Category.PIZZA, savedFood.getCategory());
-        assertEquals("치킨플러스", savedFood.getCompany().getName());
+        assertEquals("치킨마이너스", savedFood.getCompany().getName());
     }
 
     @Test // 22.3.6
@@ -73,7 +86,7 @@ public class FoodServiceTest extends WithFoodTest {
 
         Food savedFood = foodService.findByName(food.getName()).get();
 
-        float averageScore = foodService.getAverageScoreByFoodId(savedFood.getFoodId());
+        double averageScore = foodService.getAverageScoreByFoodId(savedFood.getFoodId());
 
         // (4+1+4)/3
         assertEquals(3.0F, averageScore);

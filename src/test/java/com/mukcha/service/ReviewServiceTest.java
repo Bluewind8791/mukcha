@@ -12,57 +12,26 @@ import com.mukcha.domain.Food;
 import com.mukcha.domain.Review;
 import com.mukcha.domain.Score;
 import com.mukcha.domain.User;
-import com.mukcha.repository.CompanyRepository;
-import com.mukcha.repository.FoodRepository;
-import com.mukcha.repository.ReviewRepository;
-import com.mukcha.service.helper.CompanyTestHelper;
-import com.mukcha.service.helper.FoodTestHelper;
-import com.mukcha.service.helper.ReviewTestHelper;
-import com.mukcha.service.helper.UserTestHelper;
+import com.mukcha.service.helper.WithTest;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.security.crypto.password.NoOpPasswordEncoder;
 import org.springframework.transaction.annotation.Transactional;
 
 
 @Transactional
 @SpringBootTest
-public class ReviewServiceTest {
-
-    @Autowired private ReviewRepository reviewRepository;
-    @Autowired private CompanyRepository companyRepository;
-    @Autowired private FoodRepository foodRepository;
-
-    @Autowired private ReviewService reviewService;
-    @Autowired private CompanyService companyService;
-    @Autowired private FoodService foodService;
-    @Autowired private UserService userService;
-
-    private CompanyTestHelper companyTestHelper;
-    private FoodTestHelper foodTestHelper;
-    private UserTestHelper userTestHelper;
-    private ReviewTestHelper reviewTestHelper;
+public class ReviewServiceTest extends WithTest {
 
     Company company;
     Food food;
     User user;
 
-
     @BeforeEach
     void before() {
-        this.companyService = new CompanyService(companyRepository);
-        this.foodService = new FoodService(foodRepository, companyService, reviewService);
-        this.reviewService = new ReviewService(reviewRepository);
-
-        this.userTestHelper = new UserTestHelper(userService, NoOpPasswordEncoder.getInstance());
-        this.companyTestHelper = new CompanyTestHelper(companyService);
-        this.foodTestHelper = new FoodTestHelper(foodService);
-        this.reviewTestHelper = new ReviewTestHelper(reviewService);
-
+        prepareTest();
         this.company = companyTestHelper.createCompany("test company", "companyLogo");
         this.food = foodTestHelper.createFood("ReviewTestFood", company, Category.CHICKEN, null);
         this.user = userTestHelper.createUser("user@review.test", "reviewTestUser");

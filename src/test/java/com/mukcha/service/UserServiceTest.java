@@ -6,9 +6,12 @@ import java.time.LocalDate;
 import java.util.Optional;
 
 import com.mukcha.domain.Authority;
+import com.mukcha.domain.Category;
+import com.mukcha.domain.Company;
+import com.mukcha.domain.Food;
 import com.mukcha.domain.Gender;
 import com.mukcha.domain.User;
-import com.mukcha.service.helper.WithUserTest;
+import com.mukcha.service.helper.WithTest;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -20,11 +23,11 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Transactional
 @SpringBootTest
-public class UserServiceTest extends WithUserTest {
+public class UserServiceTest extends WithTest {
 
     @BeforeEach
     protected void before() {
-        prepareUserServiceTest();
+        prepareTest();
     }
 
 
@@ -119,6 +122,14 @@ public class UserServiceTest extends WithUserTest {
         assertEquals(Optional.empty(), userService.findUser(user2.getUserId()));
     }
 
+    @Test
+    @DisplayName("10. 유저가 해당 메뉴에 리뷰를 썼는지 알아본다.")
+    void test_10() {
+        User user = userTestHelper.createUser("test1@user.test", "test1");
+        Company company = companyTestHelper.createCompany("testcompany", "imageUrl");
+        Food food = foodTestHelper.createFood("testfood", company, Category.CHICKEN, "image");
+        reviewTestHelper.createReview(food, user);
+    }
 
 
 
