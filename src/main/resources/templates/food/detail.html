@@ -32,13 +32,13 @@
 
     <div class="container mt-5 text-center">
 
-        <img class="mb-4" th:src="${food.image}">
-        <div class="text-muted h5" th:text="${food.company.name}">company name</div>
-        <div class="h2 fw-bold" th:text="${food.name}">food name</div>
+        <img class="mb-4" th:src="${food.foodImage}">
+        <div class="text-muted h5" th:text="${food.company}">company name</div>
+        <div class="h2 fw-bold" th:text="${food.foodName}">food name</div>
         <strong>
             <div class="small" style="color: tomato;">
-                <div class="me-1">평균 별점 ★</div>
-                <!-- <div style="float: left;" th:text="${f.getAverageScore()}">0.0</div> -->
+                <span class="me-1">평균 별점 ★</span>
+                <span th:text="${food.averageScore}">0.0</span>
             </div>
         </strong>
 
@@ -58,7 +58,7 @@
                         <div class="modal-content">
                             <!-- Modal Header -->
                             <div class="modal-header">
-                                <h4 class="modal-title" th:text="${food.name}">Modal Heading</h4>
+                                <h4 class="modal-title" th:text="${food.foodName}">Modal Heading</h4>
                                 <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                             </div>
                             <!-- Modal body -->

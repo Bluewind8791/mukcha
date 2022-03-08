@@ -37,7 +37,7 @@ public class ReviewService {
     }
     // 해당 음식의 모든 리뷰 찾기
     @Transactional(readOnly = true)
-    public List<Review> findReviewByFoodId(Long foodId) {
+    public List<Review> findAllReviewByFoodId(Long foodId) {
         return reviewRepository.findAllByFoodId(foodId);
     }
     public List<Review> findAll() {
@@ -45,7 +45,7 @@ public class ReviewService {
     }
     // 유저 아이디와 음식 아이디를 통하여 리뷰 찾기
     public Review findReviewByFoodIdAndUserId(Long foodId, Long userId) {
-        List<Review> reviewFoundByFoodId = findReviewByFoodId(foodId);
+        List<Review> reviewFoundByFoodId = findAllReviewByFoodId(foodId);
         Optional<Review> reviewFilterByUserId = reviewFoundByFoodId.stream().filter(r -> r.getUser().getUserId().equals(userId)).findFirst();
         return reviewFilterByUserId.get();
     }

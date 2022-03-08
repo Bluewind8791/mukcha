@@ -43,12 +43,14 @@ public class FoodServiceTest extends WithFoodTest {
         foodService.editFoodName(food.getFoodId(), "test2 food");
         foodService.editFoodImage(food.getFoodId(), "imageUrl2");
         foodService.editFoodCategory(food.getFoodId(), Category.PIZZA);
+        foodService.editFoodCompany(food.getFoodId(), "치킨플러스");
 
         Food savedFood = foodService.findFood(food.getFoodId()).get();
-        
+
         assertEquals("test2 food", savedFood.getName());
         assertEquals("imageUrl2", savedFood.getImage());
         assertEquals(Category.PIZZA, savedFood.getCategory());
+        assertEquals("치킨플러스", savedFood.getCompany().getName());
     }
 
     @Test // 22.3.6
@@ -71,11 +73,10 @@ public class FoodServiceTest extends WithFoodTest {
 
         Food savedFood = foodService.findByName(food.getName()).get();
 
-        System.out.println(">>> savedfood: "+savedFood);
-        System.out.println(">>> getReviews: "+savedFood.getReviews());
+        float averageScore = foodService.getAverageScoreByFoodId(savedFood.getFoodId());
 
-        // (4+1)/2
-        // assertEquals(2.5F, savedFood.getAverageScore());
+        // (4+1+4)/3
+        assertEquals(3.0F, averageScore);
     }
 
 

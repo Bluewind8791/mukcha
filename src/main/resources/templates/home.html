@@ -26,18 +26,18 @@
         <h4><strong>별점순 TOP 10</strong></h4>
 
         <div class="row">
-            <div class="col-sm" style="width: 25%;" th:each="f : ${foodList}">
-                <a style="text-decoration: none;" th:title="${f.name}" th:href="'/menu/'+${f.foodId}">
-                    <img class="img-fluid mb-2" th:src="${f.image}">
+            <div class="col-sm" style="width: 25%;" th:each="f : ${foodDtoList}">
+                <a style="text-decoration: none;" th:title="${f.foodName}" th:href="'/menu/'+${f.foodId}">
+                    <img class="img-fluid mb-2" th:src="${f.foodImage}">
                     <div>
-                        <div class="text-muted small" th:text="${f.company.name}">company name</div>
-                        <h6 class="menu-name text-dark" th:text="${f.name}">menu name</h6>
+                        <div class="text-muted small" th:text="${f.company}">company name</div>
+                        <h6 class="menu-name text-dark" th:text="${f.foodName}">menu name</h6>
                         <strong>
                             <div class="small" style="color: tomato;">
                                 <div class="me-1" style="float: left;">
                                     평균 별점 ★
                                 </div>
-                                <!-- <div style="float: left;" th:text="${f.getAverageScore()}">평균별점</div> -->
+                                <div style="float: left;" th:text="${f.averageScore}">평균별점</div>
                             </div>
                         </strong>
                     </div>

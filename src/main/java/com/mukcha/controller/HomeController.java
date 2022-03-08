@@ -19,7 +19,7 @@ public class HomeController {
     // root page
     @GetMapping(value = {"/", ""})
     public String home(Model model) {
-        model.addAttribute("foodList", foodService.findAll());
+        model.addAttribute("foodDtoList", foodService.findAllWithAverageScore());
         return "home";
     }
 

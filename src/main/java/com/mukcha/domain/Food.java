@@ -63,6 +63,8 @@ public class Food extends BaseTimeEntity {
     private List<Review> reviews = new ArrayList<>();
 
 
+}
+
     // public void addReviews(Review review) {
     //     this.reviews.add(review);
     //     // 무한루프 방지
@@ -70,17 +72,3 @@ public class Food extends BaseTimeEntity {
     //         review.setFood(this);
     //     }
     // }
-
-    // public float getAverageScore() {
-    //     List<Integer> scoreList = getReviews().stream().map(r -> r.getScore().value).collect(Collectors.toList());
-    //     if (scoreList.isEmpty()) {
-    //         return 0;
-    //     }
-    //     int total = scoreList.stream().mapToInt(Integer::intValue).sum();
-    //     return (total / (float)scoreList.size());
-    // }
-
-
-
-
-}

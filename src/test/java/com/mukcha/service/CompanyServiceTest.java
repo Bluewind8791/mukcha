@@ -7,6 +7,7 @@ import com.mukcha.domain.Company;
 import com.mukcha.domain.Food;
 import com.mukcha.repository.CompanyRepository;
 import com.mukcha.repository.FoodRepository;
+import com.mukcha.repository.ReviewRepository;
 import com.mukcha.service.helper.CompanyTestHelper;
 import com.mukcha.service.helper.FoodTestHelper;
 
@@ -24,20 +25,23 @@ public class CompanyServiceTest {
 
     @Autowired private CompanyRepository companyRepository;
     @Autowired private FoodRepository foodRepository;
+    @Autowired private ReviewRepository reviewRepository;
 
     private CompanyTestHelper companyTestHelper;
+    private FoodTestHelper foodTestHelper;
     private CompanyService companyService;
     private FoodService foodService;
-    private FoodTestHelper foodTestHelper;
+    private ReviewService reviewService;
     Company company;
     Food food1;
     Food food2;
 
     @BeforeEach
     void before() {
-        this.companyRepository.deleteAll();
         this.companyService = new CompanyService(companyRepository);
-        this.foodService = new FoodService(foodRepository);
+        this.reviewService = new ReviewService(reviewRepository);
+        this.foodService = new FoodService(foodRepository, companyService, reviewService);
+
         this.companyTestHelper = new CompanyTestHelper(companyService);
         this.foodTestHelper = new FoodTestHelper(foodService);
         company = companyTestHelper.createCompany("test company", "companyLogo");

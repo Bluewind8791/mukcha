@@ -1,12 +1,16 @@
 package com.mukcha.service;
 
+import com.mukcha.controller.dto.FoodDto;
 import com.mukcha.domain.Category;
 import com.mukcha.domain.Company;
 import com.mukcha.domain.Food;
+import com.mukcha.domain.Review;
 import com.mukcha.repository.FoodRepository;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -17,15 +21,16 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional
 public class FoodService {
 
-    private final FoodRepository foodRepository;
-
-    @Autowired
-    public FoodService(FoodRepository foodRepository) {
-        this.foodRepository = foodRepository;
-    }
-
-    @Autowired
+    private FoodRepository foodRepository;
     private CompanyService companyService;
+    private ReviewService reviewService;
+
+    @Autowired
+    public FoodService(FoodRepository foodRepository, CompanyService companyService, ReviewService reviewService) {
+        this.foodRepository = foodRepository;
+        this.companyService = companyService;
+        this.reviewService = reviewService;
+    }
 
 
     // 음식을 생성한다.
@@ -95,7 +100,7 @@ public class FoodService {
 
 
 
-    // find methods
+    /* FIND methods */
     public Optional<Food> findFood(Long foodId) {
         return foodRepository.findById(foodId);
     }
@@ -113,12 +118,57 @@ public class FoodService {
     }
 
 
-    /* GET mapping methods */
+    /* VIEW methods */
     @Transactional(readOnly = true)
-    public Food viewFoodDetail(Long foodId) {
-        return foodRepository.findById(foodId).orElseThrow(() -> {
+    public FoodDto viewFoodDetail(Long foodId) {
+        Food food = foodRepository.findById(foodId).orElseThrow(() -> {
             return new IllegalArgumentException("해당 메뉴를 찾을 수 없습니다.");
         });
+        FoodDto foodDto = new FoodDto();
+        foodDto.setFoodId(food.getFoodId());
+        foodDto.setFoodName(food.getName());
+        foodDto.setCompany(food.getCompany().getName());
+        foodDto.setCategory(food.getCategory().toString());
+        foodDto.setFoodImage(food.getImage());
+        foodDto.setAverageScore(getAverageScoreByFoodId(food.getFoodId()));
+        return foodDto;
+    }
+
+
+    // foodDto로 return 받는 find all food
+    @Transactional(readOnly = true)
+    public List<FoodDto> findAllWithAverageScore() {
+
+        // food list를 가져와서
+        List<Food> foods = foodRepository.findAll();
+        List<FoodDto> foodDtos = new ArrayList<>();
+
+        // FoodDto 로 변환
+        foods.stream().forEach(food -> {
+            FoodDto foodDto = new FoodDto();
+            foodDto.setFoodId(food.getFoodId());
+            foodDto.setFoodName(food.getName());
+            foodDto.setCompany(food.getCompany().getName());
+            foodDto.setCategory(food.getCategory().toString());
+            foodDto.setFoodImage(food.getImage());
+            foodDto.setAverageScore(getAverageScoreByFoodId(food.getFoodId()));
+            foodDtos.add(foodDto);
+        });
+        return foodDtos;
+    }
+
+
+    public float getAverageScoreByFoodId(Long foodId) {        
+
+        List<Review> reviewList = reviewService.findAllReviewByFoodId(foodId);
+        List<Integer> scoreList = reviewList.stream().map(
+            r -> r.getScore().value).collect(Collectors.toList()
+        );
+        if (scoreList.isEmpty()) {
+            return 0;
+        }
+        int total = scoreList.stream().mapToInt(Integer::intValue).sum();
+        return (total / (float)scoreList.size());
     }
 
 

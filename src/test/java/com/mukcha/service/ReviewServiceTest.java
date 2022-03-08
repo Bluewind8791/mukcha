@@ -55,7 +55,7 @@ public class ReviewServiceTest {
     @BeforeEach
     void before() {
         this.companyService = new CompanyService(companyRepository);
-        this.foodService = new FoodService(foodRepository);
+        this.foodService = new FoodService(foodRepository, companyService, reviewService);
         this.reviewService = new ReviewService(reviewRepository);
 
         this.userTestHelper = new UserTestHelper(userService, NoOpPasswordEncoder.getInstance());
@@ -150,12 +150,12 @@ public class ReviewServiceTest {
         reviewTestHelper.createReview(food1, user);
         reviewTestHelper.createReview(food2, user);
 
-        List<Review> reviews = reviewService.findReviewByFoodId(1L);
+        List<Review> reviews = reviewService.findAllReviewByFoodId(1L);
 
         assertEquals(1L, reviews.get(0).getFood().getFoodId());
     }
 
-    
+
 
 
 

@@ -10,6 +10,8 @@ import lombok.Setter;
 @Setter
 public class FoodDto {
 
+    private Long foodId;
+
     @NotBlank(message = "메뉴 이름은 필수 입력 값입니다.")
     private String foodName;
 
@@ -20,5 +22,7 @@ public class FoodDto {
     private String company;
 
     private String foodImage;
+
+    private float averageScore;
 
 }

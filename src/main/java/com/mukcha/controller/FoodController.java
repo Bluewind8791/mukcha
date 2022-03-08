@@ -40,9 +40,9 @@ public class FoodController {
 
         model.addAttribute("food", foodService.viewFoodDetail(foodId));
         // 모든 리뷰 보기
-        model.addAttribute("reviewList", reviewService.findReviewByFoodId(foodId));
+        model.addAttribute("reviewList", reviewService.findAllReviewByFoodId(foodId));
 
-        System.out.println(">>> getReviewList: "+reviewService.findReviewByFoodId(foodId));
+        System.out.println(">>> getReviewList: "+reviewService.findAllReviewByFoodId(foodId));
         return "food/detail";
     }
 
