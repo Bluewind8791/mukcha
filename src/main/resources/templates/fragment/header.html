@@ -3,28 +3,11 @@
     xmlns:th="http://www.thymeleaf.org" 
     xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 
+
 <header th:fragment="headerFragment">
 
-    <style type="text/css">
-        .header_welcome {
-            margin-left: 10px;
-            margin-right: 10px;
-        }
-        .header_searchbar {
-            
-            margin-left: auto;
-            margin-right: 10px;
-        }
-        .nav_category {
-            margin-left: 10px;
-        }
-        .navbar-collapse {
-            flex-grow: 0;
-        }
-    </style>
-
-    <nav class="navbar navbar-expand-xxl navbar-dark bg-dark">
-        <div class="container-fluid">
+    <nav class="navbar navbar-expand-md navbar-dark bg-dark">
+        <div class="container align-self-center">
             <a class="navbar-brand" href="/"> MUKCHA </a>
 
             <ul class="nav_category navbar-nav">

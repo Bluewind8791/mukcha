@@ -1,3 +1,19 @@
 * {
     font-family: 'Gowun Dodum', sans-serif;
 }
+
+.header_welcome {
+    margin-left: 10px;
+    margin-right: 10px;
+}
+.header_searchbar {
+    
+    margin-left: auto;
+    margin-right: 10px;
+}
+.nav_category {
+    margin-left: 10px;
+}
+.navbar-collapse {
+    flex-grow: 0;
+}

@@ -10,25 +10,29 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
     <!-- J Query -->
     <script src="https://code.jquery.com/jquery-2.2.4.min.js"></script>
-    <!-- Custom styles for this template -->
-    <link rel="stylesheet" type="text/css" th:href="@{/css/common.css}">
     <!-- FONT -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Gowun+Dodum&display=swap" rel="stylesheet">
+    <!-- FONT AWESOME -->
+    <script src="https://kit.fontawesome.com/ce0be18579.js" crossorigin="anonymous"></script>
+    <!-- Custom CSS -->
+    <link rel="stylesheet" type="text/css" th:href="@{/css/common.css}">
 </head>
 
 <body>
-    <!-- header fragment 사용 -->
-    <th:block th:replace="fragment/header :: headerFragment" id="header-block"></th:block>
+    <div class="sticky-top">
+        <!-- header fragment -->
+        <th:block th:replace="fragment/header :: headerFragment" id="header-block"></th:block>
+    </div>
 
-    <!-- 
-        content fragment 사용 
-        현재 layout을 사용하는 content fragment의 내용을 삽입한다.
-    -->
-    <th:block layout:fragment="content"></th:block>
+    <div class="min-vh-100">
 
-    <!-- footer fragment 사용 -->
+        <!-- content fragment - 현재 layout을 사용하는 content fragment의 내용을 삽입. -->
+        <th:block layout:fragment="content"></th:block>
+    </div>
+
+    <!-- footer fragment -->
     <th:block th:replace="fragment/footer :: footerFragment"> </th:block>
 </body>
 

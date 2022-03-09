@@ -5,7 +5,7 @@
 
 <div layout:fragment="content">
 
-    <div class="container p-5 mt-4 text-center">
+    <div class="container p-5 mt-4 text-center bg-light">
 
         <form method="POST" th:action="@{/join}" th:object="${form}" modelAttribute="form">
 
@@ -27,7 +27,7 @@
                     <label for="password"> 비밀번호 </label>
                     <input type="password" class="form-control" id="password" name="password" 
                         th:field="*{password}" th:value="${form.password}"
-                        placeholder="******" required>
+                        placeholder="****" required>
                     <span style="color:tomato" th:text="${valid_password}"></span>
                 </div>
 
@@ -36,7 +36,7 @@
                     <label for="rePassword"> 비밀번호 (확인) </label>
                     <input type="password" class="form-control" id="rePassword" 
                         th:field="*{rePassword}" th:value="${form.rePassword}"
-                        name="rePassword" placeholder="******" required>
+                        name="rePassword" placeholder="****" required>
                     <span style="color:tomato" th:text="${valid_rePassword}"></span>
                 </div>
             </div>
@@ -107,10 +107,13 @@
             </div>
 
             <!-- blank -->
-            <hr class="mb-4">
+            <hr class="mb-5 mt-5">
 
             <!-- submit button -->
-            <button type="submit" class="btn btn-primary"> 회원가입 </button>
+            <button class="btn btn-primary me-2" type="submit" > 회원가입 </button>
+            <!-- cancel button -->
+            <a type="button" class="btn btn-secondary" onclick="window.history.back();">취소</a>
+
 
         </form>
 
