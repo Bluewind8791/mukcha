@@ -132,6 +132,39 @@ public class DBInit implements CommandLineRunner {
             foodService.save(food);
             return Optional.of(foodService.save(food));
         });
+        foodService.findByName("하바네로 포테킹 후라이드").or(() -> {
+            Food food = Food.builder()
+                            .name("하바네로 포테킹 후라이드")
+                            .category(Category.CHICKEN)
+                            .image("http://www.bhc.co.kr/upload/bhc/menu/%ED%95%98%EB%B0%94%EB%84%A4%EB%A1%9C%20%ED%8F%AC%ED%85%8C%ED%82%B9_410x271(0).png")
+                            .company(companyService.findByName("BHC").get())
+                            .build()
+            ;
+            foodService.save(food);
+            return Optional.of(foodService.save(food));
+        });
+        foodService.findByName("뿌링클").or(() -> {
+            Food food = Food.builder()
+                            .name("뿌링클")
+                            .category(Category.CHICKEN)
+                            .image("http://www.bhc.co.kr//upload/bhc/menu//BB(0).jpg")
+                            .company(companyService.findByName("BHC").get())
+                            .build()
+            ;
+            foodService.save(food);
+            return Optional.of(foodService.save(food));
+        });
+        foodService.findByName("뿌링클HOT").or(() -> {
+            Food food = Food.builder()
+                            .name("뿌링클HOT")
+                            .category(Category.CHICKEN)
+                            .image("http://www.bhc.co.kr//upload/bhc/menu//BBUHOT.jpg")
+                            .company(companyService.findByName("BHC").get())
+                            .build()
+            ;
+            foodService.save(food);
+            return Optional.of(foodService.save(food));
+        });
 
 
 
