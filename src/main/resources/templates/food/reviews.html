@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org"
+    xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{layout/layout}">
+
+
+<head>
+    
+</head>
+
+
+<div layout:fragment="content">
+
+    <div class="container h2 mt-5 mb-5 text-center fw-bold" th:text="${foodName}" ></div>
+    
+    <!-- REVIEW LIST -->
+    <ul class="container d-flex justify-content-center" th:each="r : ${reviewList}">
+        <div class="card w-50">
+            <div class="card-header">
+                <div class="d-flex justify-content-between">
+                    <div class="fw-bold" th:text="${r.user.nickname}">username</div>
+                    <!-- 별점 개수 -->
+                    <div class="rounded bg-white border-dark">
+                        <span>⭐</span>
+                        <span th:text="${r.score.getValue()}">score</span>
+                    </div>
+                </div>
+            </div>
+            <div class="card-body d-flex">
+                <div class="align-content-start" th:text="${r.comment}">comment</div>
+            </div>
+            <div class="card-footer d-flex"></div>
+            <!-- <div class="card-footer d-flex">❤</div> -->
+        </div>
+    </ul>
+
+    <!-- 리뷰가 없을 경우 -->
+    <div class="text-center" >
+        <div class="h3" th:if="${reviewList.isEmpty()}" >아직 리뷰가 없어요 😅</div>
+    </div>
+
+</div>
+
+
+<script>
+
+</script>
+
+</html>

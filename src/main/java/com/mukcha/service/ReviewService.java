@@ -11,6 +11,8 @@ import com.mukcha.domain.Food;
 import com.mukcha.domain.Review;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -106,6 +108,11 @@ public class ReviewService {
         } catch (Exception e) {
             throw new IllegalArgumentException("해당 리뷰를 찾을 수 없습니다.");
         }
+    }
+
+    @Transactional(readOnly = true)
+    public Page<Review> findAllByFoodIdOrderByCreatedAtDesc(Long foodId, int pageNum, int size) {
+        return reviewRepository.findAllByFoodIdOrderByCreatedDesc(foodId, PageRequest.of(pageNum-1, size));
     }
 
     // public void setReviewComment(Review review, String comment) {
