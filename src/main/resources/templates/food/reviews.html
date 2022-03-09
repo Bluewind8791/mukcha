@@ -10,8 +10,13 @@
 
 <div layout:fragment="content">
 
-    <div class="container h2 mt-5 mb-5 text-center fw-bold" th:text="${foodName}" ></div>
-    
+    <div class="container mt-5 mb-5 " >
+        <!-- cancel button -->
+        <a type="button" class="btn" onclick="window.history.back();" >< 뒤로가기</a>
+        
+        <div class="h2 fw-bold text-center" th:text="${foodName}" ></div>
+    </div>
+
     <!-- REVIEW LIST -->
     <ul class="container d-flex justify-content-center" th:each="r : ${reviewList}">
         <div class="card w-50">
