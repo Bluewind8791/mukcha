@@ -140,18 +140,7 @@ public class FoodService {
     public List<FoodDto> findAllWithAverageScore() {
         // food list를 가져와서
         List<Food> foods = foodRepository.findAll();
-        // FoodDto 로 변환
-        List<FoodDto> foodDtos = new ArrayList<>();
-        foods.stream().forEach(food -> {
-            FoodDto foodDto = new FoodDto();
-            foodDto.setFoodId(food.getFoodId());
-            foodDto.setFoodName(food.getName());
-            foodDto.setCompany(food.getCompany().getName());
-            foodDto.setCategory(food.getCategory().toString());
-            foodDto.setFoodImage(food.getImage());
-            foodDto.setAverageScore(getAverageScoreByFoodId(food.getFoodId()));
-            foodDtos.add(foodDto);
-        });
+        List<FoodDto> foodDtos = convertFoodToDto(foods);
         return foodDtos;
     }
 
@@ -168,6 +157,20 @@ public class FoodService {
         // get top 10
         foodDtos = foodDtos.stream().limit(10).collect(Collectors.toList());
         return foodDtos;
+    }
+
+    // 최신순 기준 10개 메뉴 가져오기
+    @Transactional(readOnly = true)
+    public List<FoodDto> findTopTenNewest() {
+        // get
+        List<FoodDto> targetFoodList = findAllWithAverageScore();
+        // sort
+        Collections.sort(
+            targetFoodList, Comparator.comparing(FoodDto::getCreatedAt).reversed()
+        );
+        // get top 10
+        targetFoodList = targetFoodList.stream().limit(10).collect(Collectors.toList());
+        return targetFoodList;
     }
 
 
@@ -187,7 +190,21 @@ public class FoodService {
     }
 
 
-
+    private List<FoodDto> convertFoodToDto(List<Food> foods) {
+        List<FoodDto> foodDtos = new ArrayList<>();
+        foods.stream().forEach(food -> {
+            FoodDto foodDto = new FoodDto();
+            foodDto.setFoodId(food.getFoodId());
+            foodDto.setFoodName(food.getName());
+            foodDto.setCompany(food.getCompany().getName());
+            foodDto.setCategory(food.getCategory().toString());
+            foodDto.setFoodImage(food.getImage());
+            foodDto.setAverageScore(getAverageScoreByFoodId(food.getFoodId()));
+            foodDto.setCreatedAt(food.getCreatedAt());
+            foodDtos.add(foodDto);
+        });
+        return foodDtos;
+    }
 
 
 

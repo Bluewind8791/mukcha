@@ -11,12 +11,11 @@ import org.springframework.data.jpa.repository.Query;
 
 public interface FoodRepository extends JpaRepository<Food, Long> {
 
-    @Query("select distinct(category) from Food")
-    List<String> getAllCategories();
+    Optional<Food> findByName(String foodName);
 
     List<Food> findAllByCategory(Category category);
 
-    Optional<Food> findByName(String foodName);
-
+    @Query("select distinct(category) from Food")
+    List<String> getAllCategories();
 
 }

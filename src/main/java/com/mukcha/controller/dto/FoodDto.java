@@ -1,5 +1,7 @@
 package com.mukcha.controller.dto;
 
+import java.time.LocalDateTime;
+
 import javax.validation.constraints.NotBlank;
 
 import lombok.Getter;
@@ -24,5 +26,7 @@ public class FoodDto {
     private String foodImage;
 
     private double averageScore;
+
+    private LocalDateTime createdAt;
 
 }

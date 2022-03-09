@@ -2,10 +2,7 @@ package com.mukcha.service;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import com.mukcha.controller.dto.FoodDto;
 import com.mukcha.domain.Category;
@@ -99,8 +96,7 @@ public class FoodServiceTest extends WithTest {
         assertEquals(2.0F, averageScore); // (1+1+4)/3
     }
 
-
-    @Test
+    @Test // 22.3.9
     @DisplayName("6. 평균별점을 기준으로 상위 10개의 메뉴를 가져온다")
     void test_6() {
         Food food1 = foodTestHelper.createFood("ttest1", company, Category.HAMBURGER, null);
@@ -114,23 +110,31 @@ public class FoodServiceTest extends WithTest {
         reviewTestHelper.createReviewWithScore(food4, user, Score.GOOD);
         reviewTestHelper.createReviewWithScore(food5, user, Score.GOOD);
 
+        List<FoodDto> foodDtos = foodService.findTopTenOrderByScore();
+        assertEquals(10, foodDtos.size());
+    }
+
+
+    @Test
+    @DisplayName("7. 가장 최신의 메뉴 10개를 가져온다.")
+    void test_7() {
+        List<FoodDto> allFoods = foodService.findTopTenNewest();
+/*
         // get
-        List<FoodDto> foodDtos = foodService.findAllWithAverageScore();
-
-        List<Double> before = foodDtos.stream().map(f -> f.getAverageScore()).collect(Collectors.toList());
-        System.out.println(">>> before: "+before);
-
+        List<Food> allFoods = foodService.findAll();
+        List<LocalDateTime> times = allFoods.stream().map(f -> f.getCreatedAt()).collect(Collectors.toList());
+        System.out.println(">>> before: "+times);
         // sort
         Collections.sort(
-            foodDtos, Comparator.comparing(FoodDto::getAverageScore).reversed()
+            allFoods, Comparator.comparing(Food::getCreatedAt).reversed()
         );
         // get top 10
-        foodDtos = foodDtos.stream().limit(10).collect(Collectors.toList());
-
+        allFoods = allFoods.stream().limit(10).collect(Collectors.toList());
         // assert
-        List<Double> after = foodDtos.stream().map(f -> f.getAverageScore()).collect(Collectors.toList());
-        System.out.println(">>> after:  "+after);
-        assertEquals(10, foodDtos.size());
+        times = allFoods.stream().map(f -> f.getCreatedAt()).collect(Collectors.toList());
+        System.out.println(">>> after:  "+times);
+*/
+        assertEquals(10, allFoods.size());
     }
 
 

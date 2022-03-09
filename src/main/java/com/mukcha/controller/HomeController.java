@@ -20,6 +20,7 @@ public class HomeController {
     @GetMapping(value = {"/", ""})
     public String home(Model model) {
         model.addAttribute("avgScoreTopTen", foodService.findTopTenOrderByScore());
+        model.addAttribute("newestTopTen", foodService.findTopTenNewest());
         return "home";
     }
 
