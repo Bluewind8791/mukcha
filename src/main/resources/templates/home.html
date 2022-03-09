@@ -4,6 +4,12 @@
     xmlns:th="http://www.thymeleaf.org"
     xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{layout/layout}">
 
+
+<head>
+    <script src="/js/slider.js"></script>
+</head>
+
+
 <div layout:fragment="content">
 
     <div class="container mt-5">
@@ -25,29 +31,58 @@
     <div class="container mt-5">
         <h4><strong>별점순 TOP 10</strong></h4>
 
-        <div class="row">
-            <div class="col-sm" style="width: 25%;" th:each="f : ${foodDtoList}">
-                <a style="text-decoration: none;" th:title="${f.foodName}" th:href="'/menu/'+${f.foodId}">
-                    <img class="img-fluid mb-2" th:src="${f.foodImage}">
-                    <div>
-                        <div class="text-muted small" th:text="${f.company}">company name</div>
-                        <h6 class="menu-name text-dark" th:text="${f.foodName}">menu name</h6>
-                        <strong>
-                            <div class="small" style="color: tomato;">
-                                <div class="me-1" style="float: left;">
-                                    평균 별점 ★
-                                </div>
-                                <div style="float: left;" th:text="${f.averageScore}">평균별점</div>
+        <div class="container">
+            <div class="row">
+                <div class="MultiCarousel" data-items="1,3,6,5" data-slide="5" id="MultiCarousel" data-interval="1000">
+                    <div class="MultiCarousel-inner">
+                        <div class="item" th:each="f : ${avgScoreTopTen}">
+                            <div class="pad15">
+                                <a style="text-decoration: none;" th:title="${f.foodName}" th:href="'/menu/'+${f.foodId}">
+                                    <img class="mb-2" style="width: 250px; height: 150px;" th:src="${f.foodImage}" >
+                                    <div class="ms-2" >
+                                        <div class="text-muted small" th:text="${f.company}">회사이름</div>
+                                        <h6 class="menu-name text-dark fw-bold" th:text="${f.foodName}">메뉴이름</h6>
+                                        <div class="small fw-bold" style="color: tomato;">
+                                            <div class="me-1" style="float: left;">
+                                                평균 별점 ★
+                                            </div>
+                                            <div class="fw-bold" style="float: left;" th:text="${f.averageScore}">평균별점</div>
+                                        </div>
+                                    </div>
+                                </a>
                             </div>
-                        </strong>
+                        </div>
                     </div>
-                </a>
+                    <button class="btn leftLst"> < </button>
+                    <button class="btn rightLst"> > </button>
+                </div>
             </div>
+        </div>
 
-            
-        </div> <!-- end of row -->
     </div> <!-- end of container -->
 
 </div>
 
 </html>
+
+<!-- 
+<div class="row">
+    <div class="col-sm" style="width: 25%;" th:each="f : ${avgScoreTopTen}" >
+        <a style="text-decoration: none;" th:title="${f.foodName}" th:href="'/menu/'+${f.foodId}">
+            <img class="img-fluid mb-2" th:src="${f.foodImage}" >
+            <div>
+                <div class="text-muted small" th:text="${f.company}">company name</div>
+                <h6 class="menu-name text-dark" th:text="${f.foodName}">menu name</h6>
+                <strong>
+                    <div class="small" style="color: tomato;">
+                        <div class="me-1" style="float: left;">
+                            평균 별점 ★
+                        </div>
+                        <div style="float: left;" th:text="${f.averageScore}">평균별점</div>
+                    </div>
+                </strong>
+            </div>
+        </a>
+    </div>
+</div>
+-->

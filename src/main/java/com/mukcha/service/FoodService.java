@@ -10,6 +10,8 @@ import com.mukcha.repository.FoodRepository;
 import com.mukcha.repository.ReviewRepository;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -117,6 +119,7 @@ public class FoodService {
 
 
     /* VIEW methods */
+    // FoodDto로 변환하여 메뉴 정보 return
     @Transactional(readOnly = true)
     public FoodDto viewFoodDetail(Long foodId) {
         Food food = foodRepository.findById(foodId).orElseThrow(() -> {
@@ -132,13 +135,13 @@ public class FoodService {
         return foodDto;
     }
 
-    // foodDto로 return 받는 find all food
+    // foodDto 변환하여 모든 메뉴의 평균점수와 함께 리턴
     @Transactional(readOnly = true)
     public List<FoodDto> findAllWithAverageScore() {
         // food list를 가져와서
         List<Food> foods = foodRepository.findAll();
-        List<FoodDto> foodDtos = new ArrayList<>();
         // FoodDto 로 변환
+        List<FoodDto> foodDtos = new ArrayList<>();
         foods.stream().forEach(food -> {
             FoodDto foodDto = new FoodDto();
             foodDto.setFoodId(food.getFoodId());
@@ -153,8 +156,23 @@ public class FoodService {
     }
 
 
-    public double getAverageScoreByFoodId(Long foodId) {        
+    // 평균 점수를 기준으로 모든 10개의 메뉴를 가져오기
+    @Transactional(readOnly = true)
+    public List<FoodDto> findTopTenOrderByScore() {
+        // get
+        List<FoodDto> foodDtos = findAllWithAverageScore();
+        // sort
+        Collections.sort(
+            foodDtos, Comparator.comparing(FoodDto::getAverageScore).reversed()
+        );
+        // get top 10
+        foodDtos = foodDtos.stream().limit(10).collect(Collectors.toList());
+        return foodDtos;
+    }
 
+
+
+    public double getAverageScoreByFoodId(Long foodId) {        
         // List<Review> reviewList = reviewService.findAllReviewByFoodId(foodId);
         List<Review> reviewList = reviewRepository.findAllByFoodId(foodId);
         List<Integer> scoreList = reviewList.stream().map(
@@ -173,9 +191,7 @@ public class FoodService {
 
 
 
-    // public Page<Food> listOrderByScore(int pageNum, int size) {
-        // return foodReviewInfoRepository.(PageRequest.of(pageNum, size));
-    // }
+
 
 
 }
