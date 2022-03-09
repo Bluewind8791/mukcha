@@ -85,13 +85,12 @@ public class FoodServiceTest extends WithTest {
     void test_5() {
         reviewTestHelper.createReviewWithScore(food, user, Score.BAD); // 1
         reviewTestHelper.createReviewWithScore(food, user, Score.GOOD); // 4
-
+        // System.out.println(">>> "+reviewService.findAllReviewByFoodId(food.getFoodId()).stream().map(
+        //     r -> r.getScore().value).collect(Collectors.toList())
+        // );
         Food savedFood = foodService.findByName(food.getName()).get();
-
         double averageScore = foodService.getAverageScoreByFoodId(savedFood.getFoodId());
-
-        // (4+1+4)/3
-        assertEquals(3.0F, averageScore);
+        assertEquals(2.0F, averageScore); // (1+1+4)/3
     }
 
 

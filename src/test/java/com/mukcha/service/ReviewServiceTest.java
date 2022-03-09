@@ -18,6 +18,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.domain.Page;
 import org.springframework.transaction.annotation.Transactional;
 
 
@@ -112,6 +113,25 @@ public class ReviewServiceTest extends WithTest {
         assertEquals(1L, reviews.get(0).getFood().getFoodId());
     }
 
+    @Test
+    @DisplayName("6. findAllByFoodIdOrderByCreatedAtDesc")
+    void test_6() {
+        User user1 = userTestHelper.createUser("test2@review.test", "rt2");
+        User user2 = userTestHelper.createUser("test3@review.test", "rt3");
+        User user3 = userTestHelper.createUser("test4@review.test", "rt4");
+        User user4 = userTestHelper.createUser("test5@review.test", "rt5");
+        reviewTestHelper.createReview(food, user);
+        reviewTestHelper.createReview(food, user1);
+        reviewTestHelper.createReview(food, user2);
+        reviewTestHelper.createReview(food, user3);
+        reviewTestHelper.createReview(food, user4);
+
+        // review.getCreatedAt()
+        
+        Page<Review> reviewPage = reviewService.findAllByFoodIdOrderByCreatedAtDesc(food.getFoodId(), 1, 5);
+
+        System.out.println(">>> reviewPage: "+reviewPage);
+    }
 
 
 
