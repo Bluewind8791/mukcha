@@ -4,25 +4,35 @@
 
 <footer th:fragment="footerFragment">
 
-    <div class="container-fluid navbar-fixed-bottom mt-5 p-4 bg-dark text-white text-center">
+    <div class="container-fluid navbar-fixed-bottom mt-5 p-5 bg-dark text-white text-center">
+
         <div class="row">
             <div class="col-6 col-md">
-                <p class="d-block mb-3">Developer</p>
-                <ul class="list-unstyled text-small">
-                    <li><a class="text-muted" href="https://github.com/Bluewind8791/"> Bluewind </a></li>
-                    <li><a class="text-muted" href="https://github.com/Bluewind8791/mukcha"> GitHub </a></li>
-                </ul>
+
+                <p class="d-block mb-4">Developer</p>
+
+                <section>
+                    <a class="btn btn-link btn-lg text-white" role="button" href="https://github.com/Bluewind8791" >
+                        <i class="fab fa-github fa-lg" ></i>
+                    </a>
+                    <a class="btn btn-link btn-lg text-white" role="button" href="https://github.com/Bluewind8791/mukcha" >
+                        <i class="fas fa-code fa-lg" ></i>
+                    </a>
+                </section>
+
             </div>
 
-            <div class="col-12 col-md">
+            <div class="col-6 col-md">
                 <p class="d-block mb-3">Account for test</p>
                 <ul class="list-unstyled text-small">
                     <li><small class="text-muted">admin@test.com</small></li>
                     <li><small class="text-muted">user@test.com</small></li>
                     <li><small class="text-muted">password : qwe1</small></li>
+                    
                 </ul>
             </div>
         </div>
+
     </div>
 
 </footer>
