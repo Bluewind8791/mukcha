@@ -40,7 +40,7 @@ public class FoodRepositoryTest {
     @Test
     @DisplayName("2. getCategories Test") // 22.3.5
     void test_2() {
-        System.out.println(">>> getAllCategories: "+foodRepository.getAllCategories());
+        System.out.println(">>> getAllCategories: "+foodRepository.findAllCategories());
     }
 
     @Test

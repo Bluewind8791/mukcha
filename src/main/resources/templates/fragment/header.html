@@ -6,21 +6,23 @@
 
 <header th:fragment="headerFragment">
 
-    <nav class="navbar navbar-expand-md navbar-dark bg-dark">
+    <nav class="navbar navbar-expand-sm navbar-dark bg-dark">
         <div class="container align-self-center">
             <a class="navbar-brand fw-bold" href="/"> MUKCHA </a>
-
+<!-- 
             <ul class="nav_category navbar-nav">
                 <a class="nav-link" href="#"> 치킨 </a>
             </ul>
             <ul class="nav_category navbar-nav">
                 <a class="nav-link" href="#"> 피자 </a>
-            </ul>
+            </ul> -->
 
             <!-- 검색창 -->
-            <form class="header_searchbar d-flex">
-                <input class="form-control me-2" type="text" placeholder="Search">
-                <button class="btn btn-primary" type="button">Search</button>
+            <form class="header_searchbar d-flex" method="GET" action="/search" >
+                <input type="search" class="form-control rounded" placeholder="🔎 메뉴, 회사, 유저를 검색해보세요."
+                aria-label="Search" aria-describedby="search-addon" style="width: 290px;" name="keyword" />
+                <div class="bg-white  flex-row" >
+                </div>
             </form>
 
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mynavbar">

@@ -6,11 +6,12 @@ import java.util.Optional;
 import com.mukcha.domain.Company;
 
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 
 
-public interface CompanyRepository extends JpaRepository<Company, Long> {
+public interface CompanyRepository extends JpaRepository<Company, Long>, JpaSpecificationExecutor<Company> {
 
     // 회사 이름으로 db 에서 찾기
     Optional<Company> findByName(String name);

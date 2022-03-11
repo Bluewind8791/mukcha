@@ -112,7 +112,7 @@ public class FoodService {
         return foodRepository.findByName(foodName);
     }
     public List<String> categories() {
-        return foodRepository.getAllCategories();
+        return foodRepository.findAllCategories();
     }
     public List<Food> findAllByCategory(Category category) {
         return foodRepository.findAllByCategory(category);
