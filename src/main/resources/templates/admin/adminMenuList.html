@@ -19,7 +19,11 @@
 
     <div class="container mt-4 mb-5">
         <a href="/admin" type="button" class="text-secondary" >< 뒤로가기</a>
-        <div class="text-center h4 mt-3" >메뉴 수정 및 삭제는 해당 메뉴의 이름을 클릭해주세요.</div>
+    </div>
+
+    <div class="container text-center mb-5">
+        <p class="h4 mt-3" >메뉴 수정은 해당 메뉴의 이름을 클릭해주세요.</p>
+        <p class="mt-2" >메뉴 삭제는 해당 메뉴의 회사를 삭제해주세요.</p>
     </div>
 
 
@@ -104,8 +108,8 @@
                                     <div class="modal-footer">
                                         <button type="submit" class="btn btn-success" >수정하기</button>
                                         <a class="btn btn-secondary" data-bs-dismiss="modal">취소</a>
-                                        <a class="btn btn-danger" th:data-bs-target="'#deleteMenuModal'+${f.foodId}" data-bs-toggle="modal"
-                                        data-bs-dismiss="modal">메뉴 삭제하기</a>
+                                        <!-- <a class="btn btn-danger" th:data-bs-target="'#deleteMenuModal'+${f.foodId}" data-bs-toggle="modal"
+                                        data-bs-dismiss="modal">메뉴 삭제하기</a> -->
                                     </div>
                                 </form>
                             </div>
@@ -124,6 +128,7 @@
                                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                     </div>
                                     <div class="modal-body">
+                                        <p class="h3 fw-bold" style="color: tomato;">경고</p>
                                         <p class="fw-bold" style="color: tomato;">정말 해당 메뉴를 삭제하시겠습니까?</p>
                                         <p>메뉴를 삭제하시면 해당 메뉴의 모든 리뷰는 삭제됩니다.</p>
                                     </div>

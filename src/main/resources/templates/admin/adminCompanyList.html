@@ -102,12 +102,13 @@
                             <div class="modal-dialog modal-dialog-centered">
                                 <div class="modal-content">
                                     <div class="modal-header">
-                                        <h5 class="modal-title fw-bold" id="exampleModalToggleLabel">경고</h5>
+                                        <h4 class="modal-title fw-bold" style="color: tomato;" id="exampleModalToggleLabel">‼ 경고 ‼</h4>
                                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                     </div>
                                     <div class="modal-body">
-                                        <p class="fw-bold" style="color: tomato;">정말 해당 회사를 삭제하시겠습니까?</p>
-                                        <p>회사를 삭제하시면 해당 회사와 연결된 메뉴 또한 모두 삭제됩니다.</p>
+                                        <p class="h5 fw-bold" style="color: tomato;">정말 해당 회사를 삭제하시겠습니까?</p>
+                                        <span> > </span><span class="fw-bold" th:text="${c.name}" ></span><span> < </span>
+                                        <p>회사를 삭제하시면 해당 회사와 연결된 메뉴 또한 모두 삭제되며, 해당 메뉴에 작성된 리뷰 또한 모두 삭제되며 되돌릴 수 없습니다.</p>
                                     </div>
                                     <div class="modal-footer">
                                         <button class="btn btn-danger" type="submit" >삭제하기</button>

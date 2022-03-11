@@ -94,6 +94,8 @@ public class FoodService {
         );
         // 연결된 리뷰 모두 삭제 
         reviewRepository.deleteAllByFoodId(foodId);
+        // 회사 null 처리 ?
+        targetFood.setCompany(null);
         foodRepository.delete(targetFood);
         if (findFood(foodId).isPresent()) {
             throw new IllegalArgumentException("삭제에 실패하였습니다.");
