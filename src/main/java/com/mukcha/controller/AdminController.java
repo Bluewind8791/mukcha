@@ -12,8 +12,10 @@ import com.mukcha.service.FoodService;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
@@ -32,19 +34,34 @@ public class AdminController {
     private final CompanyService companyService;
     private final FoodService foodService;
 
+
+    // VIEW - ROOT PAGE
     @GetMapping(value = {"/", ""})
     public String adminHome(Model model) {
         log.info("관리자 페이지에 진입하였습니다.");
-
+        model.addAttribute("foodList", foodService.findFoodTopTenNewest());
+        model.addAttribute("companyList", companyService.findCompanyTopTenNewest());
         List<Category> categoryList = List.of(Category.values());
         model.addAttribute("categoryList", categoryList);
-
-        model.addAttribute("companyList", companyService.findAll());
-        model.addAttribute("foodList", foodService.findAll());
-
         return "admin/adminHome";
     }
 
+    // VIEW - 모든 메뉴 리스트
+    @GetMapping(value = "/menus")
+    public String viewAllMenus(Model model) {
+        List<Category> categoryList = List.of(Category.values());
+        model.addAttribute("categoryList", categoryList);
+        model.addAttribute("foodList", foodService.findAll());
+        model.addAttribute("companyList", companyService.findAll());
+        return "admin/adminMenuList";
+    }
+
+    // VIEW - 모든 회사 리스트
+    @GetMapping(value = "/companies")
+    public String viewAllCompanies(Model model) {
+        model.addAttribute("companyList", companyService.findAll());
+        return "admin/adminCompanyList";
+    }
 
     // 회사 추가하기
     @PostMapping(value = "/company")
@@ -56,7 +73,6 @@ public class AdminController {
         Company company = Company.builder()
                             .name(companyDto.getCompanyName())
                             .image(companyDto.getCompanyLogo())
-                            .foods(null)
                             .build()
         ;
         Company savedCompany = companyService.save(company);
@@ -64,8 +80,7 @@ public class AdminController {
         return "redirect:/admin/";
     }
 
-
-    // 메뉴 추가하기
+    // 메뉴(음식) 추가
     @PostMapping(value = "/menu")
     public String addMenu(
             @ModelAttribute FoodDto foodDto,
@@ -84,8 +99,57 @@ public class AdminController {
         return "redirect:/admin/";
     }
 
+    // 회사를 삭제
+    @DeleteMapping(value = "/companies/delete/{companyId}")
+    public String deleteCompany(@PathVariable Long companyId) {
+        String name = companyService.findCompany(companyId).get().getName();
+        companyService.deleteCompany(companyId);
+        if (companyService.findCompany(companyId).isPresent()) {
+            log.info("회사 <"+name+"> 의 삭제에 실패하였습니다..");
+        } else {
+            log.info("회사 <"+name+"> 이 삭제되었습니다.");
+        }
+        return "redirect:/admin/companies/";
+    }
+
+    // 음식을 삭제
+    @DeleteMapping(value = "/menus/delete/{foodId}")
+    public String deleteFood(@PathVariable Long foodId) {
+        String name = foodService.findFood(foodId).get().getName();
+        foodService.deleteFood(foodId);
+        if (foodService.findFood(foodId).isPresent()) {
+            log.info("메뉴 <"+name+"> 의 삭제가 실패하였습니다.");
+        } else {
+            log.info("메뉴 <"+name+"> 가 삭제되었습니다.");
+        }
+        return "redirect:/admin/menus/";
+    }
 
 
+    // 회사 수정
+    @PostMapping(value = "/companies/edit/{companyId}")
+    public String editCompany(
+        @PathVariable Long companyId,
+        CompanyDto companyDto
+    ) {
+        companyService.editCompanyName(companyId, companyDto.getCompanyName());
+        companyService.editCompanyLogo(companyId, companyDto.getCompanyLogo());
+        return "redirect:/admin/companies/";
+    }
+
+
+    // 메뉴 수정
+    @PostMapping(value = "/menus/edit/{foodId}")
+    public String editFood(
+        @PathVariable Long foodId,
+        FoodDto foodDto
+    ) {
+        foodService.editFoodName(foodId, foodDto.getFoodName());
+        foodService.editFoodImage(foodId, foodDto.getFoodImage());
+        foodService.editFoodCompany(foodId, foodDto.getCompany());
+        foodService.editFoodCategory(foodId, transCategory(foodDto.getCategory()));
+        return "redirect:/admin/menus/";
+    }
 
 
 

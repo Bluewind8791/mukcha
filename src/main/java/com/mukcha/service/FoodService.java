@@ -32,7 +32,6 @@ public class FoodService {
     private final ReviewRepository reviewRepository;
 
 
-
     // 음식을 생성한다.
     public Food save(Food food) {
         return foodRepository.save(food);
@@ -87,25 +86,25 @@ public class FoodService {
     }
 
 
-    // food 에서 company 와의 연관관계를 끊는다. (null 처리)
-    public void FoodRemoveCompany(Long foodId) {
-        Food targetFood = foodRepository.findById(foodId).orElseThrow(() -> 
-            new IllegalArgumentException("해당 음식/메뉴를 찾을 수 없습니다.")
+    // 음식을 삭제한다
+    @Transactional
+    public void deleteFood(Long foodId) {
+        Food targetFood = findFood(foodId).orElseThrow(
+            () -> new IllegalArgumentException("해당 음식을 찾을 수 없습니다.")
         );
-        targetFood.setCompany(null);
-        foodRepository.save(targetFood);
+        // 연결된 리뷰 모두 삭제 
+        reviewRepository.deleteAllByFoodId(foodId);
+        foodRepository.delete(targetFood);
+        if (findFood(foodId).isPresent()) {
+            throw new IllegalArgumentException("삭제에 실패하였습니다.");
+        }
     }
-
-
 
 
 
     /* FIND methods */
     public Optional<Food> findFood(Long foodId) {
         return foodRepository.findById(foodId);
-    }
-    public List<Food> findAll() {
-        return foodRepository.findAll();
     }
     public Optional<Food> findByName(String foodName) {
         return foodRepository.findByName(foodName);
@@ -119,6 +118,12 @@ public class FoodService {
 
 
     /* VIEW methods */
+    // Find All
+    @Transactional(readOnly = true)
+    public List<Food> findAll() {
+        return foodRepository.findAll();
+    }
+
     // FoodDto로 변환하여 메뉴 정보 return
     @Transactional(readOnly = true)
     public FoodDto viewFoodDetail(Long foodId) {
@@ -144,39 +149,53 @@ public class FoodService {
         return foodDtos;
     }
 
-
     // 평균 점수를 기준으로 모든 10개의 메뉴를 가져오기
     @Transactional(readOnly = true)
     public List<FoodDto> findTopTenOrderByScore() {
         // get
         List<FoodDto> foodDtos = findAllWithAverageScore();
         // sort
-        Collections.sort(
-            foodDtos, Comparator.comparing(FoodDto::getAverageScore).reversed()
-        );
+        if (foodDtos.size() > 2) {
+            Collections.sort(
+                foodDtos, Comparator.comparing(FoodDto::getAverageScore).reversed()
+            );
+        }
         // get top 10
-        foodDtos = foodDtos.stream().limit(10).collect(Collectors.toList());
-        return foodDtos;
+        return foodDtos.stream().limit(10).collect(Collectors.toList());
     }
 
-    // 최신순 기준 10개 메뉴 가져오기
+    // 최신순 기준 10개 메뉴 FoodDto로 평균점수 포함하여 가져오기
     @Transactional(readOnly = true)
     public List<FoodDto> findTopTenNewest() {
         // get
         List<FoodDto> targetFoodList = findAllWithAverageScore();
         // sort
-        Collections.sort(
-            targetFoodList, Comparator.comparing(FoodDto::getCreatedAt).reversed()
-        );
+        if (targetFoodList.size() > 2) {
+            Collections.sort(
+                targetFoodList, Comparator.comparing(FoodDto::getCreatedAt).reversed()
+            );
+        }
         // get top 10
-        targetFoodList = targetFoodList.stream().limit(10).collect(Collectors.toList());
-        return targetFoodList;
+        return targetFoodList.stream().limit(10).collect(Collectors.toList());
     }
 
+    // 최신순 기준 10개 메뉴 가져오기
+    @Transactional(readOnly = true)
+    public List<Food> findFoodTopTenNewest() {
+        // get
+        List<Food> targetFoodList = findAll();
+        // sort
+        if (targetFoodList.size() > 2) {
+            Collections.sort(
+                targetFoodList, Comparator.comparing(Food::getCreatedAt).reversed()
+            );
+        }
+        // get top 10
+        return targetFoodList.stream().limit(10).collect(Collectors.toList());
+    }
 
-
+    // 해당 메뉴의 평균 점수를 계산한다
     public double getAverageScoreByFoodId(Long foodId) {        
-        // List<Review> reviewList = reviewService.findAllReviewByFoodId(foodId);
         List<Review> reviewList = reviewRepository.findAllByFoodId(foodId);
         List<Integer> scoreList = reviewList.stream().map(
             r -> r.getScore().value).collect(Collectors.toList()
@@ -188,6 +207,9 @@ public class FoodService {
         float avgScore = (total / (float)scoreList.size());
         return Math.round(avgScore*100)/100.0;
     }
+
+
+
 
 
     private List<FoodDto> convertFoodToDto(List<Food> foods) {
@@ -205,10 +227,6 @@ public class FoodService {
         });
         return foodDtos;
     }
-
-
-
-
 
 
 }

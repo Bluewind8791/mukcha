@@ -38,7 +38,7 @@ public class WithTest {
         // service
         this.userSecurityService = new UserSecurityService(userRepository);
         this.foodService = new FoodService(foodRepository, companyRepository, reviewRepository);
-        this.companyService = new CompanyService(companyRepository);
+        this.companyService = new CompanyService(companyRepository, foodRepository);
         this.userService = new UserService(userRepository);
         this.reviewService = new ReviewService(reviewRepository);
 

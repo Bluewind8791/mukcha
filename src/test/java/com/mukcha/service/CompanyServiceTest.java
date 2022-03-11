@@ -1,6 +1,10 @@
 package com.mukcha.service;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
+
+import java.util.List;
+import java.util.Optional;
 
 import com.mukcha.domain.Category;
 import com.mukcha.domain.Company;
@@ -18,23 +22,16 @@ import org.springframework.transaction.annotation.Transactional;
 @SpringBootTest // 22.3.8
 public class CompanyServiceTest extends WithTest {
 
-    Company company;
-    Food food1;
-    Food food2;
-
     @BeforeEach
     protected void before() {
         prepareTest();
-        company = companyTestHelper.createCompany("test company", "companyLogo");
-        food1 = foodTestHelper.createFood("food1", company, Category.CHICKEN, null);
-        food2 = foodTestHelper.createFood("food2", company, Category.PIZZA, null);
     }
 
 
     @Test // 22.3.6
     @DisplayName("1. 회사를 생성한다.")
     void test_1() {
-        // Company company = companyTestHelper.createCompany("test company", "companyLogo");
+        Company company = companyTestHelper.createCompany("test company", "companyLogo");
         Company savedCompany = companyService.findCompany(company.getCompanyId()).orElseThrow(() -> 
             new IllegalArgumentException("해당 회사를 찾을 수 없습니다.")
         );
@@ -44,6 +41,10 @@ public class CompanyServiceTest extends WithTest {
     @Test // 22.3.6
     @DisplayName("2. 회사의 음식/메뉴를 추가한다.")
     void test_2() {
+        Company company = companyTestHelper.createCompany("test company", "companyLogo");
+        Food food1 = foodTestHelper.createFood("food1", company, Category.CHICKEN, null);
+        Food food2 = foodTestHelper.createFood("food2", company, Category.PIZZA, null);
+
         companyService.companyAddFood(company.getCompanyId(), food1);
         assertEquals(1, company.getFoods().size());
         companyService.companyAddFood(company.getCompanyId(), food2);
@@ -56,17 +57,26 @@ public class CompanyServiceTest extends WithTest {
     @Test // 22.3.6
     @DisplayName("3. 회사의 음식/메뉴는 중복하여 들어가지 않는다.")
     void test_3() {
+        // set
+        Company company = companyTestHelper.createCompany("test company", "companyLogo");
+        Food food1 = foodTestHelper.createFood("food1", company, Category.CHICKEN, null);
+        // add
         companyService.companyAddFood(company.getCompanyId(), food1);
         companyService.companyAddFood(company.getCompanyId(), food1);
+        // assert
         assertEquals(1, company.getFoods().size());
         assertEquals("food1", company.getFoods().iterator().next().getName());
     }
 
-    @Test // 22.3.6
+    @Test // 22.3.11
     @DisplayName("4. 회사의 이름, 이미지URL를 수정한다.")
     void test_4() {
-        companyService.updateCompanyName(company.getCompanyId(), "ChickenPlus");
-        companyService.updateCompanyImage(company.getCompanyId(), "NewCompanyLogo");
+        // set
+        Company company = companyTestHelper.createCompany("test company", "companyLogo");
+        // edit
+        companyService.editCompanyName(company.getCompanyId(), "ChickenPlus");
+        companyService.editCompanyLogo(company.getCompanyId(), "NewCompanyLogo");
+        // assert
         Company savedCompany = companyService.findCompany(company.getCompanyId()).orElseThrow(() -> 
             new IllegalArgumentException("해당 회사를 찾을 수 없습니다.")
         );
@@ -74,24 +84,57 @@ public class CompanyServiceTest extends WithTest {
         assertEquals("NewCompanyLogo", savedCompany.getImage());
     }
 
-    @Test // 22.3.6
-    @DisplayName("5. 회사의 음식을 삭제한다.")
-    void test_5() {
-        companyService.companyAddFood(company.getCompanyId(), food1);
-        companyService.companyAddFood(company.getCompanyId(), food2);
+    @Test
+    @DisplayName("6. 회사를 삭제한다.")
+    void test_6() {
+        // set
+        Company company = companyTestHelper.createCompany("test company", "companyLogo");
+        Food food1 = foodTestHelper.createFood("food1", company, Category.CHICKEN, null);
+        Long companyId = company.getCompanyId();
+        System.out.println(">>> "+company.getFoods());
+        // delete
+        companyService.deleteCompany(companyId);
+        // assert
+        assertEquals(Optional.empty(), companyService.findCompany(companyId));
+        assertNull(food1.getCompany());
+    }
 
-        companyService.CompanyRemoveFood(company.getCompanyId(), food1);
-        foodService.FoodRemoveCompany(food1.getFoodId());
-
-        Company savedCompany = companyService.findCompany(company.getCompanyId()).orElseThrow(() -> 
-            new IllegalArgumentException("해당 회사를 찾을 수 없습니다.")
-        );
-        assertEquals(1, savedCompany.getFoods().size());
-        assertEquals("food2", savedCompany.getFoods().iterator().next().getName());
-
-        System.out.println(">>> "+savedCompany.getFoods());
+    @Test
+    @DisplayName("7. findCompanyTopTenNewest")
+    void test_7() {
+        // set
+        Company company = companyTestHelper.createCompany("test company", "companyLogo");
+        foodTestHelper.createFood("food1", company, Category.CHICKEN, null);
+        foodTestHelper.createFood("food2", company, Category.PIZZA, null);
+        // get
+        List<Company> companies = companyService.findCompanyTopTenNewest();
+        // assert
+        // assertEquals(10, companies.size());
+        System.out.println(">>> "+companies);
     }
 
 
 
 }
+/*
+    @Test // 22.3.6
+    @DisplayName("5. 회사의 음식을 삭제한다.")
+    void test_5() {
+        Company company = companyTestHelper.createCompany("test company", "companyLogo");
+        Food food1 = foodTestHelper.createFood("food1", company, Category.CHICKEN, null);
+        foodTestHelper.createFood("food2", company, Category.PIZZA, null);
+        
+        // 음식 -> 회사의 연관관계를 끊는다.
+        foodService.setNullCompanysFood(food1.getFoodId());
+
+        // 회사의 음식을 삭제한다.
+        companyService.companyRemoveFood(company.getCompanyId(), food1);
+
+        Company savedCompany = companyService.findCompany(company.getCompanyId()).get();
+        List<Food> foods = companyService.getFoodListInfo(savedCompany.getCompanyId());
+        
+        System.out.println(">>> company.getFoods: "+foods);
+        assertEquals(1, foods.size());
+        assertEquals("food2", foods.get(0).getName());
+    }
+*/

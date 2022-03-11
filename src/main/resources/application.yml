@@ -41,6 +41,11 @@ spring:
     ansi:
       enabled: always # console color
 
+  mvc:
+    hiddenmethod:
+      filter:
+        enabled: true # for using PUT, DELETE mapping
+
 logging:
   level: 
     org.springframework.web: trace # controller 가 제대로 서버에 뜨고잇는지 로그 확인

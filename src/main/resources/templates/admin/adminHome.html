@@ -2,19 +2,30 @@
 <html lang="ko" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org"
     xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{layout/layout}">
 
+
 <div layout:fragment="content">
-    <div class="container-fluid p-5 my-5 bg-danger text-white text-center">
+
+    <style>        
+        #menu_image_url, #logo_url{
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+    </style>
+
+    <div class="container-fluid p-5 bg-danger text-white text-center">
         <h2>관리자 페이지</h2>
     </div>
 
+    <!-- Buttons -->
     <div class="container p-5 text-center">
         <button type="button" class="btn btn-primary w-50" data-bs-toggle="modal" data-bs-target="#companyModal">
             회사 추가하기
         </button>
-
-        <button type="button" class="btn btn-primary w-50 mt-5" data-bs-toggle="modal" data-bs-target="#menuModal">
+        <button type="button" class="btn btn-primary w-50 mt-3 mb-3" data-bs-toggle="modal" data-bs-target="#menuModal">
             메뉴 추가하기
         </button>
+        <p>메뉴,회사 수정 삭제는 전체 리스트 보기를 눌러주세요</p>
     </div>
 
     <!-- 회사 추가 Modal -->
@@ -44,7 +55,6 @@
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
                     </div>
                 </form>
-
             </div>
         </div>
     </div> <!-- end of 회사 추가 modal -->
@@ -96,10 +106,10 @@
         </div>
     </div> <!-- end of menu 추가 modal -->
 
+
     <!-- Food List -->
-    <div class="container mt-3">
+    <div class="container mt-3 mb-5">
         <h2><strong>Menu List</strong></h2>
-        <p></p>
         <table class="table table-hover">
             <thead>
                 <tr>
@@ -107,10 +117,10 @@
                     <th>카테고리</th>
                     <th>회사</th>
                     <th>이름</th>
-                    <th>Image URL</th>
                     <th>이미지</th>
                     <th>Update Time</th>
                     <th>Create Time</th>
+                    <th>Image URL</th>
                 </tr>
             </thead>
             <tbody>
@@ -119,7 +129,6 @@
                     <td><span th:text="${f.category}">category</span></td>
                     <td><span th:text="${f.company.name}">companyName</span></td>
                     <td><span th:text="${f.name}">Name</span></td>
-                    <td><span th:text="${f.image}">Image</span></td>
                     <td><img th:src="${f.image}" height="50" data-bs-toggle="modal" th:data-bs-target="'#fImageModal'+${f.foodId}"></td>
                     <div class="modal" th:id="'fImageModal'+${f.foodId}">
                         <div class="modal-dialog">
@@ -137,13 +146,16 @@
                     </div>
                     <td><span th:text="${f.updatedAt}">updatedAt</span></td>
                     <td><span th:text="${f.createdAt}">createdAt</span></td>
+                    <td><div th:text="${f.image}" style="width: 100px;" id="menu_image_url" >MenuImageUrl</div></td>
                 </tr>
             </tbody>
         </table>
+        <!-- 더보기 -->
+        <a type="button" class="btn btn-light text-dark w-100" th:href="@{/admin/menus/}" >전체 메뉴 리스트 보기</a>
     </div>
 
     <!-- Company List -->
-    <div class="container mt-3">
+    <div class="container mt-3 mb-5">
         <h2><strong>Company List</strong></h2>
         <p></p>
         <table class="table table-hover">
@@ -151,17 +163,16 @@
                 <tr>
                     <th>ID</th>
                     <th>이름</th>
-                    <th>Logo Image URL</th>
                     <th>Logo</th>
                     <th>Update Time</th>
                     <th>Create Time</th>
+                    <th>Logo Image URL</th>
                 </tr>
             </thead>
             <tbody>
                 <tr th:each="c : ${companyList}">
                     <td><span th:text="${c.companyId}">ID</span></td>
                     <td><span th:text="${c.name}">companyName</span></td>
-                    <td><span th:text="${c.image}">Image</span></td>
                     <td><img th:src="${c.image}" height="30" data-bs-toggle="modal" th:data-bs-target="'#cLogoModal'+${c.companyId}"></td>
                     <div class="modal" th:id="'cLogoModal'+${c.companyId}">
                         <div class="modal-dialog">
@@ -179,9 +190,12 @@
                     </div>
                     <td><span th:text="${c.updatedAt}">updatedAt</span></td>
                     <td><span th:text="${c.createdAt}">createdAt</span></td>
+                    <td><div th:text="${c.image}" style="width: 300px;" id="logo_url" >LogoImageUrl</div></td>
                 </tr>
             </tbody>
         </table>
+        <!-- 더보기 -->
+        <a type="button" class="btn btn-light text-dark w-100" th:href="@{/admin/companies/}" >전체 회사 리스트 보기</a>
     </div>
 
 
