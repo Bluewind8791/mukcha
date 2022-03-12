@@ -106,29 +106,29 @@
     </div>
 
     <!-- SEARCH USER -->
-    <div class="container">
-        <div class="h3 text-center fw-bold mb-4">
+    <div class="container mb-5">
+        <div class="h3 text-center fw-bold mb-5">
             유저 검색 결과
         </div>
         <!-- USER LIST -->
-        <ul class="d-flex justify-content-center" th:each="u : ${userSearchList}">
-            <div class="card w-50">
-                <div class="card-header">
-                    <div class="d-flex justify-content-between">
-                        <div class="fw-bold" th:text="${u.nickname}">nickname</div>
+        <ul class="d-flex flex-wrap">
+            <a style="text-decoration: none;" th:href="'/user/'+${u.userId}" th:each="u : ${userSearchList}">
+                <li class="row border p-3 me-4 mb-3">
+                    <div class="col-3 p-1">
+                        <img th:src="${u.profileImage}" class="rounded-circle" width="60px" height="60px">
                     </div>
-                </div>
-                <div class="card-body d-flex">
-                    <div class="align-content-start">뭐가들어가야하려나</div>
-                </div>
-                <div class="card-footer d-flex"></div>
-            </div>
+                    <div class="col-9 p-3 align-middle" style="width: 200px;">
+                        <p class="text-dark fw-bold" th:text="${u.nickname}" ></p>
+                    </div>
+                </li>
+            </a>
         </ul>
         <!-- 검색 결과가 없을 경우 -->
         <div class="text-center" >
             <div class="h4 mt-5" th:if="${userSearchList.isEmpty()}" >검색 결과가 없어요 😅</div>
         </div>
     </div>
+
 </div>
 
 

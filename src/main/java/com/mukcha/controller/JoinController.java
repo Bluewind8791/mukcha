@@ -42,6 +42,8 @@ public class JoinController {
     @PostMapping("/join")
     public String join(@Valid UserDto userDto, BindingResult bindingResult, Model model, Errors errors) {
 
+        String profileImage;
+
         // 비밀번호 확인 불일치
         if (!userDto.getPassword().equals(userDto.getRePassword())) {
             model.addAttribute("form", userDto); // 회원가입 실패 시 입력 데이터 유지
@@ -71,6 +73,12 @@ public class JoinController {
             return "user/joinForm";
         }
 
+        if (userDto.getProfileImage() == null) {
+            profileImage = "/profile/blank.png";
+        } else {
+            profileImage = userDto.getProfileImage();
+        }
+
         // 통과 시 회원가입 진행
         final User user = User.builder()
                             .email(userDto.getEmail())
@@ -78,6 +86,7 @@ public class JoinController {
                             .password(passwordEncoder.encode(userDto.getPassword()))
                             .gender(getGenderForJoin(userDto.getGender()))
                             .birthday(getBirthday(userDto.getBirthYear(), userDto.getBirthMonth(), userDto.getBirthDayOfMonth()))
+                            .profileImage(profileImage)
                             .enabled(true)
                             .build();
         User savedUser = userService.save(user);

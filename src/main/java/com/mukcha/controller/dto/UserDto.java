@@ -36,13 +36,13 @@ public class UserDto {
 
     private String birthMonth;
 
+    private String profileImage;
+
     // @Pattern(
     //     regexp = "[0-9]+",
     //     message = "숫자만 입력해주세요."
     // )
     private String birthDayOfMonth;
-
-    // private String profileImage;
 
 
 }
