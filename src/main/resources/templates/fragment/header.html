@@ -9,7 +9,8 @@
     <nav class="navbar navbar-expand-sm navbar-dark bg-dark">
         <div class="container align-self-center">
             <a class="navbar-brand fw-bold" href="/"> MUKCHA </a>
-<!-- 
+
+            <!-- 
             <ul class="nav_category navbar-nav">
                 <a class="nav-link" href="#"> 치킨 </a>
             </ul>
@@ -36,7 +37,7 @@
 
                 <!-- welcome message -->
                 <div class="header_welcome text-white" sec:authorize="isAuthenticated()" id="header_welcome">
-                    <a><span sec:authentication="name">username</span> 님 환영합니다!</a>
+                    <a><span th:text="${#authentication.principal.nickname}" >username</span> 님 환영합니다!</a>
                 </div>
 
                 <ul class="navbar-nav">
@@ -55,7 +56,7 @@
 
                     <!-- 로그인 사용자 노출 영역 -->
                     <li class="nav-item">
-                        <a class="nav-link" href="/user/edit" sec:authorize="isAuthenticated()">내 정보</a>
+                        <a class="nav-link" th:href="'/users/'+${#authentication.principal.userId}" sec:authorize="isAuthenticated()">내 정보</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="/logout" sec:authorize="isAuthenticated()">로그아웃</a>

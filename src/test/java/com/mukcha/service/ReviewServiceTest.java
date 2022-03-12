@@ -6,6 +6,7 @@ import static org.junit.jupiter.api.Assertions.*;
 import java.time.LocalDate;
 import java.util.List;
 
+import com.mukcha.controller.dto.CategoryDto;
 import com.mukcha.domain.Category;
 import com.mukcha.domain.Company;
 import com.mukcha.domain.Food;
@@ -101,7 +102,7 @@ public class ReviewServiceTest extends WithTest {
     }
 
     @Test // 22.3.7
-    @DisplayName("5. findReviewByFoodId")
+    @DisplayName("5. 해당 음식의 모든 리뷰를 찾는다")
     void test_5() {
         Food food1 = foodService.findFood(1L).get();
         Food food2 = foodService.findFood(2L).get();
@@ -114,7 +115,7 @@ public class ReviewServiceTest extends WithTest {
     }
 
     @Test
-    @DisplayName("6. findAllByFoodIdOrderByCreatedAtDesc")
+    @DisplayName("6. 해당 음식의 모든 음식을 가장 최신순으로 페이징하여 가져온다")
     void test_6() {
         User user1 = userTestHelper.createUser("test2@review.test", "rt2");
         User user2 = userTestHelper.createUser("test3@review.test", "rt3");
@@ -126,13 +127,43 @@ public class ReviewServiceTest extends WithTest {
         reviewTestHelper.createReview(food, user3);
         reviewTestHelper.createReview(food, user4);
 
-        // review.getCreatedAt()
-        
         Page<Review> reviewPage = reviewService.findAllByFoodIdOrderByCreatedAtDesc(food.getFoodId(), 1, 5);
 
         System.out.println(">>> reviewPage: "+reviewPage);
     }
 
+    @Test
+    @DisplayName("7. 해당 유저의 모든 리뷰 찾기")
+    void test_7() {
+        // set
+        reviewTestHelper.createReview(food, user);
+        reviewTestHelper.createReview(food, user);
+        reviewTestHelper.createReview(food, user);
+        reviewTestHelper.createReview(food, user);
+        reviewTestHelper.createReview(food, user);
+        
+        List<Review> reviews = reviewService.findAllByUserId(user.getUserId());
+        System.out.println(reviews);
+    }
+
+    @Test
+    @DisplayName("8. 각 카테고리별 해당 유저의 모든 리뷰 수 가져오기")
+    void test_8() {
+        reviewTestHelper.createReview(food, user);
+        reviewTestHelper.createReview(food, user);
+        reviewTestHelper.createReview(food, user);
+        reviewTestHelper.createReview(food, user);
+        reviewTestHelper.createReview(food, user);
+        
+        CategoryDto categoryDto = reviewService.getReviewCountByCategoryAndUserId(user.getUserId());
+
+        System.out.println(">>> chicken: "+categoryDto.getChickenReviewCount());
+        System.out.println(">>> burger: "+categoryDto.getBurgerReviewCount());
+        System.out.println(">>> pizza: "+categoryDto.getPizzaReviewCount());
+        assertEquals(5, categoryDto.getChickenReviewCount());
+        assertEquals(0, categoryDto.getBurgerReviewCount());
+        assertEquals(0, categoryDto.getPizzaReviewCount());
+    }
 
 
 

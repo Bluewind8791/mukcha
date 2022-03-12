@@ -112,7 +112,7 @@
         </div>
         <!-- USER LIST -->
         <ul class="d-flex flex-wrap">
-            <a style="text-decoration: none;" th:href="'/user/'+${u.userId}" th:each="u : ${userSearchList}">
+            <a style="text-decoration: none;" th:href="'/users/'+${u.userId}" th:each="u : ${userSearchList}">
                 <li class="row border p-3 me-4 mb-3">
                     <div class="col-3 p-1">
                         <img th:src="${u.profileImage}" class="rounded-circle" width="60px" height="60px">
