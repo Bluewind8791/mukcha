@@ -18,9 +18,11 @@
             <div class="card-header">
                 <div class="d-flex justify-content-between">
                     <div class="fw-bold" th:text="${r.user.nickname}">username</div>
-                    <!-- 별점 개수 -->
-                    <div class="rounded bg-white border-dark">
+                    <div>
+                        <!-- 메뉴 이름 -->
+                        <span th:text="${r.food.name}" ></span>
                         <span>⭐</span>
+                        <!-- 별점 개수 -->
                         <span th:text="${r.score.getValue()}">score</span>
                     </div>
                 </div>
