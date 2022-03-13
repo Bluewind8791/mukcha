@@ -30,7 +30,7 @@
                     <div class="h5 text-center text-dark fw-bold">햄버거</div>
                 </a>
             </div>
-            <div class="col-sm bg-light p-3 me-3">
+            <!-- <div class="col-sm bg-light p-3 me-3">
                 <a href="#" style="text-decoration: none;">
                     <div class="h5 text-center text-dark fw-bold">다음</div>
                 </a>
@@ -39,7 +39,7 @@
                 <a href="#" style="text-decoration: none;">
                     <div class="h5 text-center text-dark fw-bold">다음</div>
                 </a>
-            </div>
+            </div> -->
         </div>
     </div>
 
@@ -54,7 +54,7 @@
                         <div class="item" th:each="f : ${avgScoreTopTen}">
                             <div class="pad15">
                                 <a th:title="${f.foodName}" th:href="'/menu/'+${f.foodId}">
-                                    <img class="mb-2" style="width: 250px; height: 150px;" th:src="${f.foodImage}" >
+                                    <img class="mb-2 me-3" style="width: 250px; height: 150px;" th:src="${f.foodImage}" >
                                 </a>
                                 <div class="ms-2" >
                                     <a style="text-decoration: none;" th:title="${f.company}" th:href="'/company/'+${f.companyId}">
