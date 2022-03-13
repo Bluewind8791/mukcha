@@ -24,6 +24,4 @@ public interface CompanyRepository extends JpaRepository<Company, Long>, JpaSpec
     @Query("update Company set name=?2 where companyId=?1")
     void updateCompanyName(Long companyId, String name);
 
-
-
 }

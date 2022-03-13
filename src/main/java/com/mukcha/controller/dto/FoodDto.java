@@ -27,6 +27,8 @@ public class FoodDto {
 
     private double averageScore;
 
+    private Long companyId;
+
     private LocalDateTime createdAt;
 
 }

@@ -225,6 +225,7 @@ public class FoodService {
             foodDto.setFoodImage(food.getImage());
             foodDto.setAverageScore(getAverageScoreByFoodId(food.getFoodId()));
             foodDto.setCreatedAt(food.getCreatedAt());
+            foodDto.setCompanyId(food.getCompany().getCompanyId());
             foodDtos.add(foodDto);
         });
         return foodDtos;

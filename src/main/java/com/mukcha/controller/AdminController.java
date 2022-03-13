@@ -41,6 +41,7 @@ public class AdminController {
         log.info("관리자 페이지에 진입하였습니다.");
         model.addAttribute("foodList", foodService.findFoodTopTenNewest());
         model.addAttribute("companyList", companyService.findCompanyTopTenNewest());
+        // Category List
         List<Category> categoryList = List.of(Category.values());
         model.addAttribute("categoryList", categoryList);
         return "admin/adminHome";

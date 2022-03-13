@@ -45,7 +45,6 @@ public class Company extends BaseTimeEntity {
     @Builder.Default
     @ToString.Exclude
     private List<Food> foods = new ArrayList<>();
-    
 
     public void addFood(Food food) {
         this.getFoods().add(food);
