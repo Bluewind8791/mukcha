@@ -7,8 +7,7 @@ branches:
   only:
     - master
 
-# gradle 통해 의존서을 받게 되면 해당 디렉토리에 cache 하여,
-# 같은 의존성은 다음 배포 때부터 받지 않도록 설정
+# gradle 통해 의존성을 받게 되면 해당 디렉토리에 cache 하여, 같은 의존성은 다음 배포 때부터 받지 않도록 설정
 cache:
   directories:
     - '$HOME/.m2/repository'
