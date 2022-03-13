@@ -38,11 +38,8 @@ import lombok.extern.slf4j.Slf4j;
 @RequestMapping(value = "/user")
 public class UserController {
 
-    @Autowired
-    private UserService userService;
-
-    @Autowired
-    private PasswordEncoder passwordEncoder;
+    @Autowired private UserService userService;
+    @Autowired private PasswordEncoder passwordEncoder;
 
 
     // 회원 개인정보 확인 및 수정
@@ -52,6 +49,7 @@ public class UserController {
         return "user/editForm";
     }
 
+
     @PostMapping(value = "/edit")
     public String updateUserInfo(
             @Valid @ModelAttribute UserDto form, // requestbody = json data
@@ -60,8 +58,7 @@ public class UserController {
             Errors errors,
             @AuthenticationPrincipal User user,
             RedirectAttributes redirectAttributes
-        ) {
-
+    ) {
         // 비밀번호 확인 불일치
         if (!form.getPassword().equals(form.getRePassword())) {
             model.addAttribute("form", form); // 실패 시 입력 데이터 유지
@@ -89,24 +86,21 @@ public class UserController {
             }
             return "user/editForm";
         }
-
         // 통과 시 회원 수정 진행
         userService.updateNickname(user.getUserId(), form.getNickname());
         userService.updatePassword(user.getUserId(), passwordEncoder.encode(form.getPassword()));
         userService.updateGender(user.getUserId(), transGenderClass(form.getGender()));
         userService.updateBirthday(user.getUserId(), transLocalDateClass(form.getBirthYear(), form.getBirthMonth(), form.getBirthDayOfMonth()));
         User savedUser = userService.findUser(user.getUserId()).get();
-
         // for update principal, re-login
         Authentication authentication = new UsernamePasswordAuthenticationToken(savedUser, savedUser.getPassword(), savedUser.getAuthorities());
         SecurityContextHolder.getContext().setAuthentication(authentication);
-
         // 회원 정보 수정 성공 메세지를 위한 redirect attribute
         redirectAttributes.addFlashAttribute("resultMessage", "success");
-        
         log.info("회원 정보 수정이 처리되었습니다."+savedUser.toString());
         return "redirect:/user/edit";
     }
+
 
     // 회원 탈퇴 창 진입
     @GetMapping(value = "/delete")
@@ -114,6 +108,7 @@ public class UserController {
         log.info(user.getEmail()+" 님 회원 탈퇴 창 진입");
         return "user/deleteForm";
     }
+
 
     // 회원 탈퇴 구현
     @PostMapping(value = "/delete")

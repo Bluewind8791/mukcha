@@ -31,19 +31,22 @@ public class JoinController {
     private final PasswordEncoder passwordEncoder;
 
 
-    // 회원가입 - GET
+    // VIEW - 회원가입
     @GetMapping("/join")
     public String joinForm(Model model, UserDto userDto) {
         model.addAttribute("form", new UserDto());
         return "user/joinForm";
     }
 
-    // 회원가입 - POST
+
+    // SAVE - 회원가입
     @PostMapping("/join")
-    public String join(@Valid UserDto userDto, BindingResult bindingResult, Model model, Errors errors) {
-
-        String profileImage;
-
+    public String join(
+        @Valid UserDto userDto,
+        BindingResult bindingResult,
+        Model model,
+        Errors errors
+    ) {
         // 비밀번호 확인 불일치
         if (!userDto.getPassword().equals(userDto.getRePassword())) {
             model.addAttribute("form", userDto); // 회원가입 실패 시 입력 데이터 유지
@@ -72,32 +75,42 @@ public class JoinController {
             }
             return "user/joinForm";
         }
-
-        if (userDto.getProfileImage() == null) {
-            profileImage = "/profile/blank.png";
-        } else {
-            profileImage = userDto.getProfileImage();
-        }
-
+        
         // 통과 시 회원가입 진행
-        final User user = User.builder()
-                            .email(userDto.getEmail())
-                            .nickname(userDto.getNickname())
-                            .password(passwordEncoder.encode(userDto.getPassword()))
-                            .gender(getGenderForJoin(userDto.getGender()))
-                            .birthday(getBirthday(userDto.getBirthYear(), userDto.getBirthMonth(), userDto.getBirthDayOfMonth()))
-                            .profileImage(profileImage)
-                            .enabled(true)
-                            .build();
-        User savedUser = userService.save(user);
-        userService.addAuthority(savedUser.getUserId(), Authority.ROLE_USER);
+        User user = saveUser(userDto);
         log.info("회원가입이 처리되었습니다." + user.toString());
         return "redirect:/login";
     }
 
 
+    // 회원가입 진행 메소드
+    private User saveUser(UserDto userDto) {
+        // 프로필 이미지가 없을 경우 기본 프로필로 대체
+        String profileImage;
+        if (userDto.getProfileImage() == null) {
+            profileImage = "/profile/blank.png";
+        } else {
+            profileImage = userDto.getProfileImage();
+        }
+        final User user = User.builder()
+            .email(userDto.getEmail())
+            .nickname(userDto.getNickname())
+            .password(passwordEncoder.encode(userDto.getPassword()))
+            .gender(transClassToGender(userDto.getGender()))
+            .birthday(transClassToLocalDate(userDto.getBirthYear(), userDto.getBirthMonth(), userDto.getBirthDayOfMonth()))
+            .profileImage(profileImage)
+            .enabled(true)
+            .build();
+        User savedUser = userService.save(user);
+        userService.addAuthority(savedUser.getUserId(), Authority.ROLE_USER);
+        return savedUser;
+    }
+
+
+
+
     // 회원가입 시 성별 선택 메소드
-    private Gender getGenderForJoin(String formGender) {
+    private Gender transClassToGender(String formGender) {
         if (formGender.equals("MALE")) {
             return Gender.MALE;
         } else if (formGender.equals("FEMALE")) {
@@ -106,8 +119,9 @@ public class JoinController {
         return null;
     }
 
+
     // 회원가입 시 생년월일
-    private LocalDate getBirthday(String year, String month, String day) {
+    private LocalDate transClassToLocalDate(String year, String month, String day) {
         if (year == null || month == null || day == null) {
             return null;
         } else if (year.isEmpty() || month.isEmpty() || day.isEmpty()) {
@@ -118,5 +132,6 @@ public class JoinController {
         Integer intDay = Integer.parseInt(day);
         return LocalDate.of(intYear, intMonth, intDay);
     }
+
 
 }

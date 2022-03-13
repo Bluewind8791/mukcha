@@ -21,8 +21,10 @@ public class SearchController {
 
 
     @GetMapping(value = "/search")
-    public String search(@RequestParam(required = false) String keyword, Model model) {
-
+    public String search(
+        @RequestParam(required = false) String keyword,
+        Model model
+    ) {
         model.addAttribute("foodSearchList", 
             foodRepository.findAll(Search.foodSearching(keyword))
         );

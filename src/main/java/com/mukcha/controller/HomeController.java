@@ -27,7 +27,8 @@ public class HomeController {
     private final UserService userService;
     private final ReviewService reviewService;
 
-    // root page
+
+    // VIEW - Root page
     @GetMapping(value = {"/", ""})
     public String home(Model model) {
         model.addAttribute("avgScoreTopTen", foodService.findTopTenOrderByScore());
@@ -35,7 +36,8 @@ public class HomeController {
         return "home";
     }
 
-    // login page
+
+    // 로그인 처리
     @GetMapping("/login")
     public String login(
             @RequestParam(value = "error", defaultValue = "false") Boolean error,
@@ -45,7 +47,8 @@ public class HomeController {
         return "user/loginForm";
     }
 
-    // 유저 정보 페이지
+
+    // VIEW - 유저 정보
     @GetMapping(value = "/users/{userId}")
     public String viewUserInfo(
         @PathVariable Long userId,
@@ -55,7 +58,7 @@ public class HomeController {
         // Category List
         List<Category> categoryList = List.of(Category.values());
         model.addAttribute("categoryList", categoryList);
-
+        // DTO로 변환한 유저 정보
         User user = userService.findUser(userId).orElseThrow(() -> 
             new IllegalArgumentException("해당 유저를 찾을 수 없습니다.")
         );
@@ -64,11 +67,13 @@ public class HomeController {
         userDto.setNickname(user.getNickname());
         userDto.setProfileImage(user.getProfileImage());
         model.addAttribute("user", userDto);
-
+        // 각 카테고리별 적은 리뷰 개수
         model.addAttribute("reviewCount", reviewService.getReviewCountByCategoryAndUserId(userId));
         return "user/userPage";
     }
 
+
+    // VIEW - 해당 유저의 각 카테고리별 리뷰
     @GetMapping(value = "/users/{userId}/category/{category}")
     public String viewReviewInCategory(
         @PathVariable Long userId,

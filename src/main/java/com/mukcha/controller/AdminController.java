@@ -47,6 +47,7 @@ public class AdminController {
         return "admin/adminHome";
     }
 
+
     // VIEW - 모든 메뉴 리스트
     @GetMapping(value = "/menus")
     public String viewAllMenus(Model model) {
@@ -57,12 +58,14 @@ public class AdminController {
         return "admin/adminMenuList";
     }
 
+
     // VIEW - 모든 회사 리스트
     @GetMapping(value = "/companies")
     public String viewAllCompanies(Model model) {
         model.addAttribute("companyList", companyService.findAll());
         return "admin/adminCompanyList";
     }
+
 
     // 회사 추가하기
     @PostMapping(value = "/company")
@@ -80,6 +83,7 @@ public class AdminController {
         log.info("회사가 생성되었습니다." + savedCompany.toString());
         return "redirect:/admin/";
     }
+
 
     // 메뉴(음식) 추가
     @PostMapping(value = "/menu")
@@ -100,6 +104,7 @@ public class AdminController {
         return "redirect:/admin/";
     }
 
+
     // 회사를 삭제
     @DeleteMapping(value = "/companies/delete/{companyId}")
     public String deleteCompany(@PathVariable Long companyId) {
@@ -112,6 +117,7 @@ public class AdminController {
         }
         return "redirect:/admin/companies/";
     }
+
 
     // 음식을 삭제
     @DeleteMapping(value = "/menus/delete/{foodId}")

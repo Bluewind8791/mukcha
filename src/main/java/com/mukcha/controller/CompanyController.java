@@ -55,11 +55,5 @@ public class CompanyController {
     }
 
 
-    @GetMapping(value = "/companies")
-    public String viewCompanies(Model model) {
-        model.addAttribute("companyList", companyService.findAll());
-        return "";
-    }
-
 
 }
