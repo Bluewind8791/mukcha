@@ -28,4 +28,6 @@ public interface FoodRepository extends JpaRepository<Food, Long>, JpaSpecificat
     @Transactional
     void deleteById(Long foodId);
 
+    List<Food> findAllByCompanyAndCategory(Company company, Category category);
+
 }

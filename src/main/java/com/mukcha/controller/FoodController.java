@@ -8,7 +8,6 @@ import com.mukcha.domain.User;
 import com.mukcha.service.FoodService;
 import com.mukcha.service.ReviewService;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -19,15 +18,17 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @Controller
+@RequiredArgsConstructor
 @RequestMapping(value = "/menu")
 public class FoodController {
 
-    @Autowired private FoodService foodService;
-    @Autowired private ReviewService reviewService;
+    private final FoodService foodService;
+    private final ReviewService reviewService;
 
 
     // VIEW - FOOD INFO AND REVIEWS

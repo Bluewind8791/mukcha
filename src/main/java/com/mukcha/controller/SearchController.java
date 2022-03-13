@@ -6,18 +6,20 @@ import com.mukcha.repository.CompanyRepository;
 import com.mukcha.repository.FoodRepository;
 import com.mukcha.repository.UserRepository;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import lombok.RequiredArgsConstructor;
+
 @Controller
+@RequiredArgsConstructor
 public class SearchController {
 
-    @Autowired private FoodRepository foodRepository;
-    @Autowired private CompanyRepository companyRepository;
-    @Autowired private UserRepository userRepository;
+    private final FoodRepository foodRepository;
+    private final CompanyRepository companyRepository;
+    private final UserRepository userRepository;
 
 
     @GetMapping(value = "/search")

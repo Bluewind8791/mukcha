@@ -4,8 +4,12 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.NoSuchElementException;
+import java.util.stream.Collectors;
 
 import com.mukcha.controller.dto.FoodDto;
 import com.mukcha.domain.Category;
@@ -146,6 +150,26 @@ public class FoodServiceTest extends WithTest {
         assertThrows(NoSuchElementException.class, () -> foodService.findByName("ttest1").get());
         // 해당 회사에 삭제한 음식이 있는지 검사
         assertEquals(List.of(), companyService.getFoodListInfo(company.getCompanyId()));
+    }
+
+    @Test
+    @DisplayName("9. 음식 리스트를 회사 별로 분류한다.")
+    void test_9() {
+        List<Company> companyList = companyService.findAll();
+        Category thisCategory = Category.valueOf("CHICKEN");
+        List<Food> foodList = foodService.findAllByCategory(thisCategory);
+        Map<String, List<Food>> foodMap = new HashMap<>();
+        
+        for (Company com : companyList) {
+            List<Food> foodPerCompany = new ArrayList<>();
+            // getCompany가 null로 뜨는듯
+            // 
+            foodPerCompany.addAll(foodList.stream().filter(f -> 
+                f.getCompany() == com).collect(Collectors.toList())
+            );
+            foodMap.put(com.getName(), foodPerCompany);
+        }
+        System.out.println(">>> foodMap: "+foodMap);
     }
 
 

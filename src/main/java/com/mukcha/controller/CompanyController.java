@@ -1,6 +1,5 @@
 package com.mukcha.controller;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -39,18 +38,18 @@ public class CompanyController {
         // Category List
         List<Category> categoryList = List.of(Category.values());
         model.addAttribute("categoryList", categoryList);
-
         // Company's food List        
         List<Food> foods = companyService.getFoodListInfo(companyId);
         Map<String, List<Food>> map = new HashMap<>();
-
         for (Category ctg : Category.values()) {
-            List<Food> foodPerCategory = new ArrayList<>();
-            foodPerCategory.addAll(foods.stream().filter(f -> f.getCategory() == ctg).collect(Collectors.toList()));
-            map.put(ctg.name(), foodPerCategory);
+            map.put(ctg.name(),
+                foods
+                    .stream()
+                    .filter(f -> f.getCategory() == ctg)
+                    .collect(Collectors.toList())
+            );
         }
         model.addAttribute("foodList", map);
-        
         return "company/detail";
     }
 

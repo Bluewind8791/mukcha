@@ -11,7 +11,6 @@ import com.mukcha.domain.Gender;
 import com.mukcha.domain.User;
 import com.mukcha.service.UserService;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -38,8 +37,8 @@ import lombok.extern.slf4j.Slf4j;
 @RequestMapping(value = "/user")
 public class UserController {
 
-    @Autowired private UserService userService;
-    @Autowired private PasswordEncoder passwordEncoder;
+    private final UserService userService;
+    private final PasswordEncoder passwordEncoder;
 
 
     // 회원 개인정보 확인 및 수정

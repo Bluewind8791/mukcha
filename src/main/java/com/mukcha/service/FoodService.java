@@ -12,7 +12,9 @@ import com.mukcha.repository.ReviewRepository;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -108,18 +110,19 @@ public class FoodService {
     public Optional<Food> findFood(Long foodId) {
         return foodRepository.findById(foodId);
     }
+
     public Optional<Food> findByName(String foodName) {
         return foodRepository.findByName(foodName);
     }
+
     public List<String> categories() {
         return foodRepository.findAllCategories();
     }
+
     public List<Food> findAllByCategory(Category category) {
         return foodRepository.findAllByCategory(category);
     }
 
-
-    /* VIEW methods */
     // Find All
     @Transactional(readOnly = true)
     public List<Food> findAll() {
@@ -208,6 +211,17 @@ public class FoodService {
         int total = scoreList.stream().mapToInt(Integer::intValue).sum();
         float avgScore = (total / (float)scoreList.size());
         return Math.round(avgScore*100)/100.0;
+    }
+
+    // 각 회사별 메뉴들을 카테고리 별로 가져온다
+    public Map<String, List<Food>> findAllByCategorySortByCompany(Category category) {
+        Map<String, List<Food>> foodMap = new HashMap<>();
+        for (Company company : companyRepository.findAll()) {
+            foodMap.put(company.getName(),
+                foodRepository.findAllByCompanyAndCategory(company, category)
+            );
+        }
+        return foodMap;
     }
 
 
