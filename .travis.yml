@@ -1,0 +1,24 @@
+language: java
+
+jdk:
+  - openjdk11
+
+branches:
+  only:
+    - master
+
+# gradle 통해 의존서을 받게 되면 해당 디렉토리에 cache 하여,
+# 같은 의존성은 다음 배포 때부터 받지 않도록 설정
+cache:
+  directories:
+    - '$HOME/.m2/repository'
+    - '$HOME/.gradle'
+
+# branch에 push 되었을 때 수행하는 명령어
+script: "./gradlew clean build"
+
+# Travis CI 실행 완료 후 메일 알람
+notifications:
+  email:
+    recipients:
+      - castus1214@naver.com
