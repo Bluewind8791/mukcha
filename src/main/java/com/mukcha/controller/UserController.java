@@ -41,14 +41,14 @@ public class UserController {
     private final PasswordEncoder passwordEncoder;
 
 
-    // 회원 개인정보 확인 및 수정
+    // VIEW - 회원 개인정보 페이지
     @GetMapping("/edit")
     public String viewUserEditPage(Model model, @AuthenticationPrincipal User user) {
-        log.info(user.getEmail() + " 님의 회원 정보 수정 진입 >>> "+user.toString());
         return "user/editForm";
     }
 
 
+    // 개인정보 업데이트
     @PostMapping(value = "/edit")
     public String updateUserInfo(
             @Valid @ModelAttribute UserDto form, // requestbody = json data
@@ -96,15 +96,14 @@ public class UserController {
         SecurityContextHolder.getContext().setAuthentication(authentication);
         // 회원 정보 수정 성공 메세지를 위한 redirect attribute
         redirectAttributes.addFlashAttribute("resultMessage", "success");
-        log.info("회원 정보 수정이 처리되었습니다."+savedUser.toString());
+        log.info(">>> 회원 <"+savedUser.getEmail()+">님의 개인정보 수정이 처리되었습니다."+savedUser.toString());
         return "redirect:/user/edit";
     }
 
 
-    // 회원 탈퇴 창 진입
+    // VIEW - 회원 탈퇴 페이지
     @GetMapping(value = "/delete")
-    public String viewDisableUserPage(@AuthenticationPrincipal User user) {
-        log.info(user.getEmail()+" 님 회원 탈퇴 창 진입");
+    public String viewDisableUserPage() {
         return "user/deleteForm";
     }
 
@@ -132,8 +131,9 @@ public class UserController {
             return "user/deleteForm";
         }
         httpSession.invalidate(); // delete login session
+        String disabledUser = user.getEmail();
         userService.disableUser(user.getUserId()); // disable user
-        log.info("회원이 탈퇴 되었습니다.");
+        log.info(">>> 회원 <"+disabledUser+">님이 탈퇴 처리되었습니다.");
         return "redirect:/";
     }
 

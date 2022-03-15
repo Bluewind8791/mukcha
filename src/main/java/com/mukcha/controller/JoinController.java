@@ -75,10 +75,9 @@ public class JoinController {
             }
             return "user/joinForm";
         }
-        
         // 통과 시 회원가입 진행
         User user = saveUser(userDto);
-        log.info("회원가입이 처리되었습니다." + user.toString());
+        log.info(">>> 회원<"+user.getEmail()+">님의 가입이 처리되었습니다."+user.toString());
         return "redirect:/login";
     }
 
@@ -105,8 +104,6 @@ public class JoinController {
         userService.addAuthority(savedUser.getUserId(), Authority.ROLE_USER);
         return savedUser;
     }
-
-
 
 
     // 회원가입 시 성별 선택 메소드

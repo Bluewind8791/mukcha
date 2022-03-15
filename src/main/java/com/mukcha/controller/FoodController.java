@@ -68,7 +68,7 @@ public class FoodController {
     ) {
         Food food = foodService.findFood(foodId).get();
         Review review = reviewService.saveReview(reviewDto.getScore(), reviewDto.getComment(), food, user);
-        log.info(">>> Review Saved! "+review.toString());
+        log.info(">>> 회원<"+user.getEmail()+">님의 리뷰가 처리되었습니다."+review.toString());
         return "redirect:/menu/"+foodId;
     }
 
@@ -83,7 +83,7 @@ public class FoodController {
     ) {
         Food food = foodService.findFood(foodId).get();
         Review review = reviewService.saveEatenDate(reviewDto.getEatenDate(), food, user);
-        log.info(">>> Review Saved! "+review.toString());
+        log.info(">>> 회원<"+user.getEmail()+">님의 리뷰가 처리되었습니다."+review.toString());
         return "redirect:/menu/"+foodId;
     }
 
@@ -97,8 +97,8 @@ public class FoodController {
         // 현재 로그인한 유저가 작성한 해당 음식의 리뷰를 찾는다.
         Review targetReview = reviewService.findReviewByFoodIdAndUserId(targetFood.getFoodId(), user.getUserId());
         // delete
-        log.info(user.getEmail() +"님이 <"+targetFood.getName()+"> 의 리뷰를 삭제합니다.");
         reviewService.deleteReview(targetReview);
+        log.info(">>> 회원 <"+user.getEmail()+"> 님의 <"+targetFood.getName()+"> 리뷰가 삭제 처리되었습니다.");
         return "redirect:/menu/"+foodId;
     }
 
