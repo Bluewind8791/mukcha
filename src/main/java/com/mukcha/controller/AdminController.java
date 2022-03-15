@@ -153,8 +153,12 @@ public class AdminController {
     ) {
         foodService.editFoodName(foodId, foodDto.getFoodName());
         foodService.editFoodImage(foodId, foodDto.getFoodImage());
-        foodService.editFoodCompany(foodId, foodDto.getCompany());
-        foodService.editFoodCategory(foodId, transCategory(foodDto.getCategory()));
+        if (foodDto.getCompany() != "") {
+            foodService.editFoodCompany(foodId, foodDto.getCompany());
+        }
+        if (foodDto.getCategory() != "") {
+            foodService.editFoodCategory(foodId, transCategory(foodDto.getCategory()));
+        }
         return "redirect:/admin/menus/";
     }
 
