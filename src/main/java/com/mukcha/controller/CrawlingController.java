@@ -1,6 +1,8 @@
 package com.mukcha.controller;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 import com.mukcha.domain.Category;
 import com.mukcha.domain.Company;
@@ -30,38 +32,117 @@ public class CrawlingController {
 
     @GetMapping(value = "/crawling")
     public String crawling() {
-        페리카나();
+        kfc();
         return "redirect:/admin";
     }
 
 
-    public void 페리카나() {
-        // String 오리지널 = "https://pelicana.co.kr/menu/menu_original.html";
-        // String 순살 = "https://pelicana.co.kr/menu/menu_sunsal.html";
-        // String 신선핀 = "https://pelicana.co.kr/menu/menu_sinsunpin.html";
-        // String 신선윙 = "https://pelicana.co.kr/menu/menu_sinsunwing.html";
-        // String 페리윙봉 = "https://pelicana.co.kr/menu/menu_periwing.html";
-        // String 뿌리오 = "https://pelicana.co.kr/menu/menu_bburio.html";
-        // String 맵삭치킨 = "https://pelicana.co.kr/menu/menu_mapsak.html";
-        String 로스핀 = "https://pelicana.co.kr/menu/menu_rospin.html";
 
+    public void kfc() {
+        System.out.println(">>> CRAWLING START >>>");
+        List<String> urlList = new ArrayList<>();
+        // urlList.add("https://www.kfckorea.com/menu/chicken"); // 치킨
+        urlList.add("https://www.kfckorea.com/menu/burger"); // 버거
         Document doc;
         try {
-            doc = Jsoup.connect(로스핀).get();
-            // 
-            Elements lists = doc.select("#contents > ul.menu_list.menu_pop > li");
-            System.out.println(">>> size: "+lists.size());
-            for (Element e : lists) {
-                // image url: #contents > ul.menu_list.menu_pop > li:nth-child(1) > a > figure > img
-                String image = e.select("a > figure > img").first().absUrl("src");
-                System.out.println(">>> image: "+image);
-                // menu name: #contents > ul.menu_list.menu_pop > li:nth-child(1) > a > figure > figcaption
-                String foodName = e.select("a > figure > figcaption").text();
-                System.out.println(">>> food: "+foodName);
-                // 만약 같은 이름의 메뉴가 없다면 DB에 저장
-                if (!isPresent(foodName)) {
-                    // 실행 전 체크할 것
-                    saveFood(foodName, image, "페리카나", Category.CHICKEN);
+            for (String url : urlList) {
+                doc = Jsoup.connect(url).get();
+                // 메뉴 리스트
+                Elements menuList = doc.select("div[menu-list= ]").select("section > ul > li");
+                System.out.println(">>> list size: "+menuList.size());
+
+                for (Element li : menuList) {
+                    // 메뉴 이름을 가져온다 - section > ul > li:nth-child(1) > h3
+                    String foodName = li.select("h3").text();
+                    String[] name = foodName.split(" ");
+                    foodName = name[0].replace("1＋1", "");
+                    System.out.println(">>> food: "+foodName+">");
+                    
+                    // 만약 같은 이름의 메뉴가 없다면
+                    if (!isPresent(foodName)) {
+                        // image url 가져오기 실패: 이유 미상...
+                        Elements imageE = li.select("div > a > img");
+                        String image = imageE.attr("src");
+                        System.out.println(">>> image: "+image+">");
+                        // 실행 전 체크할 것
+                        saveFood(foodName, image, "KFC", Category.HAMBURGER);
+                    }
+                }
+            }
+        } catch (IOException e1) {
+            e1.printStackTrace();
+        }
+    }
+
+
+    public void dominoPizza() {
+        System.out.println(">>> CRAWLING START >>>");
+        List<String> urlList = new ArrayList<>();
+        urlList.add("https://web.dominos.co.kr/goods/list?dsp_ctgr=C0101"); // 메뉴
+        urlList.add("https://web.dominos.co.kr/goods/onePizzalist"); // 1인 메뉴
+        Document doc;
+        try {
+            for (String url : urlList) {
+                doc = Jsoup.connect(url).get();
+                // #content > div > div > article > div:nth-child(6)
+                Elements menuList = doc.select("#content > div > div > article").select("div[class=menu-list]");
+                System.out.println(">>> list size: "+menuList.size());
+                for (Element e : menuList) {
+                    // second list: #content > div > div > article > div:nth-child(6) > ul > li:nth-child(1)
+                    Elements secondList = e.select("ul > li");
+                    for (Element li : secondList) {
+                        // image url을 가져온다: > div.prd-img > a:nth-child(1) > img
+                        String image = li.select("div.prd-img > a").first().select("img").first().absUrl("data-src");
+                        // 메뉴 이름을 가져온다: > div.prd-cont > div
+                        String foodName = li.select("div.prd-cont").select("div[class=subject]")
+                                            .text()
+                                            .replace("NEW", "")
+                                            .replace("BEST", "")
+                        ;
+                        // 만약 같은 이름의 메뉴가 없거나 공백이 아니라면 DB에 저장
+                        if (!isPresent(foodName)) {
+                            System.out.println(">>> food:"+foodName+"|");
+                            System.out.println(">>> image:"+image+"|");
+                            // 실행 전 체크할 것
+                            saveFood(foodName, image, "도미노피자", Category.PIZZA);
+                        }
+                    }
+                }
+            }
+        } catch (IOException e1) {
+            e1.printStackTrace();
+        }
+    }
+
+
+    public void 페리카나() {
+        List<String> urlList = new ArrayList<>();
+        urlList.add("https://pelicana.co.kr/menu/menu_original.html"); // 오리지널
+        urlList.add("https://pelicana.co.kr/menu/menu_sunsal.html"); // 순살
+        urlList.add("https://pelicana.co.kr/menu/menu_sinsunpin.html"); // 신선핀
+        urlList.add("https://pelicana.co.kr/menu/menu_sinsunwing.html"); // 신선윙
+        urlList.add("https://pelicana.co.kr/menu/menu_periwing.html"); // 페리윙봉
+        urlList.add("https://pelicana.co.kr/menu/menu_bburio.html"); // 뿌리오
+        urlList.add("https://pelicana.co.kr/menu/menu_mapsak.html"); // 맵삭치킨
+        urlList.add("https://pelicana.co.kr/menu/menu_rospin.html"); // 로스핀
+        Document doc;
+        try {
+            for (String url : urlList) {
+                doc = Jsoup.connect(url).get();
+                Elements lists = doc.select("#contents > ul.menu_list.menu_pop > li");
+                System.out.println(">>> size: "+lists.size());
+                for (Element e : lists) {
+                    // image url: #contents > ul.menu_list.menu_pop > li:nth-child(1) > a > figure > img
+                    String image = e.select("a > figure > img").first().absUrl("src");
+                    System.out.println(">>> image: "+image);
+                    // menu name: #contents > ul.menu_list.menu_pop > li:nth-child(1) > a > figure > figcaption
+                    String foodName = e.select("a > figure > figcaption").text();
+                    System.out.println(">>> food: "+foodName);
+                    // 만약 같은 이름의 메뉴가 없다면 DB에 저장
+                    if (!isPresent(foodName)) {
+                        // 실행 전 체크할 것
+                        saveFood(foodName, image, "페리카나", Category.CHICKEN);
+                    }
                 }
             }
         } catch (IOException e1) {
