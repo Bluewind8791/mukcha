@@ -15,7 +15,6 @@ import com.mukcha.service.FoodService;
 import com.mukcha.service.UserService;
 
 import org.springframework.boot.CommandLineRunner;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
 import lombok.RequiredArgsConstructor;
@@ -28,7 +27,6 @@ public class DBInit implements CommandLineRunner {
     private final UserService userService;
     private final CompanyService companyService;
     private final FoodService foodService;
-    private final PasswordEncoder passwordEncoder;
 
     @Override
     public void run(String... args) throws Exception {
@@ -38,31 +36,29 @@ public class DBInit implements CommandLineRunner {
             User admin = User.builder()
                             .email("admin@test.com")
                             .nickname("admin_ben")
-                            .password(passwordEncoder.encode("qwe1"))
-                            .enabled(true)
+                            .password("qwe1")
                             .build();
-            userService.save(admin);
+            userService.signUp(admin);
             admin.setAuthorities(Set.of(
                 new Authority(admin.getUserId(), Authority.ROLE_USER),
                 new Authority(admin.getUserId(), Authority.ROLE_ADMIN)
             ));
-            return Optional.of(userService.save(admin));
+            return Optional.of(userService.signUp(admin));
         });
         // init user
         userService.findByEmail("user@test.com").or(() ->{
             User user = User.builder()
                             .email("user@test.com")
                             .nickname("test_user")
-                            .password(passwordEncoder.encode("qwe1"))
+                            .password("qwe1")
                             .gender(Gender.MALE)
                             .birthday(LocalDate.of(1991, 12, 14))
-                            .enabled(true)
                             .build();
-            userService.save(user);
+            userService.signUp(user);
             user.setAuthorities(Set.of(
                 new Authority(user.getUserId(), Authority.ROLE_USER)
             ));
-            return Optional.of(userService.save(user));
+            return Optional.of(userService.signUp(user));
         });
 
         // init company
