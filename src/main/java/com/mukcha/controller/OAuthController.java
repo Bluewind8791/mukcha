@@ -52,15 +52,14 @@ public class OAuthController {
         } catch (JsonProcessingException e) {
             e.printStackTrace();
         }
-
-        // 가입자인지 가입자가 아닌지 확인
-        userService.findByEmail(naverProfile.getResponse().getEmail()).ifPresent(u ->
+        // 가입자인지 가입자가 아닌지 확인하여
+        if (userService.findByEmail(naverProfile.getResponse().getEmail()).isPresent()) {
             // 가입자라면 Login Process
-            userService.doLogin(u.getEmail(), u.getPassword())
-        );
-
-        // 가입자가 아니라면 회원가입 및 로그인 진행
-        doSaveAndLogin(naverProfile);
+            userService.doLogin(naverProfile.getResponse().getEmail(), naverProfile.getResponse().getId());
+        } else {
+            // 가입자가 아니라면 회원가입 및 로그인 진행
+            doSaveAndLogin(naverProfile);
+        }
         return "redirect:/";
     }
 
