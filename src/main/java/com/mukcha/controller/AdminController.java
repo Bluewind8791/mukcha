@@ -1,5 +1,6 @@
 package com.mukcha.controller;
 
+import java.util.Collections;
 import java.util.List;
 
 import com.mukcha.controller.dto.CompanyDto;
@@ -53,7 +54,9 @@ public class AdminController {
     public String viewAllMenus(Model model) {
         List<Category> categoryList = List.of(Category.values());
         model.addAttribute("categoryList", categoryList);
-        model.addAttribute("foodList", foodService.findAll());
+        List<Food> foodList = foodService.findAll();
+        Collections.reverse(foodList);
+        model.addAttribute("foodList", foodList);
         model.addAttribute("companyList", companyService.findAll());
         return "admin/adminMenuList";
     }
