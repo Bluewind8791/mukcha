@@ -1,12 +1,9 @@
 package com.mukcha.controller;
 
-import java.time.LocalDate;
 import java.util.Map;
 import javax.validation.Valid;
 
 import com.mukcha.controller.dto.UserDto;
-import com.mukcha.domain.Authority;
-import com.mukcha.domain.Gender;
 import com.mukcha.domain.User;
 import com.mukcha.service.UserService;
 
@@ -14,7 +11,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.Errors;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 
@@ -28,7 +24,6 @@ import lombok.extern.slf4j.Slf4j;
 public class JoinController {
 
     private final UserService userService;
-    private final PasswordEncoder passwordEncoder;
 
 
     // VIEW - 회원가입
@@ -84,50 +79,18 @@ public class JoinController {
 
     // 회원가입 진행 메소드
     private User saveUser(UserDto userDto) {
-        // 프로필 이미지가 없을 경우 기본 프로필로 대체
-        String profileImage;
-        if (userDto.getProfileImage() == null) {
-            profileImage = "/profile/blank.png";
-        } else {
-            profileImage = userDto.getProfileImage();
-        }
         final User user = User.builder()
             .email(userDto.getEmail())
             .nickname(userDto.getNickname())
-            .password(passwordEncoder.encode(userDto.getPassword()))
-            .gender(transClassToGender(userDto.getGender()))
-            .birthday(transClassToLocalDate(userDto.getBirthYear(), userDto.getBirthMonth(), userDto.getBirthDayOfMonth()))
-            .profileImage(profileImage)
+            .password(userDto.getPassword())
+            .gender(userService.transClassGender(userDto.getGender()))
+            .birthday(userService.transClassLocalDate(userDto.getBirthYear(), userDto.getBirthMonth(), userDto.getBirthDayOfMonth()))
+            .profileImage(userDto.getProfileImage())
             .enabled(true)
-            .build();
-        User savedUser = userService.save(user);
-        userService.addAuthority(savedUser.getUserId(), Authority.ROLE_USER);
+            .build()
+        ;
+        User savedUser = userService.signUp(user);
         return savedUser;
-    }
-
-
-    // 회원가입 시 성별 선택 메소드
-    private Gender transClassToGender(String formGender) {
-        if (formGender.equals("MALE")) {
-            return Gender.MALE;
-        } else if (formGender.equals("FEMALE")) {
-            return Gender.FEMALE;
-        }
-        return null;
-    }
-
-
-    // 회원가입 시 생년월일
-    private LocalDate transClassToLocalDate(String year, String month, String day) {
-        if (year == null || month == null || day == null) {
-            return null;
-        } else if (year.isEmpty() || month.isEmpty() || day.isEmpty()) {
-            return null;
-        }
-        Integer intYear = Integer.parseInt(year);
-        Integer intMonth = Integer.parseInt(month);
-        Integer intDay = Integer.parseInt(day);
-        return LocalDate.of(intYear, intMonth, intDay);
     }
 
 

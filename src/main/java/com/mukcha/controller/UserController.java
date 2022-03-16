@@ -1,21 +1,15 @@
 package com.mukcha.controller;
 
-import java.time.LocalDate;
 import java.util.Map;
 
 import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 
 import com.mukcha.controller.dto.UserDto;
-import com.mukcha.domain.Gender;
 import com.mukcha.domain.User;
 import com.mukcha.service.UserService;
 
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -38,7 +32,6 @@ import lombok.extern.slf4j.Slf4j;
 public class UserController {
 
     private final UserService userService;
-    private final PasswordEncoder passwordEncoder;
 
 
     // VIEW - 회원 개인정보 페이지
@@ -87,13 +80,14 @@ public class UserController {
         }
         // 통과 시 회원 수정 진행
         userService.updateNickname(user.getUserId(), form.getNickname());
-        userService.updatePassword(user.getUserId(), passwordEncoder.encode(form.getPassword()));
-        userService.updateGender(user.getUserId(), transGenderClass(form.getGender()));
-        userService.updateBirthday(user.getUserId(), transLocalDateClass(form.getBirthYear(), form.getBirthMonth(), form.getBirthDayOfMonth()));
+        userService.updatePassword(user.getUserId(), form.getPassword());
+        userService.updateGender(user.getUserId(), userService.transClassGender(form.getGender()));
+        userService.updateBirthday(user.getUserId(),
+            userService.transClassLocalDate(form.getBirthYear(), form.getBirthMonth(), form.getBirthDayOfMonth())
+        );
         User savedUser = userService.findUser(user.getUserId()).get();
-        // for update principal, re-login
-        Authentication authentication = new UsernamePasswordAuthenticationToken(savedUser, savedUser.getPassword(), savedUser.getAuthorities());
-        SecurityContextHolder.getContext().setAuthentication(authentication);
+        // 재로그인
+        userService.doLoginWithAuth(savedUser, savedUser.getPassword(), savedUser.getAuthorities());
         // 회원 정보 수정 성공 메세지를 위한 redirect attribute
         redirectAttributes.addFlashAttribute("resultMessage", "success");
         log.info(">>> 회원 <"+savedUser.getEmail()+">님의 개인정보 수정이 처리되었습니다."+savedUser.toString());
@@ -123,9 +117,7 @@ public class UserController {
             return "user/deleteForm";
         }
         // 현재 비밀번호와 불일치
-        if (!passwordEncoder.matches(form.getPassword(), user.getPassword())) {
-            System.out.println(user.getPassword());
-            System.out.println(form.getPassword());
+        if (!userService.isPasswordSame(form.getPassword(), user.getPassword())) {
             model.addAttribute("valid_password", "비밀번호가 일치하지 않습니다.");
             log.info("valid_password" + "비밀번호가 일치하지 않습니다.");
             return "user/deleteForm";
@@ -137,30 +129,5 @@ public class UserController {
         return "redirect:/";
     }
 
-
-
-
-    // 성별 선택 메소드
-    private Gender transGenderClass(String formGender) {
-        if (formGender.equals("MALE")) {
-            return Gender.MALE;
-        } else if (formGender.equals("FEMALE")) {
-            return Gender.FEMALE;
-        }
-        return null;
-    }
-    
-    // 생년월일
-    private LocalDate transLocalDateClass(String year, String month, String day) {
-        if (year == null || month == null || day == null) {
-            return null;
-        } else if (year.isEmpty() || month.isEmpty() || day.isEmpty()) {
-            return null;
-        }
-        Integer intYear = Integer.parseInt(year);
-        Integer intMonth = Integer.parseInt(month);
-        Integer intDay = Integer.parseInt(day);
-        return LocalDate.of(intYear, intMonth, intDay);
-    }
 
 }
