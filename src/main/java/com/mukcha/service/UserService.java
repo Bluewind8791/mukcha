@@ -1,6 +1,7 @@
 package com.mukcha.service;
 
 import java.time.LocalDate;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -13,29 +14,52 @@ import com.mukcha.domain.Gender;
 import com.mukcha.domain.User;
 import com.mukcha.repository.UserRepository;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.Errors;
 import org.springframework.validation.FieldError;
 
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
+
+@Slf4j
 @Service
 @Transactional
+@RequiredArgsConstructor
 public class UserService {
 
     private final UserRepository userRepository;
-
-    @Autowired
-    public UserService(UserRepository userRepository) {
-        this.userRepository = userRepository;
-    }
+    private final AuthenticationManager authenticationManager;
+    private final BCryptPasswordEncoder passwordEncoder;
 
 
     // 회원가입 서비스
-    public User save(User user) {
-        return userRepository.save(user);
+    public User signUp(User user) {
+        // 프로필 이미지가 없을 경우 기본 프로필로 대체
+        if (user.getProfileImage() == null) {
+            user.setProfileImage("/profile/blank.png");
+        }
+        // Password encoding
+        String rawP = user.getPassword();
+        String encP = passwordEncoder.encode(rawP);
+        user.setPassword(encP);
+        // set enable
+        user.setEnabled(true);
+        userRepository.save(user);
+        User savedUser = findByEmail(user.getEmail()).orElseThrow(() ->
+            new IllegalArgumentException("회원가입에 실패하였습니다.")
+        );
+        addAuthority(savedUser.getUserId(), Authority.ROLE_USER);
+        return savedUser;
     }
+
 
     // 회원가입 시 유효성 체크
     public Map<String, String> validateHandling(Errors errors) {
@@ -79,7 +103,9 @@ public class UserService {
         userRepository.updateBirthday(userId, birthday);
     }
     public void updatePassword(Long userId, String password) {
-        userRepository.updatePassword(userId, password);
+        // Password encoding
+        String encodigPassword = passwordEncoder.encode(password);
+        userRepository.updatePassword(userId, encodigPassword);
     }
 
 
@@ -91,16 +117,18 @@ public class UserService {
                 HashSet<Authority> authorities = new HashSet<>();
                 authorities.add(newRole);
                 user.setAuthorities(authorities);
-                save(user);
+                userRepository.save(user);
             } else if (!user.getAuthorities().contains(newRole)) { // 해당 권한만 가지고 있지 않다면
                 HashSet<Authority> authorities = new HashSet<>();
                 authorities.addAll(user.getAuthorities()); // 기존의 권한에서
                 authorities.add(newRole); // new role 추가
                 user.setAuthorities(authorities);
-                save(user);
+                userRepository.save(user);
             }
         });
     }
+
+
     // 권한 제거
     public void removeAuthority(Long userId, String authority) {
         userRepository.findById(userId).ifPresent(user -> {
@@ -115,10 +143,11 @@ public class UserService {
                             .collect(Collectors.toSet());
 
                 user.setAuthorities(authorities);
-                save(user);
+                userRepository.save(user);
             }
         });
     }
+
 
     // 회원 삭제 (enabled = false)
     @Transactional(rollbackFor = {RuntimeException.class})
@@ -128,6 +157,104 @@ public class UserService {
         userRepository.disableUser(userId); // enable=false 처리
     }
 
+
+    // NAVER 회원가입
+    public User saveNaverUser(
+        String email,
+        String naverId,
+        String nickname,
+        String profileImage,
+        String gender,
+        String birthyear,
+        String birthday
+    ) {
+        User user = User.builder()
+                    .email(email)
+                    .password(naverId)
+                    .nickname(nickname)
+                    .profileImage(profileImage)
+                    .gender(transClassGender4Naver(gender))
+                    .birthday(transClassLocalDate4Naver(birthyear, birthday))
+                    .build()
+        ;
+        return signUp(user);
+    }
+
+
+
+    // 네이버 회원가입 성별 클래스 전환
+    private Gender transClassGender4Naver(String gender) {
+        if (gender != null) {
+            // - F: 여성 - M: 남성 - U: 확인불가
+            switch (gender) {
+                case "F":
+                return Gender.FEMALE;
+                case "M":
+                return Gender.MALE;
+            }
+        }
+        return null;
+    }
+
+
+    // 네이버 회원가입 생년월일 클래스 전환
+    private LocalDate transClassLocalDate4Naver(String birthyear, String birthday) {
+        // 사용자 생일 (MM-DD 형식)
+        if (birthyear != null || birthday != null) {
+            String[] b = birthday.split("-");
+            return LocalDate.of(Integer.parseInt(birthyear), Integer.parseInt(b[0]), Integer.parseInt(b[1]));
+        }
+        return null;
+    }
+
+
+    // 인코딩된 패스워드 비교 메소드
+    public Boolean isPasswordSame(String oldPwd, String newPwd) {
+        if (passwordEncoder.matches(oldPwd, newPwd)) {
+            return true;
+        }
+        return false;
+    }
+
+
+    // 로그인 진행
+    public void doLogin(String email, String password) {
+        log.info(">>> 회원<"+email+">님의 네이버 로그인을 진행합니다.");
+        Authentication authentication = authenticationManager.authenticate(
+            new UsernamePasswordAuthenticationToken(email, password)
+        );
+        SecurityContextHolder.getContext().setAuthentication(authentication);
+    }
+
+    // 권한을 넣어서 함께 로그인 진행
+    public void doLoginWithAuth(Object principal, String password, Collection<? extends GrantedAuthority> authorities) {
+        Authentication authentication = new UsernamePasswordAuthenticationToken(principal, password, authorities);
+        SecurityContextHolder.getContext().setAuthentication(authentication);
+    }
+
+
+    // 성별 클래스 전환 for DTO
+    public Gender transClassGender(String stringGender) {
+        if (stringGender.equals("MALE")) {
+            return Gender.MALE;
+        } else if (stringGender.equals("FEMALE")) {
+            return Gender.FEMALE;
+        }
+        return null;
+    }
+
+    // 생년월일 클래스 전환 for DTO
+    public LocalDate transClassLocalDate(String year, String month, String day) {
+        if (year == null || month == null || day == null) {
+            return null;
+        } else if (year.isEmpty() || month.isEmpty() || day.isEmpty()) {
+            return null;
+        }
+        Integer intYear = Integer.parseInt(year);
+        Integer intMonth = Integer.parseInt(month);
+        Integer intDay = Integer.parseInt(day);
+        return LocalDate.of(intYear, intMonth, intDay);
+    }
 
 
 
