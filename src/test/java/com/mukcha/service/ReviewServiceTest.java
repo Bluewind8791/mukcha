@@ -104,14 +104,15 @@ public class ReviewServiceTest extends WithTest {
     @Test // 22.3.7
     @DisplayName("5. 해당 음식의 모든 리뷰를 찾는다")
     void test_5() {
-        Food food1 = foodService.findFood(1L).get();
-        Food food2 = foodService.findFood(2L).get();
+        foodTestHelper.createFood("ReviewTestFood2", company, Category.HAMBURGER, "");
+        Food food1 = foodService.findByName("ReviewTestFood").get();
+        Food food2 = foodService.findByName("ReviewTestFood2").get();
         reviewTestHelper.createReview(food1, user);
         reviewTestHelper.createReview(food2, user);
 
-        List<Review> reviews = reviewService.findAllReviewByFoodId(1L);
+        List<Review> reviews = reviewService.findAllReviewByFoodId(food1.getFoodId());
 
-        assertEquals(1L, reviews.get(0).getFood().getFoodId());
+        assertEquals("ReviewTestFood", reviews.get(0).getFood().getName());
     }
 
     @Test

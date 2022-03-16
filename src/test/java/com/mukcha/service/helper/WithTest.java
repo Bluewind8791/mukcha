@@ -12,7 +12,8 @@ import com.mukcha.service.UserSecurityService;
 import com.mukcha.service.UserService;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 
 public class WithTest {
@@ -21,7 +22,8 @@ public class WithTest {
     @Autowired protected ReviewRepository reviewRepository;
     @Autowired protected FoodRepository foodRepository;
     @Autowired protected CompanyRepository companyRepository;
-    @Autowired protected PasswordEncoder passwordEncoder;
+    @Autowired protected BCryptPasswordEncoder passwordEncoder;
+    @Autowired protected AuthenticationManager authenticationManager;
     
     protected UserService userService;
     protected ReviewService reviewService;
@@ -39,11 +41,11 @@ public class WithTest {
         this.userSecurityService = new UserSecurityService(userRepository);
         this.foodService = new FoodService(foodRepository, companyRepository, reviewRepository);
         this.companyService = new CompanyService(companyRepository, foodRepository);
-        this.userService = new UserService(userRepository);
+        this.userService = new UserService(userRepository, authenticationManager, passwordEncoder);
         this.reviewService = new ReviewService(reviewRepository);
 
         //test helper
-        this.userTestHelper = new UserTestHelper(userService, passwordEncoder);
+        this.userTestHelper = new UserTestHelper(userService);
         this.reviewTestHelper = new ReviewTestHelper(reviewService);
         this.foodTestHelper = new FoodTestHelper(this.foodService);
         this.companyTestHelper = new CompanyTestHelper(this.companyService);

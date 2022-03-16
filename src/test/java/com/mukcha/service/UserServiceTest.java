@@ -109,7 +109,8 @@ public class UserServiceTest extends WithTest {
         User user = userTestHelper.createUser("test@user.test", "TestUser", "123456"); // make user
         userService.updatePassword(user.getUserId(), "111111"); // update password
         User savedUser = userService.findUser(user.getUserId()).get(); // find user
-        assertEquals("111111", savedUser.getPassword()); // assert
+        // assert
+        assertTrue(userService.isPasswordSame("111111", savedUser.getPassword()));
     }
 
     @Test

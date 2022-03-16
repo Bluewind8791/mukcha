@@ -12,36 +12,33 @@ import com.mukcha.domain.User;
 import com.mukcha.service.UserService;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.crypto.password.PasswordEncoder;
 
 public class UserTestHelper {
     
     @Autowired private UserService userService;
-    @Autowired private PasswordEncoder passwordEncoder;
 
-    public UserTestHelper(UserService userService, PasswordEncoder passwordEncoder) {
+    public UserTestHelper(UserService userService) {
         this.userService = userService;
-        this.passwordEncoder = passwordEncoder;
     }
 
     public User makeUser(String email, String nickname) {
         return User.builder()
-                   .email(email)
-                   .nickname(nickname)
-                   .enabled(true)
-                   .build();
+            .email(email)
+            .nickname(nickname)
+            .build()
+        ;
     }
 
     public User createUser(String email, String nickname) {
         User user = makeUser(email, nickname);
-        user.setPassword(passwordEncoder.encode(nickname+"123"));
-        return userService.save(user);
+        user.setPassword(nickname+"123");
+        return userService.signUp(user);
     }
 
     public User createUser(String email, String nickname, String password) {
         User user = makeUser(email, nickname);
-        user.setPassword(passwordEncoder.encode(password));
-        return userService.save(user);
+        user.setPassword(password);
+        return userService.signUp(user);
     }
 
     public User createUserWithAuth(String email, String nickname, String ... authorities) {
