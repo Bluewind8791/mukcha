@@ -35,8 +35,10 @@
     <div class="container mt-5 text-center">
 
         <img class="mb-4 w-75" th:src="${food.foodImage}">
-        <div class="text-muted h5" th:text="${food.company}">company name</div>
-        <div class="h2 fw-bold" th:text="${food.foodName}">food name</div>
+        <a style="text-decoration: none;" th:href="'/company/'+${food.companyId}">
+            <div class="text-muted h5" th:text="${food.company}">회사 이름</div>
+        </a>
+        <div class="h2 fw-bold" th:text="${food.foodName}">메뉴 이름</div>
         <strong>
             <div class="small mb-3" style="color: tomato;">
                 <span class="me-1">평균 별점 ★</span>

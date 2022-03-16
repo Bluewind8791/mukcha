@@ -139,6 +139,7 @@ public class FoodService {
         foodDto.setFoodId(food.getFoodId());
         foodDto.setFoodName(food.getName());
         foodDto.setCompany(food.getCompany().getName());
+        foodDto.setCompanyId(food.getCompany().getCompanyId());
         foodDto.setCategory(food.getCategory().toString());
         foodDto.setFoodImage(food.getImage());
         foodDto.setAverageScore(getAverageScoreByFoodId(food.getFoodId()));

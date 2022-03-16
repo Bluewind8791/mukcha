@@ -59,7 +59,7 @@
       <div class="d-flex flex-wrap">
         <div class="ms-2" th:each="c : ${categoryList}">
           <a style="text-decoration: none;" th:title="${c.name}" th:href="'/users/'+${userId}+'/category/'+${c.name}">
-            <div class="bg-black bg-opacity-50 p-3" style="width: 190px; height: 200px;">
+            <div class="bg-black bg-opacity-50 p-3 mb-2" style="width: 190px; height: 200px;">
               <p class="h4 text-white fw-bold" th:text="${c.getKorean()}">카테고리 이름</p>
               <p>
                 <span class="text-white fw-bold"> ★ </span>
