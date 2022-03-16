@@ -21,6 +21,7 @@ spring:
     restart:
       enabled: true
 
+  # MySQL username과 password로 변경
   datasource:
     username: root
     password: 1234
