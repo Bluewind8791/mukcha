@@ -219,7 +219,7 @@ public class UserService {
 
     // 로그인 진행
     public void doLogin(String email, String password) {
-        log.info(">>> 회원<"+email+">님의 네이버 로그인을 진행합니다.");
+        log.info(">>> 회원<"+email+">님의 로그인을 진행합니다.");
         Authentication authentication = authenticationManager.authenticate(
             new UsernamePasswordAuthenticationToken(email, password)
         );
