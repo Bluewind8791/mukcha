@@ -80,19 +80,19 @@ public class UserServiceTest extends WithTest {
     @Test // 22.3.5
     @DisplayName("5. ADMIN 권한 부여")
     void test_5() {
-        User user = userTestHelper.createUserWithAuth("ben@test.com", "ben", Authority.ROLE_USER); // make user
+        User user = userTestHelper.createUserWithAuth("ben@user.test", "usertest", Authority.ROLE_USER); // make user
         userService.addAuthority(user.getUserId(), Authority.ROLE_ADMIN); // add authority
         User savedUser = userService.findUser(user.getUserId()).get();
-        userTestHelper.assertUser(savedUser, "ben@test.com", "ben", Authority.ROLE_USER, Authority.ROLE_ADMIN);
+        userTestHelper.assertUser(savedUser, "ben@user.test", "usertest", Authority.ROLE_USER, Authority.ROLE_ADMIN);
     }
 
     @Test  // 22.3.5
     @DisplayName("6. ADMIN 권한 취소")
     void test_6() {
-        User user = userTestHelper.createUserWithAuth("ben@test.com", "ben", Authority.ROLE_USER, Authority.ROLE_ADMIN);
+        User user = userTestHelper.createUserWithAuth("ben@user.test", "usertest", Authority.ROLE_USER, Authority.ROLE_ADMIN);
         userService.removeAuthority(user.getUserId(), Authority.ROLE_ADMIN);
         User savedUser = userService.findUser(user.getUserId()).get();
-        userTestHelper.assertUser(savedUser, "ben@test.com", "ben", Authority.ROLE_USER);
+        userTestHelper.assertUser(savedUser, "ben@user.test", "usertest", Authority.ROLE_USER);
     }
 
     @DisplayName("7. UserSecurityService의 email로 검색할 수 있다")
