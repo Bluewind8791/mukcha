@@ -2,21 +2,17 @@
     font-family: 'Gowun Dodum', sans-serif;
 }
 
+/* Header */
 .header_welcome {
     margin-left: 10px;
     margin-right: 10px;
 }
 .header_searchbar {
-    
+    width: 290px;
     margin-left: auto;
-    margin-right: 10px;
+    margin-right: auto;
 }
-.nav_category {
-    margin-left: 10px;
-}
-.navbar-collapse {
-    flex-grow: 0;
-}
+
 
 /* 슬라이더 */
 .MultiCarousel { 
@@ -26,14 +22,19 @@
     width: 100%; 
     position:relative; 
 }
-.MultiCarousel .MultiCarousel-inner { 
+.MultiCarousel
+.MultiCarousel-inner { 
     transition: 1s ease all; 
     float: left; 
 }
-.MultiCarousel .MultiCarousel-inner .item { 
+.MultiCarousel
+.MultiCarousel-inner
+.item { 
     float: left;
 }
-.MultiCarousel .MultiCarousel-inner .item > div { 
+.MultiCarousel
+.MultiCarousel-inner
+.item > div { 
     padding: 0px; 
     margin: 0px;
     margin-right: 10px;
@@ -48,10 +49,12 @@
     border-radius: 50%;
     background: whitesmoke;
 }
-.MultiCarousel .leftLst { 
+.MultiCarousel 
+.leftLst { 
     left:0; 
 }
-.MultiCarousel .rightLst { 
+.MultiCarousel 
+.rightLst { 
     right:0; 
 }
 .MultiCarousel .leftLst.over, 
