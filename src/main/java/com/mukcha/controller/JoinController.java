@@ -71,9 +71,13 @@ public class JoinController {
             return "user/joinForm";
         }
         // 통과 시 회원가입 진행
-        User user = saveUser(userDto);
+        saveUser(userDto);
+        User user = userService.findByEmail(userDto.getEmail()).orElseThrow(() ->
+            new IllegalArgumentException("회원가입에 실패하였습니다.")
+        );
+        userService.doLogin(user.getEmail(), user.getPassword());
         log.info(">>> 회원<"+user.getEmail()+">님의 가입이 처리되었습니다."+user.toString());
-        return "redirect:/login";
+        return "redirect:/";
     }
 
 
@@ -89,8 +93,7 @@ public class JoinController {
             .enabled(true)
             .build()
         ;
-        User savedUser = userService.signUp(user);
-        return savedUser;
+        return userService.signUp(user);
     }
 
 
