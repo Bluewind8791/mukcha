@@ -26,7 +26,8 @@ spring:
     username: root
     password: 1234
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://localhost:3306/mukcha?serverTimezone=Asia/Seoul
+    url: jdbc:mysql://3.39.16.219:3306/mukcha?serverTimezone=Asia/Seoul
+    # url: jdbc:mysql://localhost:3306/mukcha?serverTimezone=Asia/Seoul
 
   jpa:
     open-in-view: false # Explicitly configure spring.jpa.open-in-view to disable this warning
