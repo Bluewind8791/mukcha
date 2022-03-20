@@ -26,7 +26,7 @@ spring:
     username: bluewind
     password: sialn9aldac
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://mysql-test.c8odve5cbglu.ap-northeast-2.rds.amazonaws.com:3306/mukcha?serverTimezone=Asia/Seoul
+    url: jdbc:mysql://mysql-test.c8odve5cbglu.ap-northeast-2.rds.amazonaws.com:3306/mukcha
     # url: jdbc:mysql://localhost:3306/mukcha?serverTimezone=Asia/Seoul
 
   jpa:
