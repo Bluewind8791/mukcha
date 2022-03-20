@@ -13,17 +13,16 @@ cache:
     - '$HOME/.m2/repository'
     - '$HOME/.gradle'
 
-script: "./gradlew clean build -x test"
-
 # Fix permission error
 before_install:
   - chmod +x gradlew
 
-# CI 실행 완료시 메일로 알람
-notifications:
-  email:
-    recipients:
-      - castus1214@naver.com 
+script: "./gradlew clean build -x test"
+
+before_deploy:
+  - zip -r mukcha *
+  - mkdir -p deploy
+  - mv mukcha.zip deploy/mukcha.zip
 
 deploy:
   - provider: s3
@@ -33,7 +32,14 @@ deploy:
     region: ap-northeast-2
     skip_cleanup: true
     acl: public_read
+    local_dir: deploy # before_deploy에서 생성한 디렉토리
     wait-until-deployed: true
     on:
       repo: Bluewind8791/mukcha #Github 주소
       branch: main
+
+# CI 실행 완료시 메일로 알람
+notifications:
+  email:
+    recipients:
+      - castus1214@naver.com 
