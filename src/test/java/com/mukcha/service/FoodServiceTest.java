@@ -119,6 +119,12 @@ public class FoodServiceTest extends WithTest {
     @Test
     @DisplayName("7. 가장 최신의 메뉴 10개를 가져온다.")
     void test_7() {
+        // set
+        foodTestHelper.createFood("ttest1", company, Category.HAMBURGER, null);
+        foodTestHelper.createFood("ttest2", company, Category.HAMBURGER, null);
+        foodTestHelper.createFood("ttest3", company, Category.HAMBURGER, null);
+        foodTestHelper.createFood("ttest4", company, Category.HAMBURGER, null);
+        foodTestHelper.createFood("ttest5", company, Category.HAMBURGER, null);
         // get
         List<FoodDto> allFoods = foodService.findTopTenNewest();
         // assert

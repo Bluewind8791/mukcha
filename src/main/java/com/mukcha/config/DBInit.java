@@ -71,6 +71,15 @@ public class DBInit implements CommandLineRunner {
             companyService.save(company);
             return Optional.of(companyService.save(company));
         });
+        companyService.findByName("BHC").or(() -> {
+            Company company = Company.builder()
+                                .name("BHC")
+                                .image("https://www.bhc.co.kr/images/index/img_bottom_brand1.jpg")
+                                .build()
+            ;
+            companyService.save(company);
+            return Optional.of(companyService.save(company));
+        });
 
         // init menus
         foodService.findByName("NO1.포테이토닭토닭").or(() -> {
