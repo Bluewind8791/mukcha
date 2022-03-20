@@ -50,3 +50,8 @@ dependencies {
 test {
 	useJUnitPlatform()
 }
+
+jar {
+	// *-plain.jar 만들지 않도록 설정
+    enabled = false
+}
