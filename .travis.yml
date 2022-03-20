@@ -24,3 +24,16 @@ notifications:
   email:
     recipients:
       - castus1214@naver.com 
+
+deploy:
+  - provider: s3
+    access_key_id: $AWS_ACCESS_KEY # Travis repo settings에 설정된 값
+    secret_access_key: $AWS_SECRET_KEY # Travis repo settings에 설정된 값
+    bucket: bluewind-bucket # S3 버킷
+    region: ap-northeast-2
+    skip_cleanup: true
+    acl: public_read
+    wait-until-deployed: true
+    on:
+      repo: Bluewind8791/mukcha #Github 주소
+      branch: main
