@@ -2,7 +2,7 @@ version: 0.0
 os: linux
 files:
   - source:  /
-    destination: /home/ec2-user/app/travis/build/  # EC2 내부 배포 할 위치
+    destination: /home/ec2-user/app/nonstop/mukcha/  # EC2 내부 배포 할 위치
     overwrite: yes
 
 hooks:
