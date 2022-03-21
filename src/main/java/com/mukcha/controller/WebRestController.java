@@ -20,9 +20,9 @@ public class WebRestController {
     @GetMapping("/profile")
     public String getProfile() {
         System.out.println(">>> "+
-            Arrays.toString(env.getActiveProfiles())
+            Arrays.toString(env.getActiveProfiles()).replace("[", "").replace("]", "")
         );
-        return Arrays.toString(env.getActiveProfiles());
+        return Arrays.toString(env.getActiveProfiles()).replace("[", "").replace("]", "");
     }
 
 }
