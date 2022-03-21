@@ -20,7 +20,7 @@ public class RestControllerTest {
         String profile = this.restTemplate.getForObject("/profile", String.class);
 
         // then
-        Assertions.assertThat(profile).isEqualTo("local");
+        Assertions.assertThat(profile).isEqualTo("[local]");
     }
 
 
