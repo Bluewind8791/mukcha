@@ -8,6 +8,8 @@ server:
       force: true
 
 spring:
+  profiles:
+    active: local
 
   thymeleaf:
     prefix: classpath:templates/
@@ -25,8 +27,8 @@ spring:
   datasource:
     username: bluewind
     password: 87918791
-    driver-class-name: com.mysql.cj.jdbc.Driver
     url: jdbc:mysql://mysql-test.c8odve5cbglu.ap-northeast-2.rds.amazonaws.com:3306/mukcha
+    driver-class-name: com.mysql.cj.jdbc.Driver
     # url: jdbc:mysql://localhost:3306/mukcha?serverTimezone=Asia/Seoul
 
   jpa:
@@ -73,4 +75,3 @@ spring:
 logging:
   level: 
     org.springframework.web: trace # controller 가 제대로 서버에 뜨고잇는지 로그 확인
-
