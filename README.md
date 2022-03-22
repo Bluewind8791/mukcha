@@ -1,4 +1,6 @@
-# 먹챠
+# 먹챠 [![Build Status](https://app.travis-ci.com/Bluewind8791/mukcha.svg?branch=main)](https://app.travis-ci.com/Bluewind8791/mukcha)
+
+## Live 사이트 [바로가기](http://ec2-3-39-16-219.ap-northeast-2.compute.amazonaws.com/)
 
 "이 집은 이건 맛있는데 저건 맛이 별로야... 그런데 왜 메뉴별로 평가할 수 없는거지?"
 
