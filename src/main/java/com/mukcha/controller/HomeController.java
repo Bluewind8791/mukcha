@@ -27,7 +27,6 @@ public class HomeController {
     private final UserService userService;
     private final ReviewService reviewService;
 
-
     // VIEW - Root page
     @GetMapping(value = {"/", ""})
     public String home(Model model) {
@@ -85,6 +84,7 @@ public class HomeController {
         );
         return "food/reviews";
     }
+
 
 
 }
