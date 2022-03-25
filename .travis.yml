@@ -16,6 +16,8 @@ cache:
 # Fix permission error
 before_install:
   - chmod +x gradlew
+  - openssl aes-256-cbc -K $encrypted_34b0d4dd29b4_key -iv $encrypted_34b0d4dd29b4_iv -in setting.tar.enc -out setting.tar -d
+  - tar xvf setting.tar
 
 script: "./gradlew clean build -x test"
 

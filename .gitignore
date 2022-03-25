@@ -38,3 +38,6 @@ out/
 
 ### application ###
 application.yml
+
+### Encrypt application.yml ###
+setting.tar
