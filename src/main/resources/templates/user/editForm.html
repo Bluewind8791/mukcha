@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org"
+    xmlns:sec="http://www.thymeleaf.org/extras/spring-security" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+    layout:decorate="~{layout/layout}">
+
+<head>
+    <script th:inline="javascript">
+        // 회원 정보 수정 성공 alert
+        var message = [[${ resultMessage }]];
+        if (message == "success") {
+            alert("회원 정보 수정이 완료되었습니다.");
+        }
+    </script>
+</head>
+
+
+<div layout:fragment="content">
+
+    <div class="container text-center bg-light p-5 mt-5 mb-5">
+
+        <h3 class="mb-5">회원 정보 수정</h3>
+        <h5 class="mb-2">필수항목</h5>
+
+        <form class="form-signin" th:action="@{/user/edit}" method="POST" th:object="${form}" modelAttribute="form">
+
+            <!-- E-mail -->
+            <div class="mb-3 was-validated">
+                <label for="email">이메일<span class="text-muted">(로그인 아이디)</span></label>
+                <input type="email" class="form-control" id="email" name="email"
+                    th:value="${#authentication.principal.email}" readonly>
+                <span style="color:royalblue">(이메일은 수정이 불가합니다.)</span>
+            </div>
+
+            <div class="row">
+                <!-- password -->
+                <div class="col-md-6 mb-3 was-validated">
+                    <label for="password">비밀번호</label>
+                    <input type="password" class="form-control" id="password" name="password" placeholder="******"
+                        required>
+                    <span style="color:tomato" th:text="${valid_password}"></span>
+                </div>
+                <!-- Password confirm -->
+                <div class="col-md-6 mb-3 was-validated">
+                    <label for="rePassword">비밀번호 (확인)</label>
+                    <input type="password" class="form-control" id="rePassword" name="rePassword" placeholder="******"
+                        required>
+                    <span style="color:tomato" th:text="${valid_rePassword}"></span>
+                </div>
+            </div>
+            <span style="color:royalblue">(본인 확인을 위하여 패스워드를 한번 더 적어주세요.)</span>
+
+            <!-- Nickname -->
+            <div class="mb-3 mt-3 was-validated">
+                <label for="name" class="form-label">아이디<span class="text-muted">(별명)</span></label>
+                <input type="text" class="form-control" id="nickname" name="nickname"
+                    th:value="${#authentication.principal.nickname}">
+            </div>
+
+            <hr class="mb-4">
+            <h5 class="mb-2">선택항목</h5>
+
+            <div class="mb-3 mt-3">
+                <label for="email" class="form-label">성별</label>
+                <select class="form-select" id="gender" name="gender"
+                    th:value="${#authentication.principal.getStringGender()}">
+                    <option value="">선택안함</option>
+                    <option th:value="MALE" th:text="남자"
+                        th:selected="${#authentication.principal.getStringGender()} == 'MALE'"></option>
+                    <option th:value="FEMALE" th:text="여자"
+                        th:selected="${#authentication.principal.getStringGender()} == 'FEMALE'"></option>
+                </select>
+            </div>
+
+            <div class="row">
+                <label class="form-label">생년월일</label>
+
+                <div class="col">
+                    <span class="ps_box input-group">
+                        <input type="text" class="form-control" placeholder="년(4자)" maxlength="4" id="birthYear"
+                            name="birthYear" th:value="${#authentication.principal.getBirthYear()}">
+                        <span class="input-group-text">년</span>
+                    </span>
+                </div>
+
+                <div class="col">
+                    <span class="ps_box input-group">
+                        <select class="form-select" id="birthMonth" name="birthMonth">
+                            <option value="">선택해 주세요</option>
+                            <option th:each="i : ${#numbers.sequence(1, 12)}" th:text="${i}" th:value="${i}"
+                                th:selected="${i == #authentication.principal.getBirthMonth()}">
+                            </option>
+                        </select>
+                        <span class="input-group-text">월</span>
+                    </span>
+                </div>
+
+                <div class="col">
+                    <span class="ps_box input-group">
+                        <input type="text" class="form-control" placeholder="일" maxlength="2" id="birthDayOfMonth"
+                            name="birthDayOfMonth" th:value="${#authentication.principal.getBirthDayOfMonth()}">
+                        <span class="input-group-text">일</span>
+                    </span>
+                </div>
+            </div> <!-- end of row -->
+
+            <hr class="mt-5 mb-5">
+
+            <!-- 수정 버튼 -->
+            <button class="btn btn-lg btn-primary w-50 mb-4" type="submit">수정</button>
+            <!-- 취소 버튼 -->
+            <a type="button" class="btn btn-lg btn-secondary w-50 mb-4" onclick="window.history.back();">취소</a>
+            <!-- 회원 탈퇴 -->
+            <a type="button" class="btn btn-lg btn-danger w-50" th:href="@{/user/delete}">회원 탈퇴</a>
+
+        </form>
+
+    </div> <!-- /container -->
+
+</div>
+
+</html>

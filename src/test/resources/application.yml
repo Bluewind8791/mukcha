@@ -1,0 +1,43 @@
+# Test
+spring:
+  jpa:
+    show_sql: true
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.MySQL5InnoDBDialect
+        format_sql: true # 실행쿼리를 가독성있게 표현
+  h2:
+    console:
+      enabled: true
+
+  session:
+    store-type: jdbc
+
+  output:
+    ansi:
+      enabled: always # 콘솔에 컬러 더하기
+
+  datasource:
+    hikari:
+      jdbc-url: jdbc:h2:mem:testdb;MODE=MYSQL
+      username: sa
+
+# Test OAuth
+
+  security:
+    oauth2:
+      client:
+        # registration
+        registration:
+          naver:
+            client-id: test
+            client-secret: test
+            scope: name,email,profile_image
+
+# LOGGING
+logging:
+  level:
+    org.springframework.web: trace # controller 가 제대로 서버에 뜨고잇는지 로그 확인
+
+server:
+  port: 8000

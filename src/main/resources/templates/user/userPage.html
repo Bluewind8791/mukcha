@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org"
+  xmlns:sec="http://www.thymeleaf.org/extras/spring-security" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+  layout:decorate="~{layout/layout}">
+
+<head>
+  <style>
+    .wallpaper-block {
+      width: 600px;
+      height: 200px;
+      overflow: hidden;
+    }
+    .wallpaper-block img {
+      width: 600px;
+      margin-top: -30px;
+    }
+    #btn-edit {
+      position: relative;
+      margin-bottom: -40px;
+    }
+    .edit-icon {
+      text-shadow: 0 0 3px #000;
+      color: #f2f2f2;
+    }
+  </style>
+</head>
+
+<div layout:fragment="content">
+
+  <div class="container rounded mt-5 p-0" style="width: 600px;">
+    <!-- 유저 개인정보 수정 -->
+    <div sec:authorize="isAuthenticated()" th:if="${#authentication.principal.email} == ${user.email}" >
+      <div class="d-flex flex-row-reverse me-3" id="btn-edit" >
+        <a href="/user/edit">
+          <i class="edit-icon fas fa-cog fa-2x"></i>
+        </a>
+      </div>
+    </div>
+
+    <!-- wall paper -->
+    <div class="wallpaper-block rounded">
+      <img src="/wallpaper/basic.png">
+    </div>
+    <!-- info and reviews -->
+    <div class="bg-light pb-4" style="width: 600px; height: max-content;">
+      <!-- user info -->
+      <div>
+        <!-- profile image -->
+        <div class="d-flex ms-4" style="margin-top: -30px;">
+          <img th:src="${user.profileImage}" class="rounded-circle" width="70px" height="70px">
+        </div>
+        <!-- nickname -->
+        <div class="d-flex ms-3 mt-2">
+          <div class="h4 fw-bold" th:text="${user.nickname}"></div>
+        </div>
+      </div>
+      <hr class="mt-5 mb-5 ms-2 me-2">
+      <!-- user reviews -->
+      <div class="d-flex flex-wrap">
+        <div class="ms-2" th:each="c : ${categoryList}">
+          <a style="text-decoration: none;" th:title="${c.name}" th:href="'/users/'+${userId}+'/category/'+${c.name}">
+            <div class="bg-black bg-opacity-50 p-3 mb-2" style="width: 190px; height: 200px;">
+              <p class="h4 text-white fw-bold" th:text="${c.getKorean()}">카테고리 이름</p>
+              <p>
+                <span class="text-white fw-bold"> ★ </span>
+                <span class="text-white fw-bold" th:if="${c.name} == 'CHICKEN'" th:text="${reviewCount.chickenReviewCount}" >1222</span>
+                <span class="text-white fw-bold" th:if="${c.name} == 'PIZZA'" th:text="${reviewCount.pizzaReviewCount}" >1222</span>
+                <span class="text-white fw-bold" th:if="${c.name} == 'HAMBURGER'" th:text="${reviewCount.burgerReviewCount}" >1222</span>
+              </p>
+            </div>
+          </a>
+        </div>
+      </div>
+    </div>
+
+
+
+  </div> <!-- /container -->
+
+</div>
+
+</html>

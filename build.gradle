@@ -1,0 +1,61 @@
+plugins {
+	id 'org.springframework.boot' version '2.6.3'
+	id 'io.spring.dependency-management' version '1.0.11.RELEASE'
+	id 'java'
+}
+
+group = 'com.mukcha'
+version = '0.0.3'
+sourceCompatibility = '11'
+
+configurations {
+	compileOnly {
+		extendsFrom annotationProcessor
+	}
+}
+
+repositories {
+	mavenCentral()
+}
+
+dependencies {
+	// Spring Boot
+	implementation('org.springframework.boot:spring-boot-starter-web')
+	compileClasspath("org.springframework.boot:spring-boot-devtools")
+	testImplementation('org.springframework.boot:spring-boot-starter-test')
+	// Spring Security
+	implementation("org.springframework.security:spring-security-taglibs")
+	implementation("org.springframework.boot:spring-boot-starter-security")
+	// JPA
+	implementation('org.springframework.boot:spring-boot-starter-data-jpa')
+	// lombok
+	compileOnly('org.projectlombok:lombok')
+	annotationProcessor('org.projectlombok:lombok')
+	testCompileOnly('org.projectlombok:lombok')
+	testAnnotationProcessor('org.projectlombok:lombok')
+	// thymeleaf
+	implementation('org.springframework.boot:spring-boot-starter-thymeleaf')
+	implementation('nz.net.ultraq.thymeleaf:thymeleaf-layout-dialect')
+	implementation('org.thymeleaf.extras:thymeleaf-extras-springsecurity5')
+	// validation
+	implementation('org.springframework.boot:spring-boot-starter-validation')
+	// jsoup HTML parser library @ https://jsoup.org/
+	implementation('org.jsoup:jsoup:1.14.3')
+	// https://mvnrepository.com/artifact/org.json/json
+	implementation('org.json:json:20211205')
+	// MySQL
+	implementation('mysql:mysql-connector-java:8.0.23')
+	// H2 DB
+	runtimeClasspath('com.h2database:h2')
+	// Actuator: 스프링부트 프로젝트의 여러 상태를 확인해줄 수 있는 의존성
+	implementation('org.springframework.boot:spring-boot-starter-actuator')
+}
+
+test {
+	useJUnitPlatform()
+}
+
+jar {
+	// *-plain.jar 만들지 않도록 설정
+    enabled = false
+}
