@@ -22,7 +22,9 @@ public class UserSecurityService implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        return userRepository.findByEmail(username).orElseThrow(() -> new IllegalArgumentException(username + "는(은) 존재하지 않는 사용자입니다."));
+        return userRepository.findByEmail(username).orElseThrow(() -> 
+            new IllegalArgumentException(username + "는(은) 존재하지 않는 사용자입니다.")
+        );
     }
 
 

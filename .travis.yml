@@ -1,22 +1,28 @@
 language: java
 jdk:
 - openjdk11
+
 branches:
   only:
   - main
+
 cache:
   directories:
   - "$HOME/.m2/repository"
   - "$HOME/.gradle"
+
 before_install:
 - chmod +x gradlew
 - openssl aes-256-cbc -K $encrypted_34b0d4dd29b4_key -iv $encrypted_34b0d4dd29b4_iv -in setting.tar.enc -out setting.tar -d
 - tar xvf setting.tar
-script: "./gradlew clean build -x test"
+
+script: "./gradlew clean build"
+
 before_deploy:
 - zip -r mukcha *
 - mkdir -p deploy
 - mv mukcha.zip deploy/mukcha.zip
+
 deploy:
 - provider: s3
   access_key_id: "$AWS_ACCESS_KEY"
@@ -30,6 +36,7 @@ deploy:
   on:
     repo: Bluewind8791/mukcha
     branch: main
+
 - provider: codedeploy
   access_key_id: "$AWS_ACCESS_KEY"
   secret_access_key: "$AWS_SECRET_KEY"

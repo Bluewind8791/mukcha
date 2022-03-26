@@ -46,7 +46,7 @@ dependencies {
 	// MySQL
 	implementation('mysql:mysql-connector-java:8.0.23')
 	// H2 DB
-	runtimeClasspath('com.h2database:h2')
+	// runtimeClasspath('com.h2database:h2')
 	// Actuator: 스프링부트 프로젝트의 여러 상태를 확인해줄 수 있는 의존성
 	implementation('org.springframework.boot:spring-boot-starter-actuator')
 }

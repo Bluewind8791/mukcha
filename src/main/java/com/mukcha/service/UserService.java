@@ -257,30 +257,4 @@ public class UserService {
     }
 
 
-
-
 }
-
-    // email 중복 검사
-    // private void validateDuplicateEmail(User user) {
-    //     // 본인의 이메일이 전과 같다면 return
-    //     User before = userRepository.findByEmail(user.getEmail()).get();
-    //     if (before.getEmail() == user.getEmail()) {
-    //         return ;
-    //     }
-    //     userRepository.findByEmail(user.getEmail())
-    //         .ifPresent(m -> {
-    //             throw new IllegalStateException("이미 사용중인 이메일입니다.");
-    //         });
-    // }
-    // // username 중복 검사
-    // private void validateDuplicateNickname(User user) {
-    //     User before = userRepository.findByNickname(user.getNickname()).get();
-    //     if (before.getNickname() == user.getNickname()) {
-    //         return ;
-    //     }
-    //     userRepository.findByNickname(user.getNickname())
-    //         .ifPresent(m -> {
-    //             throw new IllegalStateException("이미 사용중인 아이디입니다.");
-    //         });
-    // }
