@@ -16,9 +16,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 
-
+@Slf4j
 @Service
 @Transactional
 @RequiredArgsConstructor
@@ -30,6 +31,7 @@ public class CompanyService {
 
     // 회사 추가
     public Company save(Company company) {
+        log.info(">>> 회사 <"+company.getName()+">를 생성합니다.");
         return companyRepository.save(company);
     }
 

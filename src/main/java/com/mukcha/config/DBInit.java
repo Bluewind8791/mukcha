@@ -40,7 +40,6 @@ public class DBInit implements CommandLineRunner {
                             .build();
             userService.signUp(admin);
             admin.setAuthorities(Set.of(
-                new Authority(admin.getUserId(), Authority.ROLE_USER),
                 new Authority(admin.getUserId(), Authority.ROLE_ADMIN)
             ));
             return Optional.of(userService.signUp(admin));
@@ -55,9 +54,6 @@ public class DBInit implements CommandLineRunner {
                             .birthday(LocalDate.of(1991, 12, 14))
                             .build();
             userService.signUp(user);
-            user.setAuthorities(Set.of(
-                new Authority(user.getUserId(), Authority.ROLE_USER)
-            ));
             return Optional.of(userService.signUp(user));
         });
 
