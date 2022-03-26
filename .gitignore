@@ -37,7 +37,7 @@ out/
 .vscode/
 
 ### application ###
-src/main/resources/application.yml
+application.yml
 
 ### Encrypt application.yml ###
 setting.tar
