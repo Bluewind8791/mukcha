@@ -7,36 +7,31 @@
   <div class="container p-5 mt-5 text-center bg-light w-75">
 
     <div class="h2 mb-5 fw-bold">로그인</div>
-
-    <form class="form-signin" method="POST" th:action="@{/login}">
-
+    <form class="form-signin" method="POST" th:action="@{/login_proc}">
       <!-- E-mail -->
       <div class="mb-4 mt-3 ">
         <label class="mb-2" for="username">이메일</label>
-        <input class="form-control w-75 mx-auto" type="email" id="username" name="username" placeholder="이메일을 입력해주세요"
+        <input class="form-control w-75 mx-auto" type="email" name="email" placeholder="이메일을 입력해주세요"
           required autofocus>
       </div>
-
       <!-- Password -->
       <div class="mb-4">
         <label class="mb-2" for="pwd">비밀번호</label>
-        <input class="form-control w-75 mx-auto" type="password" id="password" name="password"
+        <input class="form-control w-75 mx-auto" type="password" name="password"
           placeholder="비밀번호를 입력해주세요" required>
       </div>
-
       <!-- Remember Me -->
       <div class="form-check mb-4 mt-2">
         <label class="form-check-label">
           <input class="form-check-input" type="checkbox" name="remember-me"> 자동 로그인
         </label>
       </div>
-
-      <!-- Login -->
+      <!-- 로그인 -->
       <button type="submit" class="btn btn-primary mb-2">로그인</button>
-      <!-- Sign In -->
+      <!-- 회원가입 -->
       <a class="btn btn-primary mb-2" th:href="@{/user/join}">회원가입</a>
       <!-- Naver Login -->
-      <a href="https://nid.naver.com/oauth2.0/authorize?response_type=code&client_id=29ePxl3H1XTUdqOjcD4X&state=STATE_STRING&redirect_uri=http://58.226.164.25:8000/naver/auth">
+      <a href="https://nid.naver.com/oauth2.0/authorize?response_type=code&client_id=29ePxl3H1XTUdqOjcD4X&state=STATE_STRING&redirect_uri=http://3.39.16.219/naver/auth">
         <img class="mb-2" src="/image/naver_btnG.png" height="38px" alt="네이버 로그인">
       </a>
 
