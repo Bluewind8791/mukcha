@@ -1,6 +1,6 @@
 # 먹챠 [![Build Status](https://app.travis-ci.com/Bluewind8791/mukcha.svg?branch=main)](https://app.travis-ci.com/Bluewind8791/mukcha)
 
-## Live 사이트 [바로가기](http://ec2-3-39-16-219.ap-northeast-2.compute.amazonaws.com/)
+## Live 사이트 [바로가기](http://3.39.16.219/)
 
 "이 집은 이건 맛있는데 저건 맛이 별로야... 그런데 왜 메뉴별로 평가할 수 없는거지?"
 
@@ -35,19 +35,3 @@
 - Bootstrap 5
 - Thymeleaf
 - MySQL
-
-
-## 설치
-
-1. application.yml 에서 MySQL 개인의 username과 password로 변경
-```yml
-datasource:
-  username: root
-  password: 1234
-```
-
-2. run java
-- src.main.java.com.mukcha 경로의 `BackendApplication` class에서 실행.
-- 혹은 Dashboard 에서 mukcha 서버 실행
-
-3. 브라우저 "http://localhost:8000/" 으로 웹페이지 접근.
