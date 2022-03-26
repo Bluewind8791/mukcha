@@ -5,7 +5,7 @@ ABSPATH=$(readlink -f $0)
 ABSDIR=$(dirname $ABSPATH)
 source ${ABSDIR}/profile.sh # import profile.sh 
 
-REPOSITORY=/home/ec2-user/app/nonstop
+REPOSITORY=/home/ec2-user/app/mukcha
 
 echo ">>> Build 파일 복사"
 echo ">>> cp $REPOSITORY/zip/*.jar $REPOSITORY/"
