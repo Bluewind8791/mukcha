@@ -1,53 +1,46 @@
 language: java
-
 jdk:
-  - openjdk11
-
+- openjdk11
 branches:
   only:
   - main
-
 cache:
   directories:
   - "$HOME/.m2/repository"
   - "$HOME/.gradle"
-
 before_install:
-  - chmod +x gradlew
-  - openssl aes-256-cbc -K $encrypted_34b0d4dd29b4_key -iv $encrypted_34b0d4dd29b4_iv -in setting.tar.enc -out setting.tar -d
-  - tar xvf setting.tar
-
+- openssl aes-256-cbc -K $encrypted_34b0d4dd29b4_key -iv $encrypted_34b0d4dd29b4_iv
+  -in setting.tar.enc -out setting.tar -d
+- chmod +x gradlew
+- tar xvf setting.tar
 script: "./gradlew clean build -x test"
-
 before_deploy:
-  - zip -r mukcha *
-  - mkdir -p deploy
-  - mv mukcha.zip deploy/mukcha.zip
-
+- zip -r mukcha *
+- mkdir -p deploy
+- mv mukcha.zip deploy/mukcha.zip
 deploy:
-  - provider: s3
-    access_key_id: "$AWS_ACCESS_KEY"
-    secret_access_key: "$AWS_SECRET_KEY"
-    bucket: bluewind-bucket
-    region: ap-northeast-2
-    skip_cleanup: true
-    acl: public_read
-    local_dir: deploy
-    wait-until-deployed: true
-    on:
-      repo: Bluewind8791/mukcha
-      branch: main
-
-  - provider: codedeploy
-    access_key_id: "$AWS_ACCESS_KEY"
-    secret_access_key: "$AWS_SECRET_KEY"
-    bucket: bluewind-bucket
-    key: mukcha.zip
-    bundle_type: zip
-    application: springboot-webservice
-    deployment_group: springboot-webservice-group
-    region: ap-northeast-2
-    wait-until-deployed: true
-    on:
-      repo: Bluewind8791/mukcha
-      branch: main
+- provider: s3
+  access_key_id: "$AWS_ACCESS_KEY"
+  secret_access_key: "$AWS_SECRET_KEY"
+  bucket: bluewind-bucket
+  region: ap-northeast-2
+  skip_cleanup: true
+  acl: public_read
+  local_dir: deploy
+  wait-until-deployed: true
+  on:
+    repo: Bluewind8791/mukcha
+    branch: main
+- provider: codedeploy
+  access_key_id: "$AWS_ACCESS_KEY"
+  secret_access_key: "$AWS_SECRET_KEY"
+  bucket: bluewind-bucket
+  key: mukcha.zip
+  bundle_type: zip
+  application: springboot-webservice
+  deployment_group: springboot-webservice-group
+  region: ap-northeast-2
+  wait-until-deployed: true
+  on:
+    repo: Bluewind8791/mukcha
+    branch: main
