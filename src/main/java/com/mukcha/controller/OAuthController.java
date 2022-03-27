@@ -6,6 +6,7 @@ import com.mukcha.domain.NaverProfile;
 import com.mukcha.service.UserService;
 
 import org.json.JSONObject;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
@@ -26,8 +27,11 @@ import lombok.extern.slf4j.Slf4j;
 @RequiredArgsConstructor
 public class OAuthController {
 
-    private static final String CLIENT_ID = "29ePxl3H1XTUdqOjcD4X";
-    private static final String CLIENT_SECRET = "qtu0G6tjle";
+    @Value("${naver-client-id}")
+    private static String CLIENT_ID;
+
+    @Value("${naver-client-secret}")
+    private static String CLIENT_SECRET;
 
     private final UserService userService;
 
@@ -131,6 +135,31 @@ public class OAuthController {
         return new HttpEntity<>(params, headers);
     }
 
+
+    // @Component
+    // public class NaverClient {
+
+    //     public String clientId;
+    //     public String clientSecret;
+
+    //     public String getClientId() {
+    //         return clientId;
+    //     }
+
+    //     public String getClientSecret() {
+    //         return clientSecret;
+    //     }
+
+        
+    //     public void setClientId(String value) {
+    //         clientId = value;
+    //     }
+
+    //     @Value("${naver-client-secret}")
+    //     public void setClientSecret(String value) {
+    //         clientSecret = value;
+    //     }
+    // }
 
 }
 /*
