@@ -25,7 +25,7 @@ deploy:
   secret_access_key: "$AWS_SECRET_KEY"
   bucket: bluewind-bucket
   region: ap-northeast-2
-  cleanup: true
+  skip_cleanup: true
   acl: public_read
   local_dir: deploy
   wait-until-deployed: true
