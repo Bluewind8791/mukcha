@@ -2,11 +2,12 @@ package com.mukcha.controller;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.mukcha.domain.NaverClient;
 import com.mukcha.domain.NaverProfile;
 import com.mukcha.service.UserService;
 
 import org.json.JSONObject;
-import org.springframework.beans.factory.annotation.Value;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
@@ -27,11 +28,8 @@ import lombok.extern.slf4j.Slf4j;
 @RequiredArgsConstructor
 public class OAuthController {
 
-    @Value("${naver-client-id}")
-    private static String CLIENT_ID;
-
-    @Value("${naver-client-secret}")
-    private static String CLIENT_SECRET;
+    @Autowired
+    NaverClient naverClient;
 
     private final UserService userService;
 
@@ -129,37 +127,12 @@ public class OAuthController {
         headers.add("Content-type", "application/x-www-form-urlencoded;charset=utf-8");
         MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
         params.add("grant_type", "authorization_code");
-        params.add("client_id", CLIENT_ID);
-        params.add("client_secret", CLIENT_SECRET);
+        params.add("client_id", naverClient.clientId);
+        params.add("client_secret", naverClient.clientSecret);
         params.add("code", code);
         return new HttpEntity<>(params, headers);
     }
 
-
-    // @Component
-    // public class NaverClient {
-
-    //     public String clientId;
-    //     public String clientSecret;
-
-    //     public String getClientId() {
-    //         return clientId;
-    //     }
-
-    //     public String getClientSecret() {
-    //         return clientSecret;
-    //     }
-
-        
-    //     public void setClientId(String value) {
-    //         clientId = value;
-    //     }
-
-    //     @Value("${naver-client-secret}")
-    //     public void setClientSecret(String value) {
-    //         clientSecret = value;
-    //     }
-    // }
 
 }
 /*
