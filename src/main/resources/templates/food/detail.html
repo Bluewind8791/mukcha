@@ -36,7 +36,7 @@
 
         <img class="mb-4 w-75" th:src="${food.foodImage}">
         <a style="text-decoration: none;" th:href="'/company/'+${food.companyId}">
-            <div class="text-muted h5" th:text="${food.company}">회사 이름</div>
+            <div class="text-muted h5" th:text="${food.companyName}">회사 이름</div>
         </a>
         <div class="h2 fw-bold" th:text="${food.foodName}">메뉴 이름</div>
         <strong>

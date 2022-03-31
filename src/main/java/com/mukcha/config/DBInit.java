@@ -1,8 +1,6 @@
 package com.mukcha.config;
 
-import java.time.LocalDate;
 import java.util.Optional;
-import java.util.Set;
 
 import com.mukcha.domain.Authority;
 import com.mukcha.domain.Category;
@@ -36,25 +34,12 @@ public class DBInit implements CommandLineRunner {
             User admin = User.builder()
                             .email("admin@test.com")
                             .nickname("admin_ben")
-                            .password("qwe1")
+                            .authority(Authority.ADMIN)
+                            .gender(Gender.MALE)
+                            .birthYear("1991")
                             .build();
             userService.signUp(admin);
-            admin.setAuthorities(Set.of(
-                new Authority(admin.getUserId(), Authority.ROLE_ADMIN)
-            ));
             return Optional.of(userService.signUp(admin));
-        });
-        // init user
-        userService.findByEmail("user@test.com").or(() ->{
-            User user = User.builder()
-                            .email("user@test.com")
-                            .nickname("test_user")
-                            .password("qwe1")
-                            .gender(Gender.MALE)
-                            .birthday(LocalDate.of(1991, 12, 14))
-                            .build();
-            userService.signUp(user);
-            return Optional.of(userService.signUp(user));
         });
 
         // init company

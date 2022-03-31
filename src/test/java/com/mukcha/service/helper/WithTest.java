@@ -8,12 +8,10 @@ import com.mukcha.repository.UserRepository;
 import com.mukcha.service.CompanyService;
 import com.mukcha.service.FoodService;
 import com.mukcha.service.ReviewService;
-import com.mukcha.service.UserSecurityService;
 import com.mukcha.service.UserService;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 
 public class WithTest {
@@ -22,14 +20,12 @@ public class WithTest {
     @Autowired protected ReviewRepository reviewRepository;
     @Autowired protected FoodRepository foodRepository;
     @Autowired protected CompanyRepository companyRepository;
-    @Autowired protected BCryptPasswordEncoder passwordEncoder;
     @Autowired protected AuthenticationManager authenticationManager;
     
     protected UserService userService;
     protected ReviewService reviewService;
     protected CompanyService companyService;
     protected FoodService foodService;
-    protected UserSecurityService userSecurityService;
 
     protected UserTestHelper userTestHelper;
     protected ReviewTestHelper reviewTestHelper;
@@ -38,11 +34,10 @@ public class WithTest {
 
     protected void prepareTest() {
         // service
-        this.userSecurityService = new UserSecurityService(userRepository);
         this.foodService = new FoodService(foodRepository, companyRepository, reviewRepository);
         this.companyService = new CompanyService(companyRepository, foodRepository);
-        this.userService = new UserService(userRepository, authenticationManager, passwordEncoder);
-        this.reviewService = new ReviewService(reviewRepository);
+        this.userService = new UserService(userRepository);
+        this.reviewService = new ReviewService(reviewRepository, userRepository, foodRepository);
 
         //test helper
         this.userTestHelper = new UserTestHelper(userService);

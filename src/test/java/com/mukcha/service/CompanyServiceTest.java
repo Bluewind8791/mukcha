@@ -15,11 +15,13 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.transaction.annotation.Transactional;
 
 
 @Transactional
-@SpringBootTest // 22.3.8
+@SpringBootTest // 22.3.31
+@ActiveProfiles("local")
 public class CompanyServiceTest extends WithTest {
 
     @BeforeEach
@@ -28,7 +30,7 @@ public class CompanyServiceTest extends WithTest {
     }
 
 
-    @Test // 22.3.6
+    @Test
     @DisplayName("1. 회사를 생성한다.")
     void test_1() {
         Company company = companyTestHelper.createCompany("test company", "companyLogo");
@@ -38,7 +40,7 @@ public class CompanyServiceTest extends WithTest {
         companyTestHelper.assertCompany(savedCompany, "test company", "companyLogo");
     }
 
-    @Test // 22.3.6
+    @Test
     @DisplayName("2. 회사의 음식/메뉴를 추가한다.")
     void test_2() {
         Company company = companyTestHelper.createCompany("test company", "companyLogo");
@@ -54,7 +56,7 @@ public class CompanyServiceTest extends WithTest {
         assertEquals("food2", company.getFoods().get(1).getName());
     }
 
-    @Test // 22.3.6
+    @Test
     @DisplayName("3. 회사의 음식/메뉴는 중복하여 들어가지 않는다.")
     void test_3() {
         // set
@@ -68,7 +70,7 @@ public class CompanyServiceTest extends WithTest {
         assertEquals("food1", company.getFoods().iterator().next().getName());
     }
 
-    @Test // 22.3.11
+    @Test
     @DisplayName("4. 회사의 이름, 이미지URL를 수정한다.")
     void test_4() {
         // set

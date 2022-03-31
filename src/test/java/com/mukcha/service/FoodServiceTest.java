@@ -23,11 +23,13 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.transaction.annotation.Transactional;
 
 
 @Transactional
-@SpringBootTest // 22.3.11
+@SpringBootTest // 22.3.31
+@ActiveProfiles("local")
 public class FoodServiceTest extends WithTest {
 
     User user;
@@ -76,7 +78,6 @@ public class FoodServiceTest extends WithTest {
     void test_4() {
         // DB init 5 + test helper 1 = 6
         List<Food> list = foodService.findAllByCategory(Category.CHICKEN);
-
         assertTrue(
             list.stream().map(food -> food.getCategory()).allMatch(c -> c == Category.CHICKEN)
         );

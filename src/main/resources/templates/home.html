@@ -24,8 +24,8 @@
                   <img class="mb-2 me-3" style="width: 250px; height: 150px;" th:src="${f.foodImage}">
                 </a>
                 <div class="ms-2">
-                  <a style="text-decoration: none;" th:title="${f.company}" th:href="'/company/'+${f.companyId}">
-                    <div class="text-muted small" th:text="${f.company}">회사이름</div>
+                  <a style="text-decoration: none;" th:title="${f.companyName}" th:href="'/company/'+${f.companyId}">
+                    <div class="text-muted small" th:text="${f.companyName}">회사이름</div>
                   </a>
                   <a style="text-decoration: none;" th:title="${f.foodName}" th:href="'/menu/'+${f.foodId}">
                     <h6 class="menu-name text-dark fw-bold" th:text="${f.foodName}">메뉴이름</h6>
@@ -61,8 +61,8 @@
                   <img class="mb-2" style="width: 250px; height: 150px;" th:src="${f.foodImage}">
                 </a>
                 <div class="ms-2">
-                  <a style="text-decoration: none;" th:title="${f.company}" th:href="'/company/'+${f.companyId}">
-                    <div class="text-muted small" th:text="${f.company}">회사이름</div>
+                  <a style="text-decoration: none;" th:title="${f.companyName}" th:href="'/company/'+${f.companyId}">
+                    <div class="text-muted small" th:text="${f.companyName}">회사이름</div>
                   </a>
                   <a style="text-decoration: none;" th:title="${f.foodName}" th:href="'/menu/'+${f.foodId}">
                     <h6 class="menu-name text-dark fw-bold" th:text="${f.foodName}">메뉴이름</h6>

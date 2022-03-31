@@ -4,9 +4,6 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
-
 import com.mukcha.domain.Authority;
 import com.mukcha.domain.User;
 import com.mukcha.service.UserService;
@@ -25,38 +22,20 @@ public class UserTestHelper {
         return User.builder()
             .email(email)
             .nickname(nickname)
+            .authority(Authority.USER)
+            .enabled(true)
             .build()
         ;
     }
 
     public User createUser(String email, String nickname) {
         User user = makeUser(email, nickname);
-        user.setPassword(nickname+"123");
         return userService.signUp(user);
-    }
-
-    public User createUser(String email, String nickname, String password) {
-        User user = makeUser(email, nickname);
-        user.setPassword(password);
-        return userService.signUp(user);
-    }
-
-    public User createUserWithAuth(String email, String nickname, String ... authorities) {
-        User user = createUser(email, nickname);
-        Stream.of(authorities).forEach(auth -> userService.addAuthority(user.getUserId(), auth));
-        return user;
-    }
-
-    public User createAdmin(String email, String nickname) {
-        User admin = createUser(email, nickname);
-        userService.addAuthority(admin.getUserId(), Authority.ROLE_ADMIN);
-        return admin;
     }
 
     public void assertUser(User user, String email, String nickname) {
         assertNotNull(user.getEmail());
         assertNotNull(user.getNickname());
-        assertNotNull(user.getPassword());
         assertNotNull(user.getCreatedAt());
         assertNotNull(user.getUpdatedAt());
         assertTrue(user.isEnabled());
@@ -64,16 +43,6 @@ public class UserTestHelper {
         assertEquals(email, user.getEmail());
         assertEquals(nickname, user.getNickname());
     }
-
-    public void assertUser(User user, String email, String nickname, String ... authorities) {
-        assertUser(user, email, nickname);
-        assertTrue(user.getAuthorities().containsAll(
-            // collector
-            Stream.of(authorities).map(auth -> new Authority(user.getUserId(), auth))
-                    .collect(Collectors.toSet())
-        ));
-    }
-
 
 
 }

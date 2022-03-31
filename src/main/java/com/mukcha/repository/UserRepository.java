@@ -1,6 +1,5 @@
 package com.mukcha.repository;
 
-import java.time.LocalDate;
 import java.util.Optional;
 
 import com.mukcha.domain.Gender;
@@ -30,8 +29,8 @@ public interface UserRepository extends JpaRepository<User, Long>, JpaSpecificat
     void updateGender(Long userId, Gender gender);
 
     @Modifying(clearAutomatically = true)
-    @Query("update User set birthday=?2 where userId=?1")
-    void updateBirthday(Long userId, LocalDate birthday);
+    @Query("update User set birthYear=?2 where userId=?1")
+    void updateBirthday(Long userId, String birthYear);
 
     @Modifying(clearAutomatically = true)
     @Query("update User set profileImage=?2 where userId=?1")

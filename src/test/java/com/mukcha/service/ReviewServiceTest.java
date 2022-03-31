@@ -20,11 +20,13 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.domain.Page;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.transaction.annotation.Transactional;
 
 
 @Transactional
-@SpringBootTest
+@SpringBootTest // 22.03.31
+@ActiveProfiles("local")
 public class ReviewServiceTest extends WithTest {
 
     Company company;
@@ -40,10 +42,10 @@ public class ReviewServiceTest extends WithTest {
     }
 
 
-    @Test // 22.3.5
+    @Test
     @DisplayName("1. 유저가 해당 음식에 점수와 코멘트를 매긴다.")
     void test_1() {
-        Review review = reviewService.saveReview(Score.BEST, "comment", food, user);
+        Review review = reviewService.saveReview(Score.BEST, "comment", food.getFoodId(), user.getUserId());
 
         Review savedReview = reviewService.findReview(review.getReviewId()).orElseThrow(() -> 
             new IllegalArgumentException("해당 리뷰를 찾을 수 없습니다.")
@@ -55,7 +57,7 @@ public class ReviewServiceTest extends WithTest {
         assertEquals(Score.BEST, savedReview.getScore());
     }
 
-    @Test // 22.3.5
+    @Test
     @DisplayName("2. 점수와 코멘트를 단 리뷰에 추가적으로 먹은날짜를 기록한다.")
     void test_2() {
         Review review = reviewTestHelper.createReview(food, user);
@@ -68,7 +70,7 @@ public class ReviewServiceTest extends WithTest {
         assertEquals(LocalDate.of(1991, 12, 14), savedReview.getEatenDate());
     }
 
-    @Test // 22.3.5
+    @Test
     @DisplayName("3. 리뷰의 점수, 코멘트, 먹은날짜를 수정한다.")
     void test_3() {
         Review review = reviewTestHelper.createReview(food, user);
@@ -85,7 +87,7 @@ public class ReviewServiceTest extends WithTest {
         assertEquals(LocalDate.now().minusDays(1), savedReview.getEatenDate());
     }
 
-    @Test // 22.3.5
+    @Test
     @DisplayName("4. 점수를 삭제하면 리뷰가 삭제된다.")
     void test_4() {
         reviewTestHelper.createReview(food, user);
@@ -101,7 +103,7 @@ public class ReviewServiceTest extends WithTest {
         assertFalse(reviewService.findReview(targetReview.getReviewId()).isPresent());
     }
 
-    @Test // 22.3.7
+    @Test
     @DisplayName("5. 해당 음식의 모든 리뷰를 찾는다")
     void test_5() {
         foodTestHelper.createFood("ReviewTestFood2", company, Category.HAMBURGER, "");

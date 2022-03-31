@@ -7,28 +7,29 @@ import java.util.stream.Collectors;
 
 import com.mukcha.domain.Score;
 import com.mukcha.domain.User;
+import com.mukcha.repository.FoodRepository;
 import com.mukcha.repository.ReviewRepository;
+import com.mukcha.repository.UserRepository;
 import com.mukcha.controller.dto.CategoryDto;
 import com.mukcha.domain.Category;
 import com.mukcha.domain.Food;
 import com.mukcha.domain.Review;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import lombok.RequiredArgsConstructor;
+
 @Service
 @Transactional
+@RequiredArgsConstructor
 public class ReviewService {
 
     private final ReviewRepository reviewRepository;
-
-    @Autowired
-    public ReviewService(ReviewRepository reviewRepository) {
-        this.reviewRepository = reviewRepository;
-    }
+    private final UserRepository userRepository;
+    private final FoodRepository foodRepository;
 
 
     public Review save(Review review) {
@@ -115,21 +116,20 @@ public class ReviewService {
 
 
     // 점수 평가
-    public Review saveReview(Score score, String comment, Food food, User user) {
+    public Review saveReview(Score score, String comment, Long foodId, Long userId) {
         Review review;
         try {
-            review = findReviewByFoodIdAndUserId(food.getFoodId(), user.getUserId());
+            review = findReviewByFoodIdAndUserId(foodId, userId);
             review.setScore(score);
             review.setComment(comment);
         } catch (Exception e) {
             review = new Review();
-            review.setFood(food);
-            review.setUser(user);
+            review.setFood(foodRepository.findById(foodId).get());
+            review.setUser(userRepository.findById(userId).get());
             review.setScore(score);
             review.setComment(comment);
         }
-        save(review);
-        return review;
+        return save(review);
     }
 
     // 먹은 날짜

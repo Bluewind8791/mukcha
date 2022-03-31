@@ -99,7 +99,7 @@ public class AdminController {
                         .name(foodDto.getFoodName())
                         .image(foodDto.getFoodImage())
                         .category(transCategory(foodDto.getCategory()))
-                        .company(transCompany(foodDto.getCompany()))
+                        .company(transCompany(foodDto.getCompanyName()))
                         .build()
         ;
         Food savedFood = foodService.save(food);
@@ -156,8 +156,8 @@ public class AdminController {
     ) {
         foodService.editFoodName(foodId, foodDto.getFoodName());
         foodService.editFoodImage(foodId, foodDto.getFoodImage());
-        if (foodDto.getCompany() != "") {
-            foodService.editFoodCompany(foodId, foodDto.getCompany());
+        if (foodDto.getCompanyName() != "") {
+            foodService.editFoodCompany(foodId, foodDto.getCompanyName());
         }
         if (foodDto.getCategory() != "") {
             foodService.editFoodCategory(foodId, transCategory(foodDto.getCategory()));

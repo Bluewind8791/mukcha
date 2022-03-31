@@ -2,17 +2,15 @@ package com.mukcha.config;
 
 import javax.sql.DataSource;
 
-import com.mukcha.service.UserSecurityService;
+import com.mukcha.domain.Authority;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.web.authentication.AuthenticationFailureHandler;
-import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.security.web.authentication.rememberme.JdbcTokenRepositoryImpl;
 import org.springframework.security.web.authentication.rememberme.PersistentTokenBasedRememberMeServices;
 import org.springframework.security.web.authentication.rememberme.PersistentTokenRepository;
@@ -21,41 +19,41 @@ import lombok.RequiredArgsConstructor;
 
 
 @RequiredArgsConstructor
-@EnableWebSecurity(debug = false) // filter 확인
+@EnableWebSecurity(debug = false) // spring security 설정 활성화
 @EnableGlobalMethodSecurity(prePostEnabled = true) // prepost 로 권한 체크
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
-    private final UserSecurityService userSecurityService;
     private final DataSource dataSource;
-
-
-    @Bean
-    public BCryptPasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder();
-    }
+    private final CustomOAuth2UserService customOAuth2UserService;
 
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-
         http
             .csrf().disable()
-            .formLogin(login -> {
-                login.loginPage("/login");
-                login.successHandler(successHandler()); // custom success handler
-                login.failureHandler(failureHandler()); // custom failure handler
-            })
-            .logout(logout -> {
-                logout.logoutSuccessUrl("/");
-            })
+            .headers(
+                headers -> {
+                    headers.frameOptions().disable();// for h2-console
+                }
+            )
             .authorizeRequests(request -> {
                 request
                     .antMatchers("/").permitAll()
                     .antMatchers("/login").permitAll()
                     .antMatchers("/join").permitAll()
-                    .antMatchers("/user/**").hasAnyAuthority("ROLE_USER", "ROLE_ADMIN")
-                    .antMatchers("/admin/**").hasAnyAuthority("ROLE_ADMIN")
+                    .antMatchers("/h2-console/**").permitAll()
+                    .antMatchers("/user/**").hasRole(Authority.USER.name())
+                    .antMatchers("/admin/**").hasRole(Authority.ADMIN.name())
                     .anyRequest().permitAll();
+            })
+            .oauth2Login(login -> {
+                login.loginPage("/login"); // 로그인 페이지 커스텀
+                login.userInfoEndpoint() // oauth2 로그인 성공 후 가져올 때의 설정들
+                    // 리소스 서버에서 사용자 정보를 가져온 상태에서 추가로 진행하고자 하는 기능 명시
+                    .userService(customOAuth2UserService);
+            })
+            .logout(logout -> {
+                logout.logoutSuccessUrl("/");
             })
             .rememberMe(service -> {
                 service.rememberMeServices(rememberMeServices());
@@ -70,7 +68,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Bean
     public PersistentTokenBasedRememberMeServices rememberMeServices() {
         PersistentTokenBasedRememberMeServices rememberMeServices = new PersistentTokenBasedRememberMeServices(
-            "rememberme-key", userSecurityService, tokenRepository()
+            "rememberme-key", userDetailsService(), tokenRepository()
         );
         rememberMeServices.setParameter("remember-me");
         rememberMeServices.setTokenValiditySeconds(60*60*24); // one day
@@ -91,21 +89,27 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     }
 
     @Bean
-    public AuthenticationSuccessHandler successHandler() {
-        return new LoginSuccessHandler();
-    }
-
-    @Bean
-    public AuthenticationFailureHandler failureHandler() {
-        return new LoginFailureHandler();
-    }
-
-    @Bean
     @Override
     public AuthenticationManager authenticationManagerBean() throws Exception {
         return super.authenticationManagerBean();
     }
 
+    @Override
+    protected void configure(AuthenticationManagerBuilder auth) throws Exception {
+        auth.inMemoryAuthentication()
+                .withUser("Admin")
+                .password("qwe1")
+                .roles("ADMIN")
+        ;
+    }
+    // @Bean
+    // public AuthenticationSuccessHandler successHandler() {
+    //     return new LoginSuccessHandler();
+    // }
+    // @Bean
+    // public AuthenticationFailureHandler failureHandler() {
+    //     return new LoginFailureHandler();
+    // }
 
 
 

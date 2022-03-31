@@ -1,12 +1,16 @@
 package com.mukcha.controller;
 
 
+import com.mukcha.config.dto.LoginUser;
+import com.mukcha.config.dto.SessionUser;
 import com.mukcha.controller.dto.ReviewDto;
+import com.mukcha.controller.dto.UserDto;
 import com.mukcha.domain.Food;
 import com.mukcha.domain.Review;
 import com.mukcha.domain.User;
 import com.mukcha.service.FoodService;
 import com.mukcha.service.ReviewService;
+import com.mukcha.service.UserService;
 
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
@@ -29,31 +33,38 @@ public class FoodController {
 
     private final FoodService foodService;
     private final ReviewService reviewService;
+    private final UserService userService;
 
 
-    // VIEW - FOOD INFO AND REVIEWS
+    // >>> VIEW <<<
+    // FOOD INFO AND REVIEWS
     @GetMapping(value = "/{foodId}")
     public String getFoodInfo(
         @PathVariable Long foodId,
         Model model,
-        @AuthenticationPrincipal User user,
+        @LoginUser SessionUser sessionUser,
         @RequestParam(value = "pageNum", defaultValue = "1") Integer pageNum,
         @RequestParam(value = "size", defaultValue = "3") Integer size
     ) {
+        if (sessionUser != null) {
+            UserDto user = userService.getSessionUserInfo(sessionUser);
+            model.addAttribute("userId", user.getUserId());
+            model.addAttribute("nickname", user.getNickname());
+            try { // 로그인한 유저가 리뷰를 적었다면
+                Review writtenReview = reviewService.findReviewByFoodIdAndUserId(foodId, user.getUserId());
+                log.info("writtenReview: "+writtenReview);
+                model.addAttribute("isReviewed", "true");
+                model.addAttribute("writtenReview", writtenReview);
+            } catch (Exception e) { // 리뷰를 쓰지 않은 로그인 한 유저
+                model.addAttribute("isReviewed", "false");
+            }
+        }
         // 해당 메뉴의 정보
         model.addAttribute("food", foodService.viewFoodDetail(foodId));
         // paging 처리한 해당 메뉴의 모든 리뷰 보기
         model.addAttribute("reviewList", 
             reviewService.findAllByFoodIdOrderByCreatedAtDesc(foodId, pageNum, size)
         );
-        try { // 로그인한 유저가 리뷰를 적었다면
-            Review writtenReview = reviewService.findReviewByFoodIdAndUserId(foodId, user.getUserId());
-            log.info("writtenReview: "+writtenReview);
-            model.addAttribute("isReviewed", "true");
-            model.addAttribute("writtenReview", writtenReview);
-        } catch (Exception e) { // 리뷰를 쓰지 않은 로그인 한 유저
-            model.addAttribute("isReviewed", "false");
-        }
         return "food/detail";
     }
 
@@ -64,11 +75,15 @@ public class FoodController {
         @PathVariable Long foodId,
         Model model,
         ReviewDto reviewDto,
-        @AuthenticationPrincipal User user
+        @LoginUser SessionUser sessionUser
     ) {
-        Food food = foodService.findFood(foodId).get();
-        Review review = reviewService.saveReview(reviewDto.getScore(), reviewDto.getComment(), food, user);
-        log.info(">>> 회원<"+user.getEmail()+">님의 리뷰가 처리되었습니다."+review.toString());
+        if (sessionUser != null) {
+            UserDto user = userService.getSessionUserInfo(sessionUser);
+            model.addAttribute("userId", user.getUserId());
+            model.addAttribute("nickname", user.getNickname());
+            Review review = reviewService.saveReview(reviewDto.getScore(), reviewDto.getComment(), foodId, user.getUserId());
+            log.info(">>> 회원<"+user.getEmail()+">님의 리뷰가 처리되었습니다."+review.toString());
+        }
         return "redirect:/menu/"+foodId;
     }
 

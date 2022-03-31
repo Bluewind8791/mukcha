@@ -4,11 +4,13 @@
 
 <header th:fragment="headerFragment">
 
-  <nav class="navbar navbar-expand-sm navbar-dark bg-dark">
+  <nav class="navbar navbar-expand-sm navbar-light bg-light">
     <div class="container">
 
       <!-- Logo -->
-      <a class="navbar-brand fw-bold" href="/"> MUKCHA </a>
+      <a class="navbar-brand fw-bold" href="/">
+        <img src="/logo/logo.png" alt="" width="120px">
+      </a>
 
       <!-- 삼선 버튼 -->
       <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mynavbar">
@@ -50,7 +52,7 @@
           <!-- welcome message -->
           <li class="nav-item">
             <div class="header_welcome text-white p-2" sec:authorize="isAuthenticated()" id="header_welcome">
-              <span th:text="${#authentication.principal.nickname}">닉네임</span><span> 님 환영합니다!</span>
+              <span th:text="${nickname}">닉네임</span><span> 님 환영합니다!</span>
             </div>
           </li>
           <!-- 비 로그인 사용자 노출 영역 -->
@@ -66,7 +68,7 @@
           </li>
           <!-- 로그인 사용자 노출 영역 -->
           <li class="nav-item">
-            <a class="nav-link" th:href="'/users/'+${#authentication.principal.userId}"
+            <a class="nav-link" th:href="'/users/'+${userId}"
               sec:authorize="isAuthenticated()">내 정보</a>
           </li>
           <li class="nav-item">

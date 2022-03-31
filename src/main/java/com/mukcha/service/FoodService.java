@@ -138,7 +138,7 @@ public class FoodService {
         FoodDto foodDto = new FoodDto();
         foodDto.setFoodId(food.getFoodId());
         foodDto.setFoodName(food.getName());
-        foodDto.setCompany(food.getCompany().getName());
+        foodDto.setCompanyName(food.getCompany().getName());
         foodDto.setCompanyId(food.getCompany().getCompanyId());
         foodDto.setCategory(food.getCategory().toString());
         foodDto.setFoodImage(food.getImage());
@@ -235,7 +235,7 @@ public class FoodService {
             FoodDto foodDto = new FoodDto();
             foodDto.setFoodId(food.getFoodId());
             foodDto.setFoodName(food.getName());
-            foodDto.setCompany(food.getCompany().getName());
+            foodDto.setCompanyName(food.getCompany().getName());
             foodDto.setCategory(food.getCategory().toString());
             foodDto.setFoodImage(food.getImage());
             foodDto.setAverageScore(getAverageScoreByFoodId(food.getFoodId()));

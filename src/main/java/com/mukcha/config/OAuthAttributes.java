@@ -1,0 +1,124 @@
+package com.mukcha.config;
+
+import java.util.Map;
+
+import com.mukcha.domain.Authority;
+import com.mukcha.domain.Gender;
+import com.mukcha.domain.User;
+
+import lombok.Builder;
+import lombok.Getter;
+
+
+@Getter
+public class OAuthAttributes {
+
+    private Map<String, Object> attributes; // OAuth2 반환할 유저 정도 Map
+    private String nameAttributeKey;
+    private String name;
+    private String email;
+    private String picture;
+    private Gender gender;
+    private String birthyear;
+
+    @Builder
+    public OAuthAttributes(
+            Map<String, Object> attributes,
+            String nameAttributeKey,
+            String name,
+            String email,
+            String picture,
+            Gender gender,
+            String birthyear
+        ) {
+        this.attributes = attributes;
+        this.nameAttributeKey = nameAttributeKey;
+        this.name = name;
+        this.email = email;
+        this.picture = picture;
+        this.gender = gender;
+        this.birthyear = birthyear;
+    }
+
+
+    public static OAuthAttributes of(String registrationId, String userNameAttributeName, Map<String, Object> attributes) {
+        // naver
+        if ("naver".equals(registrationId)) {
+            return ofNaver("id", attributes);
+        }
+        // google
+        return ofGoogle(userNameAttributeName, attributes);
+    }
+
+
+    @SuppressWarnings("unchecked")
+    private static OAuthAttributes ofNaver(String userNameAttributeName, Map<String, Object> attributes) {
+        /*
+        * JSON형태이기 떄문에 Map을 통해서 데이터를 가져온다.
+        naverProfileResponse: {
+            "resultcode":"00",
+            "message":"success",
+            "response":{
+                "id":"",
+                "nickname":"",
+                "profile_image":"",
+                "gender":"M",
+                "email":",
+                "birthday":"12-14",
+                "birthyear":"1991"
+            }
+        }*/
+        Map<String, Object> response = (Map<String, Object>)attributes.get("response");
+        return OAuthAttributes.builder()
+                .name((String)response.get("nickname"))
+                .email((String)response.get("email"))
+                .picture((String)response.get("profile_image"))
+                .gender(naverTransClassGender((String)response.get("gender")))
+                .birthyear((String)response.get("birthyear"))
+                .attributes(response)
+                .nameAttributeKey(userNameAttributeName)
+                .build()
+        ;
+    }
+
+
+    private static OAuthAttributes ofGoogle(String userNameAttributeName, Map<String, Object> attributes) {
+        return OAuthAttributes.builder()
+                .name((String) attributes.get("name"))
+                .email((String) attributes.get("email"))
+                .picture((String) attributes.get("picture"))
+                .attributes(attributes)
+                .nameAttributeKey(userNameAttributeName)
+                .build()
+        ;
+    }
+
+
+    public User toEntity(){
+        return User.builder()
+                .email(email)
+                .nickname(name)
+                .profileImage(picture)
+                .birthYear(birthyear)
+                .gender(gender)
+                .authority(Authority.USER)
+                .enabled(true)
+                .build();
+    }
+
+
+    // 네이버 회원가입 성별 클래스 전환
+    private static Gender naverTransClassGender(String gender) {
+        if (gender != null) {
+            // - F: 여성 - M: 남성 - U: 확인불가
+            switch (gender) {
+                case "F":
+                return Gender.FEMALE;
+                case "M":
+                return Gender.MALE;
+            }
+        }
+        return null;
+    }
+
+}
