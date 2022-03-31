@@ -6,6 +6,7 @@ import com.mukcha.config.dto.LoginUser;
 import com.mukcha.config.dto.SessionUser;
 import com.mukcha.controller.dto.UserDto;
 import com.mukcha.domain.Category;
+import com.mukcha.domain.ErrorMessage;
 import com.mukcha.domain.User;
 import com.mukcha.service.FoodService;
 import com.mukcha.service.ReviewService;
@@ -47,10 +48,7 @@ public class HomeController {
 
     // 로그인 페이지
     @GetMapping("/login")
-    public String login(Model model
-            // @RequestParam(value = "error", defaultValue = "false") Boolean error,
-    ) {
-        // model.addAttribute("error", error);
+    public String login(Model model) {
         return "user/loginForm";
     }
 
@@ -67,14 +65,14 @@ public class HomeController {
             UserDto user = userService.getSessionUserInfo(sessionUser);
             model.addAttribute("userId", user.getUserId());
             model.addAttribute("nickname", user.getNickname());
-            model.addAttribute("email", user.getEmail());
+            model.addAttribute("login_email", user.getEmail());
         }
         // Category List
         List<Category> categoryList = List.of(Category.values());
         model.addAttribute("categoryList", categoryList);
         // DTO로 변환한 유저 정보 -> 서비스단으로 옮길 것
         User user = userService.findUser(userId).orElseThrow(() -> 
-            new IllegalArgumentException("해당 유저를 찾을 수 없습니다.")
+            new IllegalArgumentException(ErrorMessage.USER_NOT_FOUND_MESSAGE.getMessage())
         );
         UserDto userDto = UserDto.builder()
                             .email(user.getEmail())

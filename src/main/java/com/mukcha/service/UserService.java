@@ -27,8 +27,6 @@ public class UserService {
 
     private final UserRepository userRepository;
 
-    private final String USER_NOT_FOUND_MESSAGE = "해당 회원을 찾을 수 없습니다.";
-
 
     // 회원가입 서비스
     public User signUp(User user) {
@@ -98,8 +96,12 @@ public class UserService {
             user.setEmail(u.getEmail());
             user.setNickname(u.getNickname());
             user.setProfileImage(u.getProfileImage());
-            user.setGender(u.getGender().toString());
-            user.setBirthYear(u.getBirthYear());
+            if (u.getGender() != null) {
+                user.setGender(u.getGender().toString());
+            }
+            if (u.getBirthYear() != null) {
+                user.setBirthYear(u.getBirthYear());
+            }
         });
         return user;
     }
@@ -122,22 +124,6 @@ public class UserService {
         updateProfileImage(userId, null); // delete 프로필 사진
         updateNickname(userId, null); // delete 
         userRepository.disableUser(userId); // enable=false 처리
-    }
-
-
-    public UserDto getUserDto(SessionUser sessionUser) {
-        User user = findByEmail(sessionUser.getEmail()).orElseThrow(() ->
-            new IllegalArgumentException(USER_NOT_FOUND_MESSAGE)
-        );
-        return UserDto.builder()
-                        .userId(user.getUserId())
-                        .email(user.getEmail())
-                        .nickname(user.getNickname())
-                        .profileImage(user.getProfileImage())
-                        .gender(user.getGender().name())
-                        .birthYear(user.getBirthYear())
-                        .build()
-        ;
     }
 
 

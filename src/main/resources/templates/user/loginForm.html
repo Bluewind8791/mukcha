@@ -2,25 +2,39 @@
 <html lang="ko" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org"
   xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{layout/layout}">
 
+
+<head>
+  <style>
+    @media (min-width: 710px) {
+      .container-login {
+        max-width: 375px;
+      }
+    }
+    .btn-login {
+      width: 100%;
+    }
+  </style>
+</head>
+
+
 <div layout:fragment="content">
 
-  <div class="container p-5 mt-5 text-center bg-light w-75">
+  <div class="container-login container p-5 mt-5 text-center bg-light w-75">
 
-    <div class="h2 mb-5 fw-bold">로그인</div>
-    <div class="">
-      <!-- Naver Login -->
-      <a href="/oauth2/authorization/naver">
-        <img class="mb-2 w-50 mx-auto p-1" src="/image/btn_naver_signin.png" alt="네이버 로그인">
-      </a>
-    </div>
+    <img src="/logo/logo.png" alt="" width="100%">
+
+    <div class="h2 mt-5 mb-5 fw-bold">LOGIN</div>
+    <!-- Naver Login -->
+    <a href="/oauth2/authorization/naver">
+      <img class="btn-login mb-2 mx-auto p-1" src="/image/btn_naver_signin.png" width="350px" alt="네이버 로그인">
+    </a>
     <!-- Google Login -->
-    <a href="/oauth2/authorization/google" role="button">
-      <img class="mb-2 w-50 mx-auto" src="/image/btn_google_signin.png" alt="구글 로그인">
+    <a href="/oauth2/authorization/google">
+      <img class="btn-login mb-2 mx-auto" src="/image/btn_google_signin.png" width="350px" alt="구글 로그인">
     </a>
     <br>
 
-  </div>
-
+  </div> <!-- end of container -->
 
 </div>
 

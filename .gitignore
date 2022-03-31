@@ -38,6 +38,8 @@ out/
 
 ### application ###
 application.yml
+application-local.yml
+src/main/resources/application-local.yml
 
 ### Encrypt application.yml ###
 setting.tar
