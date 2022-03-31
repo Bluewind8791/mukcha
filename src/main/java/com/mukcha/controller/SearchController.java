@@ -37,7 +37,7 @@ public class SearchController {
             userRepository.findAll(Search.userSearching(keyword))
         );
         model.addAttribute("searchWord", keyword);
-        return "/search";
+        return "search";
     }
 
 
