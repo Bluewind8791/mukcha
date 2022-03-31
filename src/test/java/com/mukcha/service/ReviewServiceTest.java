@@ -61,7 +61,7 @@ public class ReviewServiceTest extends WithTest {
     @DisplayName("2. 점수와 코멘트를 단 리뷰에 추가적으로 먹은날짜를 기록한다.")
     void test_2() {
         Review review = reviewTestHelper.createReview(food, user);
-        reviewService.saveEatenDate("1991-12-14", food, user);
+        reviewService.saveEatenDate("1991-12-14", food.getFoodId(), user.getUserId());
 
         Review savedReview = reviewService.findReview(review.getReviewId()).orElseThrow(() -> 
             new IllegalArgumentException("해당 리뷰를 찾을 수 없습니다.")
