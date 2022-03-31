@@ -6,13 +6,11 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import com.mukcha.domain.Score;
-import com.mukcha.domain.User;
 import com.mukcha.repository.FoodRepository;
 import com.mukcha.repository.ReviewRepository;
 import com.mukcha.repository.UserRepository;
 import com.mukcha.controller.dto.CategoryDto;
 import com.mukcha.domain.Category;
-import com.mukcha.domain.Food;
 import com.mukcha.domain.Review;
 
 import org.springframework.data.domain.Page;
@@ -132,14 +130,14 @@ public class ReviewService {
         return save(review);
     }
 
-    // 먹은 날짜
-    public Review saveEatenDate(String eatenDate, Food food, User user) {
+    // 먹은 날짜를 저장하는 메소드
+    public Review saveEatenDate(String eatenDate, Long foodId, Long userId) {
         // String eatenDate -> LocalDate 로 변환 (yyyy-mm-dd)
         String[] date = eatenDate.split("-");
         LocalDate eatenDateLD = LocalDate.of(Integer.parseInt(date[0]), Integer.parseInt(date[1]), Integer.parseInt(date[2]));
         Review review;
         try {
-            review = findReviewByFoodIdAndUserId(food.getFoodId(), user.getUserId());
+            review = findReviewByFoodIdAndUserId(foodId, userId);
             review.setEatenDate(eatenDateLD);
             save(review);
             return review;

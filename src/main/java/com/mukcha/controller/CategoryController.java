@@ -2,10 +2,14 @@ package com.mukcha.controller;
 
 import java.util.List;
 
+import com.mukcha.config.dto.LoginUser;
+import com.mukcha.config.dto.SessionUser;
+import com.mukcha.controller.dto.UserDto;
 import com.mukcha.domain.Category;
 import com.mukcha.domain.Company;
 import com.mukcha.service.CompanyService;
 import com.mukcha.service.FoodService;
+import com.mukcha.service.UserService;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -21,12 +25,19 @@ public class CategoryController {
 
     private final CompanyService companyService;
     private final FoodService foodService;
+    private final UserService userService;
 
     @GetMapping("/category/{categoryName}")
     public String viewCategoryPage(
         @PathVariable String categoryName,
-        Model model
+        Model model,
+        @LoginUser SessionUser sessionUser
     ) {
+        if (sessionUser != null) {
+            UserDto user = userService.getSessionUserInfo(sessionUser);
+            model.addAttribute("userId", user.getUserId());
+            model.addAttribute("nickname", user.getNickname());
+        }
         // 카테고리 이름으로 카테고리를 찾아서 넘겨준다
         Category thisCategory = Category.valueOf(categoryName);
         model.addAttribute("category", thisCategory);

@@ -7,12 +7,10 @@ import com.mukcha.controller.dto.ReviewDto;
 import com.mukcha.controller.dto.UserDto;
 import com.mukcha.domain.Food;
 import com.mukcha.domain.Review;
-import com.mukcha.domain.User;
 import com.mukcha.service.FoodService;
 import com.mukcha.service.ReviewService;
 import com.mukcha.service.UserService;
 
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -37,7 +35,7 @@ public class FoodController {
 
 
     // >>> VIEW <<<
-    // FOOD INFO AND REVIEWS
+    // 해당 메뉴의 정보와 리뷰 3개를 보여주는 페이지
     @GetMapping(value = "/{foodId}")
     public String getFoodInfo(
         @PathVariable Long foodId,
@@ -68,8 +66,25 @@ public class FoodController {
         return "food/detail";
     }
 
+    // '리뷰 더보기'를 눌러 해당 메뉴의 모든 리뷰 보기
+    @GetMapping(value = "/reviews/{foodId}")
+    public String viewAllReviews(@PathVariable Long foodId, Model model, @LoginUser SessionUser sessionUser) {
+        if (sessionUser != null) {
+            UserDto user = userService.getSessionUserInfo(sessionUser);
+            model.addAttribute("userId", user.getUserId());
+            model.addAttribute("nickname", user.getNickname());
+        }
+        model.addAttribute("foodName", foodService.findFood(foodId).get().getName());
+        model.addAttribute("reviewList", reviewService.findAllReviewByFoodId(foodId));
+        return "food/reviews";
+    }
 
-    // SAVE - SCORE AND COMMENT
+
+
+
+    // >>> METHODS <<<
+
+    // 점수와 코멘트를 저장
     @PostMapping(value = "/api/review/{foodId}")
     public String setReview(
         @PathVariable Long foodId,
@@ -88,46 +103,39 @@ public class FoodController {
     }
 
 
-    // SAVE - EATEN DATE
+    // 먹은 날짜를 저장
     @PostMapping(value = "/api/eaten/{foodId}")
     public String setEatenDate(
         @PathVariable Long foodId,
         Model model,
         ReviewDto reviewDto,
-        @AuthenticationPrincipal User user
+        @LoginUser SessionUser sessionUser
     ) {
-        Food food = foodService.findFood(foodId).get();
-        Review review = reviewService.saveEatenDate(reviewDto.getEatenDate(), food, user);
-        log.info(">>> 회원<"+user.getEmail()+">님의 리뷰가 처리되었습니다."+review.toString());
+        if (sessionUser != null) {
+            UserDto user = userService.getSessionUserInfo(sessionUser);
+            Review review = reviewService.saveEatenDate(reviewDto.getEatenDate(), foodId, user.getUserId());
+            log.info(">>> 회원<"+user.getEmail()+">님의 리뷰가 처리되었습니다."+review.toString());
+        }
         return "redirect:/menu/"+foodId;
     }
 
 
-    // DELETE - REVIEW
+    // 리뷰를 삭제
     @DeleteMapping(value = "/review/{foodId}")
-    public String deleteScore(@PathVariable Long foodId, @AuthenticationPrincipal User user) {
+    public String deleteScore(@PathVariable Long foodId, @LoginUser SessionUser sessionUser) {
         Food targetFood = foodService.findFood(foodId).orElseThrow(() -> 
             new IllegalArgumentException("해당 메뉴를 찾을 수 없습니다.")
         );
-        // 현재 로그인한 유저가 작성한 해당 음식의 리뷰를 찾는다.
-        Review targetReview = reviewService.findReviewByFoodIdAndUserId(targetFood.getFoodId(), user.getUserId());
-        // delete
-        reviewService.deleteReview(targetReview);
-        log.info(">>> 회원 <"+user.getEmail()+"> 님의 <"+targetFood.getName()+"> 리뷰가 삭제 처리되었습니다.");
+        if (sessionUser != null) {
+            UserDto user = userService.getSessionUserInfo(sessionUser);
+            // 현재 로그인한 유저가 작성한 해당 음식의 리뷰를 찾는다.
+            Review targetReview = reviewService.findReviewByFoodIdAndUserId(foodId, user.getUserId());
+            // 해당 음식의 리뷰를 삭제한다.
+            reviewService.deleteReview(targetReview);
+            log.info(">>> 회원 <"+user.getEmail()+"> 님의 <"+targetFood.getName()+"> 리뷰가 삭제 처리되었습니다.");
+        }
         return "redirect:/menu/"+foodId;
     }
-
-
-    // VIEW - 해당 메뉴의 모든 리뷰 보기
-    @GetMapping(value = "/reviews/{foodId}")
-    public String viewAllReviews(@PathVariable Long foodId, Model model) {
-        model.addAttribute("foodName", foodService.findFood(foodId).get().getName());
-        model.addAttribute("reviewList", reviewService.findAllReviewByFoodId(foodId));
-        return "food/reviews";
-    }
-
-
-
 
 
 }

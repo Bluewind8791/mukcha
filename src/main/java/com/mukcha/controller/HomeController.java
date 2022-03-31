@@ -72,7 +72,7 @@ public class HomeController {
         model.addAttribute("categoryList", categoryList);
         // DTO로 변환한 유저 정보 -> 서비스단으로 옮길 것
         User user = userService.findUser(userId).orElseThrow(() -> 
-            new IllegalArgumentException(ErrorMessage.USER_NOT_FOUND_MESSAGE.getMessage())
+            new IllegalArgumentException(ErrorMessage.USER_NOT_FOUND.getMessage())
         );
         UserDto userDto = UserDto.builder()
                             .email(user.getEmail())
