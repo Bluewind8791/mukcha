@@ -3,13 +3,17 @@ package com.mukcha.controller;
 import java.util.Collections;
 import java.util.List;
 
+import com.mukcha.config.dto.LoginUser;
+import com.mukcha.config.dto.SessionUser;
 import com.mukcha.controller.dto.CompanyDto;
 import com.mukcha.controller.dto.FoodDto;
+import com.mukcha.controller.dto.UserDto;
 import com.mukcha.domain.Category;
 import com.mukcha.domain.Company;
 import com.mukcha.domain.Food;
 import com.mukcha.service.CompanyService;
 import com.mukcha.service.FoodService;
+import com.mukcha.service.UserService;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -25,7 +29,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 
-// ROLE_ADMIN 권한 있어야 진입가능
+// ADMIN 권한 있어야 진입가능
 @Slf4j
 @Controller
 @RequiredArgsConstructor
@@ -34,12 +38,18 @@ public class AdminController {
 
     private final CompanyService companyService;
     private final FoodService foodService;
+    private final UserService userService;
 
 
     // VIEW - ROOT PAGE
     @GetMapping(value = {"/", ""})
-    public String adminHome(Model model) {
-        log.info("관리자 페이지에 진입하였습니다.");
+    public String adminHome(Model model, @LoginUser SessionUser sessionUser) {
+        if (sessionUser != null) {
+            UserDto user = userService.getSessionUserInfo(sessionUser);
+            model.addAttribute("userId", user.getUserId());
+            model.addAttribute("nickname", user.getNickname());
+        }
+        log.info(">>> 관리자 페이지에 진입하였습니다.");
         model.addAttribute("foodList", foodService.findFoodTopTenNewest());
         model.addAttribute("companyList", companyService.findCompanyTopTenNewest());
         // Category List
@@ -51,7 +61,12 @@ public class AdminController {
 
     // VIEW - 모든 메뉴 리스트
     @GetMapping(value = "/menus")
-    public String viewAllMenus(Model model) {
+    public String viewAllMenus(Model model, @LoginUser SessionUser sessionUser) {
+        if (sessionUser != null) {
+            UserDto user = userService.getSessionUserInfo(sessionUser);
+            model.addAttribute("userId", user.getUserId());
+            model.addAttribute("nickname", user.getNickname());
+        }
         List<Category> categoryList = List.of(Category.values());
         model.addAttribute("categoryList", categoryList);
         List<Food> foodList = foodService.findAll();
@@ -64,13 +79,20 @@ public class AdminController {
 
     // VIEW - 모든 회사 리스트
     @GetMapping(value = "/companies")
-    public String viewAllCompanies(Model model) {
+    public String viewAllCompanies(Model model, @LoginUser SessionUser sessionUser) {
+        if (sessionUser != null) {
+            UserDto user = userService.getSessionUserInfo(sessionUser);
+            model.addAttribute("userId", user.getUserId());
+            model.addAttribute("nickname", user.getNickname());
+        }
         model.addAttribute("companyList", companyService.findAll());
         return "admin/adminCompanyList";
     }
 
 
-    // 회사 추가하기
+    //>>> METHODS <<<
+
+    // 회사 추가 메소드
     @PostMapping(value = "/company")
     public String addCompany(
             @ModelAttribute CompanyDto companyDto,
@@ -88,7 +110,7 @@ public class AdminController {
     }
 
 
-    // 메뉴(음식) 추가
+    // 메뉴(음식) 추가 메소드
     @PostMapping(value = "/menu")
     public String addMenu(
             @ModelAttribute FoodDto foodDto,
@@ -108,7 +130,7 @@ public class AdminController {
     }
 
 
-    // 회사를 삭제
+    // 회사 삭제 메소드
     @DeleteMapping(value = "/companies/delete/{companyId}")
     public String deleteCompany(@PathVariable Long companyId) {
         String name = companyService.findCompany(companyId).get().getName();
@@ -122,7 +144,7 @@ public class AdminController {
     }
 
 
-    // 음식을 삭제
+    // 음식을 삭제 메소드
     @DeleteMapping(value = "/menus/delete/{foodId}")
     public String deleteFood(@PathVariable Long foodId) {
         String name = foodService.findFood(foodId).get().getName();
@@ -136,7 +158,7 @@ public class AdminController {
     }
 
 
-    // 회사 수정
+    // 회사 수정 메소드
     @PostMapping(value = "/companies/edit/{companyId}")
     public String editCompany(
         @PathVariable Long companyId,
@@ -148,7 +170,7 @@ public class AdminController {
     }
 
 
-    // 메뉴 수정
+    // 메뉴 수정 메소드
     @PostMapping(value = "/menus/edit/{foodId}")
     public String editFood(
         @PathVariable Long foodId,

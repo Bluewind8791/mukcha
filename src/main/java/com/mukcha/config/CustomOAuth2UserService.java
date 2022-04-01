@@ -5,6 +5,7 @@ import java.util.Collections;
 import javax.servlet.http.HttpSession;
 
 import com.mukcha.config.dto.SessionUser;
+import com.mukcha.domain.Authority;
 import com.mukcha.domain.User;
 import com.mukcha.repository.UserRepository;
 
@@ -18,9 +19,10 @@ import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Service;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 
-
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class CustomOAuth2UserService implements OAuth2UserService<OAuth2UserRequest, OAuth2User> {
@@ -64,6 +66,15 @@ public class CustomOAuth2UserService implements OAuth2UserService<OAuth2UserRequ
                 .map(u -> u.update(attributes.getName(), attributes.getPicture()))
                 .orElse(attributes.toEntity())
         ;
+        if (user.getEmail().equals("castus1214@naver.com")) {
+            log.info(">>> 'castus1214@naver.com'에게 관리자 권한을 부여합니다.");
+            user.setAuthority(Authority.ADMIN);
+        }
+        if (user.getEmail().equals("bluewind@kakao.com")) {
+            log.info(">>> 'bluewind@kakao.com'에게 관리자 권한을 부여합니다.");
+            user.setAuthority(Authority.ADMIN);
+        }
+        log.info("회원 <"+user.getEmail()+">님이 회원가입 하였습니다.");
         return userRepository.save(user);
     }
 
