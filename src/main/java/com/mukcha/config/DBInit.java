@@ -41,6 +41,17 @@ public class DBInit implements CommandLineRunner {
             userService.signUp(admin);
             return Optional.of(userService.signUp(admin));
         });
+        userService.findByEmail("castus1214@naver.com").or(() ->{
+            User admin = User.builder()
+                            .email("castus1214@naver.com")
+                            .nickname("찡빈")
+                            .authority(Authority.ADMIN)
+                            .gender(Gender.MALE)
+                            .birthYear("1991")
+                            .build();
+            userService.signUp(admin);
+            return Optional.of(userService.signUp(admin));
+        });
 
         // init company
         companyService.findByName("치킨플러스").or(() -> {
