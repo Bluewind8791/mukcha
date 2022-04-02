@@ -107,6 +107,17 @@ public class FoodService {
 
 
     /* FIND methods */
+    // 해당 회사의 메뉴 이름과 같은 메뉴가 있는지
+    public boolean isPresentFindByFoodNameAndCompanyName(String foodName, String companyName) {
+        boolean isPresent;
+        if (findByName(foodName).isPresent()) {
+            if (findByName(foodName).get().getCompany().getName().equals(companyName))
+                isPresent = true;
+        }
+        isPresent = false;
+        return isPresent;
+    }
+
     public Optional<Food> findFood(Long foodId) {
         return foodRepository.findById(foodId);
     }

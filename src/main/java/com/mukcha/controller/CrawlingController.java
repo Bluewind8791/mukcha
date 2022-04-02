@@ -31,27 +31,100 @@ public class CrawlingController {
     private final FoodService foodService;
     private final CompanyService companyService;
 
+    private final String ERROR_MESSAGE = ">>> 해당 회사의 정보를 불러올 수 없습니다.";
+
 
     @GetMapping(value = "/crawling")
     public String crawling() {
-        System.out.println(">>> CRAWLING START >>>");
-        kfc();
-        dominoPizza();
-        페리카나();
-        치킨플러스();
-        BBQ();
+        System.out.println(">>> CRAWLING START <<<");
+        빅스타피자();
+        처갓집양념치킨();
+        // kfc();
+        // dominoPizza();
+        // 페리카나();
+        // 치킨플러스();
+        // BBQ();
         return "redirect:/admin";
     }
 
 
 
-    public void 처갓집() {
-        // 처갓집 DB 생성할 것
+    public void 빅스타피자() {
+        Company company = isCompanyPresent("빅스타피자", "/logo/logo-bigstar_pizza.png");
+        Document doc;
+        String url = "http://www.bigstarpizza.co.kr/page/menu";
+        try {
+            doc = Jsoup.connect(url).get();
+            // 카테고리 리스트
+            Elements categoryList = doc.select("div[class=menu_list]");
+            for (Element cate : categoryList) {
+                // 메뉴 리스트
+                Elements menuList = cate.select("div");
+                for (Element menu : menuList) {
+                    // 메뉴 이름을 가져온다 - #s1-1 > div.menu_list > div:nth-child(1) > div.menu_name > strong
+                    String menuName = menu.select("div[class=menu_name]").select("strong").text();
+                    if (menuName.length() == 0 || menuName.length() >= 12 || menuName.contains("반반")) {
+                        continue;
+                    }
+                    System.out.println(">>> menu name: "+menuName);
+                    // 만약 같은 이름의 메뉴가 없다면
+                    if (!isFoodPresent(menuName)) {
+                        // 메뉴 이미지를 가져온다 - #s1-1 > div.menu_list > div:nth-child(1) > div.menu_img > img
+                        Elements imageE = menu.select("div[class=menu_img]").select("img");
+                        String image = imageE.attr("src");
+                        if (image.length() == 0) {
+                            continue;
+                        }
+                        image = "http://www.bigstarpizza.co.kr" + image;
+                        System.out.println(">>> image: " + image);
+                        // save DB
+                        saveFood(menuName, image, company);
+                    }
+                }
+            }
+        } catch (Exception e) {
+            System.out.println(ERROR_MESSAGE + company.getName());
+            e.printStackTrace();
+        }
     }
 
 
-    public void kfc() {
-        Company company = isCompanyPresent("KFC");
+    /**
+     * 메뉴 이름 뒤에 설명들도 함께 딸려오는 문제가 있음.
+     */
+    private void 처갓집양념치킨() {
+        Company company = isCompanyPresent("처갓집양념치킨", "/logo/logo-cheoga.png");
+        Document doc;
+        List<String> urlList = new ArrayList<>();
+        urlList.add("http://www.cheogajip.co.kr/bbs/board.php?bo_table=allmenu&page=1"); // 1페이지
+        urlList.add("http://www.cheogajip.co.kr/bbs/board.php?bo_table=allmenu&page=2"); // 2페이지
+        for (String url : urlList) {
+            try {
+                doc = Jsoup.connect(url).get();
+                // 메뉴 리스트 - #gall_ul > li:nth-child(1)
+                Elements menuList = doc.select("#gall_ul").select("li");
+                for (Element menu : menuList) {
+                    // #gall_ul > li:nth-child(1) > ul > li.gall_text_href
+                    Elements menuElement = menu.select("ul > li.gall_text_href").not("hr").not("ul").not("p").not("h3");
+                    String menuName = menuElement.text();
+                    if (menuName.length() == 0) {
+                        continue;
+                    }
+                    System.out.println(">>> name:"+menuName);
+                    String image = menu.select("ul > li.gall_href > img").attr("src");
+                    System.out.println(">>> image:"+image);
+                    saveFood(menuName, image, company);
+                }
+            } catch (IOException e) {
+                System.out.println(ERROR_MESSAGE + company);
+                e.printStackTrace();
+            }
+        }
+    }
+
+
+    private void kfc() {
+        Company company = isCompanyPresent("KFC", "");
         Document doc;
         List<String> urlList = new ArrayList<>();
         urlList.add("https://www.kfckorea.com/menu/burger"); // 버거
@@ -72,22 +145,19 @@ public class CrawlingController {
                         String image = imageE.attr("src");
                         System.out.println(">>> image: "+image+">");
                         // 실행 전 체크할 것
-                        if (url.contains("chicken")) {
-                            saveFood(foodName, image, company, Category.CHICKEN);
-                        } else if (url.contains("burger")) {
-                            saveFood(foodName, image, company, Category.HAMBURGER);
-                        }
+                        saveFood(foodName, image, company);
                     }
                 }
             }
         } catch (IOException e1) {
+            System.out.println(ERROR_MESSAGE + company.getName());
             e1.printStackTrace();
         }
     }
 
 
-    public void dominoPizza() {
-        Company company = isCompanyPresent("도미노피자");
+    private void dominoPizza() {
+        Company company = isCompanyPresent("도미노피자", "/logo/domino.png");
         
         List<String> urlList = new ArrayList<>();
         urlList.add("https://web.dominos.co.kr/goods/list?dsp_ctgr=C0101"); // 메뉴
@@ -116,19 +186,20 @@ public class CrawlingController {
                             System.out.println(">>> food:"+foodName+"|");
                             System.out.println(">>> image:"+image+"|");
                             // 실행 전 체크할 것
-                            saveFood(foodName, image, company, Category.PIZZA);
+                            saveFood(foodName, image, company);
                         }
                     }
                 }
             }
         } catch (IOException e1) {
+            System.out.println(ERROR_MESSAGE + company.getName());
             e1.printStackTrace();
         }
     }
 
 
-    public void 페리카나() {
-        Company company = isCompanyPresent("페리카나");
+    private void 페리카나() {
+        Company company = isCompanyPresent("페리카나", "");
 
         List<String> urlList = new ArrayList<>();
         urlList.add("https://pelicana.co.kr/menu/menu_original.html"); // 오리지널
@@ -155,19 +226,20 @@ public class CrawlingController {
                     // 만약 같은 이름의 메뉴가 없다면 DB에 저장
                     if (!isFoodPresent(foodName)) {
                         // 실행 전 체크할 것
-                        saveFood(foodName, image, company, Category.CHICKEN);
+                        saveFood(foodName, image, company);
                     }
                 }
             }
         } catch (IOException e1) {
+            System.out.println(ERROR_MESSAGE + company.getName());
             e1.printStackTrace();
         }
     }
 
 
     // 정확한 image URL는 모달을 통하여 가져올 수 밖에 없어서 못가져올듯
-    public void 치킨플러스() {
-        Company company = isCompanyPresent("치킨플러스");
+    private void 치킨플러스() {
+        Company company = isCompanyPresent("치킨플러스", "");
 
         List<String> urlList = new ArrayList<>();
         urlList.add("http://www.chickenplus.co.kr/menu/default.aspx?menu=치킨메뉴");
@@ -184,27 +256,19 @@ public class CrawlingController {
                     String foodName = e.select("div.mn1_txt > p.mn1_tit.menu_s_title").text();
                     System.out.println(">>> food name: "+foodName);
                     // 만약 같은 이름의 메뉴가 없다면 DB에 저장
-                    if (!isFoodPresent(foodName)) {
-                        if (url.contains("떡볶이")) {
-                            saveFood(foodName, "", company, Category.TTEOKBOKKI);
-                        } else if (url.contains("피자")) {
-                            saveFood(foodName, "", company, Category.PIZZA);
-                        } else if (url.contains("치킨")) {
-                            saveFood(foodName, "", company, Category.CHICKEN);
-                        }
-                    }
+                    saveFood(foodName, "", company);
                 }
             }
         } catch (IOException e1) {
-            System.out.println(">>> 치킨플러스의 정보를 불러올 수 없습니다.");
+            System.out.println(ERROR_MESSAGE + company.getName());
             e1.printStackTrace();
         }
     }
 
 
-    public void BBQ() {
+    private void BBQ() {
         Document doc;
-        Company company = isCompanyPresent("BBQ");
+        Company company = isCompanyPresent("BBQ", "");
         String getFoodName;
         String getImageUrl;
         List<String> urlList = new ArrayList<>();
@@ -226,33 +290,34 @@ public class CrawlingController {
                     System.out.println(">>> "+getImageUrl);
                     // 만약 같은 이름의 메뉴가 없다면 DB에 저장
                     if (!isFoodPresent(getFoodName)) {
-                        saveFood(getFoodName, getImageUrl, company, Category.CHICKEN);
+                        saveFood(getFoodName, getImageUrl, company);
                     }
                 }
             }
         } catch (IOException e) {
-            System.out.println(">>> BBQ의 정보를 불러올 수 없습니다.");
+            System.out.println(ERROR_MESSAGE + company.getName());
             e.printStackTrace();
         }
     }
 
     // --- METHODS ---
 
-    private Company createCompany(String companyName) {
+    private Company createCompany(String companyName, String companyLogo) {
         Company company = Company.builder()
-                            .image("")
-                            .name("BBQ")
+                            .image(companyLogo)
+                            .name(companyName)
                             .build()
         ;
-        companyService.save(company);
-        log.info(">>> 회사 <"+company.getName()+">의 로고 이미지를 설정해주세요.");
-        return company;
+        if (company.getImage() == "") {
+            System.out.println(">>> 회사 <"+company.getName()+">의 로고 이미지를 설정해주세요.");
+        }
+        return companyService.save(company);
     }
 
 
-    private Company isCompanyPresent(String companyName) {
+    private Company isCompanyPresent(String companyName, String companyLogo) {
         Company company = companyService.findByName(companyName).orElse(
-            createCompany(companyName)
+            createCompany(companyName, companyLogo)
         );
         return company;
     }
@@ -267,16 +332,26 @@ public class CrawlingController {
     }
 
 
-    private void saveFood(String foodName, String imageUrl, Company company, Category category) {
+    private void saveFood(String foodName, String imageUrl, Company company) {
         Food food = Food.builder()
                 .name(foodName)
                 .image(imageUrl)
                 .company(company)
-                .category(category)
                 .build()
         ;
+        if (foodName.contains("피자") || foodName.contains("그라탕") ) {
+            food.setCategory(Category.PIZZA);
+        } else if (foodName.contains("치킨") || foodName.contains("닭강정") || foodName.contains("후라이드") ) {
+            food.setCategory(Category.CHICKEN);
+        } else if (foodName.contains("떡볶이") ) {
+            food.setCategory(Category.TTEOKBOKKI);
+        } else if (foodName.contains("파스타") || foodName.contains("스파게티") ) {
+            food.setCategory(Category.PASTA);
+        } else {
+            food.setCategory(Category.SIDEMENU);
+        }
         foodService.save(food);
-        log.info(">>> 메뉴<+"+food.getName()+"> 이 DB에 생성되었습니다.");
+        log.info(">>> 메뉴<+"+food.getName()+"> 이 DB에 생성되었습니다." + food.toString());
     }
 
 
