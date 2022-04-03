@@ -126,9 +126,9 @@ public class CompanyService {
         });
     }
 
-    public void editCompanyName(Long companyId, String name) {
+    public void editCompanyName(Long companyId, String companyName) {
         findCompany(companyId).ifPresent(com -> {
-            companyRepository.updateCompanyName(companyId, name);
+            companyRepository.updateCompanyName(companyId, companyName);
         });
     }
 

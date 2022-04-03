@@ -40,8 +40,8 @@
           <th>회사</th>
           <th>이름</th>
           <th>이미지</th>
-          <th>Update Time</th>
-          <th>Create Time</th>
+          <!-- <th>Update Time</th>
+          <th>Create Time</th> -->
           <th>Image URL</th>
         </tr>
       </thead>
@@ -49,15 +49,17 @@
         <tr th:each="f : ${foodList}">
           <td><span th:text="${f.foodId}">ID</span></td>
           <td><span th:text="${f.category}">category</span></td>
-          <td><span th:if="${f.company != null}" th:text="${f.company.name}">companyName</span></td>
-          <td><span th:text="${f.name}" data-bs-toggle="modal"
+          <td><span th:if="${f.companyName != null}" th:text="${f.companyName}">companyName</span></td>
+          <td><span th:text="${f.foodName}" data-bs-toggle="modal"
               th:data-bs-target="'#editMenuModal'+${f.foodId}">Name</span></td>
-          <td><img th:src="${f.image}" height="50" data-bs-toggle="modal"
+          <td><img th:src="${f.foodImage}" height="50" data-bs-toggle="modal"
               th:data-bs-target="'#fImageModal'+${f.foodId}"></td>
-          <td><span th:text="${f.updatedAt}">updatedAt</span></td>
-          <td><span th:text="${f.createdAt}">createdAt</span></td>
+          <!-- <td><span th:text="${f.updatedAt}">updatedAt</span></td> -->
+          <!-- <td><span th:text="${f.createdAt}">createdAt</span></td> -->
           <td>
-            <div th:text="${f.image}" style="width: 100px;" id="menu_image_url">MenuImageUrl</div>
+            <div th:text="${f.foodImage}" style="width: 250px;" id="menu_image_url">
+              메뉴이미지 URL
+            </div>
           </td>
           <!-- 메뉴 이미지 크기보기 -->
           <div class="modal" th:id="'fImageModal'+${f.foodId}">
@@ -69,7 +71,7 @@
                 </div>
                 <!-- Modal body -->
                 <div class="modal-body">
-                  <img class="img-fluid" th:src="${f.image}">
+                  <img class="img-fluid" th:src="${f.foodImage}">
                 </div>
               </div>
             </div>
@@ -81,19 +83,19 @@
               <div class="modal-content">
                 <div class="modal-header">
                   <h5 class="modal-title fw-bold me-2" id="editModalToggleLabel">메뉴 수정</h5>
-                  <span class="me-2"> - </span><span th:text="${f.name}">메뉴이름</span>
+                  <span class="me-2"> - </span><span th:text="${f.foodName}">메뉴이름</span>
                   <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <form th:action="@{/admin/menus/edit/}+${f.foodId}" method="POST">
                   <div class="modal-body">
                     <div class="mb-3 mt-3">
                       <label>메뉴 이름</label>
-                      <input class="form-control" placeholder="메뉴 이름을 적어주세요" name="foodName" th:value="${f.name}">
+                      <input class="form-control" placeholder="메뉴 이름을 적어주세요" name="foodName" th:value="${f.foodName}">
                     </div>
                     <div class="mb-3">
                       <label>메뉴 이미지</label>
                       <input class="form-control" placeholder="메뉴 이미지 URL를 넣어주세요" name="foodImage"
-                        th:value="${f.image}">
+                        th:value="${f.foodImage}">
                     </div>
                     <div class="mb-3">
                       <label>카테고리</label>
@@ -105,9 +107,9 @@
                     </div>
                     <div class="mb-3">
                       <label>회사명</label>
-                      <select class="form-select" name="company">
+                      <select class="form-select" name="companyName">
                         <option value="">선택해주세요</option>
-                        <option th:each="com : ${companyList}" th:value="${com.name}" th:text="${com.name}">회사명
+                        <option th:each="com : ${companyList}" th:value="${com.companyName}" th:text="${com.companyName}">회사명
                         </option>
                       </select>
                     </div>
@@ -123,7 +125,7 @@
             </div>
           </div>
           <!-- 메뉴 삭제 모달2 -->
-          <form th:action="@{/admin/menus/delete/}+${f.foodId}" th:method="DELETE">
+          <!-- <form th:action="@{/admin/menus/delete/}+${f.foodId}" th:method="DELETE">
             <input type="hidden" name="_method" value="delete">
             <div class="modal fade" th:id="'deleteMenuModal'+${f.foodId}" aria-hidden="true"
               aria-labelledby="deleteModalToggleLabel" tabindex="-1">
@@ -147,7 +149,7 @@
                 </div>
               </div>
             </div>
-          </form>
+          </form> -->
         </tr>
       </tbody>
 

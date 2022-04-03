@@ -1,5 +1,6 @@
 package com.mukcha.controller;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -67,12 +68,33 @@ public class AdminController {
             model.addAttribute("userId", user.getUserId());
             model.addAttribute("nickname", user.getNickname());
         }
+        // 카테고리 리스트
         List<Category> categoryList = List.of(Category.values());
         model.addAttribute("categoryList", categoryList);
+        // 메뉴 정보 -> DTO 변경
+        // foodName, foodId, foodImage, foodCategory, foodCompanyName
         List<Food> foodList = foodService.findAll();
-        Collections.reverse(foodList);
-        model.addAttribute("foodList", foodList);
-        model.addAttribute("companyList", companyService.findAll());
+        Collections.reverse(foodList); // 최신순 정렬
+        List<FoodDto> foodDtoList = new ArrayList<>();
+        foodList.stream().forEach(food -> {
+            FoodDto foodDto = new FoodDto();
+            foodDto.setFoodId(food.getFoodId());
+            foodDto.setFoodName(food.getName());
+            foodDto.setFoodImage(food.getImage());
+            foodDto.setCategory(food.getCategory().name());
+            foodDto.setCompanyName(food.getCompany().getName());
+            foodDtoList.add(foodDto);
+        });
+        model.addAttribute("foodList", foodDtoList);
+        // 모든 회사 이름 -> DTO 변경
+        List<Company> companies = companyService.findAll();
+        List<CompanyDto> companyDtoList = new ArrayList<>();
+        companies.stream().forEach(com -> {
+            CompanyDto companyDto = new CompanyDto();
+            companyDto.setCompanyName(com.getName());
+            companyDtoList.add(companyDto);
+        });
+        model.addAttribute("companyList", companyDtoList);
         return "admin/adminMenuList";
     }
 
@@ -144,7 +166,7 @@ public class AdminController {
     }
 
 
-    // 음식을 삭제 메소드
+    // 메뉴 삭제 메소드
     @DeleteMapping(value = "/menus/delete/{foodId}")
     public String deleteFood(@PathVariable Long foodId) {
         String name = foodService.findFood(foodId).get().getName();
@@ -176,14 +198,11 @@ public class AdminController {
         @PathVariable Long foodId,
         FoodDto foodDto
     ) {
+        System.out.println(">>> company name:"+foodDto.getCompanyName());
         foodService.editFoodName(foodId, foodDto.getFoodName());
         foodService.editFoodImage(foodId, foodDto.getFoodImage());
-        if (foodDto.getCompanyName() != "") {
-            foodService.editFoodCompany(foodId, foodDto.getCompanyName());
-        }
-        if (foodDto.getCategory() != "") {
-            foodService.editFoodCategory(foodId, transCategory(foodDto.getCategory()));
-        }
+        foodService.editFoodCompany(foodId, foodDto.getCompanyName());
+        foodService.editFoodCategory(foodId, transCategory(foodDto.getCategory()));
         return "redirect:/admin/menus/";
     }
 
@@ -191,9 +210,7 @@ public class AdminController {
 
     private Category transCategory(String category) {
         String upperCategory = category.toUpperCase();
-
         Category arr[] = Category.values();
-
         for (Category c : arr) {
             // 동일한 카테고리가 존재한다면
             if (upperCategory.equals(c.toString())) {

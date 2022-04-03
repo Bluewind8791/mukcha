@@ -58,33 +58,25 @@ public class FoodService {
         });
     }
     // 음식 카테고리를 수정한다
-    public Optional<Food> editFoodCategory(Long foodId, Category category) {
-        return foodRepository.findById(foodId).map(food -> {
+    public void editFoodCategory(Long foodId, Category category) {
+        if (category == null) {
+            return;
+        }
+        foodRepository.findById(foodId).ifPresent(food -> {
             food.setCategory(category);
             foodRepository.save(food);
-            return food;
         });
     }
+
     // 음식 회사를 수정한다
-    public Optional<Food> editFoodCompany(Long foodId, String companyName) {
-        if (companyRepository.findByName(companyName).isPresent()) {
-            // 존재하는 회사라면
-            Company cmp = companyRepository.findByName(companyName).get();
-            return foodRepository.findById(foodId).map(food -> {
-                food.setCompany(cmp);
-                foodRepository.save(food);
-                return food;
+    public void editFoodCompany(Long foodId, String companyName) {
+        // 해당 회사와 메뉴가 존재할 때만 메소드 실행
+        companyRepository.findByName(companyName).ifPresent(com -> {
+            findFood(foodId).ifPresent(f -> {
+                f.setCompany(com);
+                save(f);
             });
-        } else {
-            // 존재하지 않는 회사라면 새로 만들기
-            Company saveCompany = Company.builder().name(companyName).build();
-            companyRepository.save(saveCompany);
-            return foodRepository.findById(foodId).map(food -> {
-                food.setCompany(saveCompany);
-                foodRepository.save(food);
-                return food;
-            });
-        }
+        });
     }
 
 
