@@ -24,6 +24,16 @@
             });
         });
     </script>
+    <style>
+        @media (min-width: 710px) {
+            .container_menu {
+                max-width: 500px;
+            }
+        }
+        .food_image {
+            width: 100%;
+        }
+    </style>
 </head>
 
 <div class="mb-5" layout:fragment="content" >
@@ -32,9 +42,9 @@
         카테고리 > <span th:text="${ food.category }"></span>
     </div>
 
-    <div class="container mt-5 text-center">
+    <div class="container container_menu mt-5 text-center">
 
-        <img class="mb-4 w-75" th:src="${food.foodImage}">
+        <img class="food_image mb-4" th:src="${food.foodImage}">
         <a style="text-decoration: none;" th:href="'/company/'+${food.companyId}">
             <div class="text-muted h5" th:text="${food.companyName}">회사 이름</div>
         </a>
