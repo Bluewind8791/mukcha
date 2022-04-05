@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org"
+  xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{layout/layout}">
+
+<head>
+  <style>
+    #img {
+      display: table;
+      width: 100%;
+      height: 100%;
+    }
+    #img>div {
+      display: table-cell;
+      text-align: center;
+      vertical-align: middle;
+    }
+    #img>div>img {
+      max-width: 100%;
+      max-height: 100%;
+      margin: auto;
+      display: block;
+    }
+    .profile_box {
+      width: 60px;
+      height: 60px;
+      border-radius: 70%;
+      overflow: hidden;
+    }
+    .profile {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+  </style>
+</head>
+
+
+<div layout:fragment="content">
+
+  <div class="container-fluid bg-light p-2">
+    <div class="container fw-bold">
+      <span>"</span><span th:text="${searchWord}"></span><span>" 의 검색결과</span>
+    </div>
+  </div>
+
+  <!-- back button -->
+  <div class="container mt-2 mb-3">
+    <a type="button" class="btn" onclick="window.history.back();">
+      < 뒤로가기 </a>
+  </div>
+
+  <!-- 메뉴 검색 결과 CONTAINER -->
+  <div class="container">
+    <div class="h3 text-center fw-bold mb-4">
+      메뉴 검색 결과
+    </div>
+
+    <!-- FOOD LIST -->
+    <div class="row mx-auto my-auto justify-content-center">
+      <div id="food_carousel" class="carousel slide" data-bs-ride="carousel">
+
+        <div class="carousel-inner" role="listbox">
+          <div class="carousel-item active">
+            <ul class="menu_list row">
+              <li th:each="f, i : ${foodList}" th:if="${i.count} <= 5">
+                <a style="text-decoration: none;" th:title="${f.name}" th:href="'/menu/'+${f.foodId}">
+                  <div class="menu_image_box">
+                    <img class="menu_image mb-2" th:src="${f.image}">
+                  </div>
+                  <div class="ms-2">
+                    <div class="text-muted small" th:text="${f.company.name}">회사이름</div>
+                    <div class="h6 text-dark fw-bold" th:text="${f.name}">메뉴이름</div>
+                  </div>
+                </a>
+              </li>
+            </ul>
+          </div>
+
+          <div class="carousel-item" th:if="${foodList.size() > 5}">
+            <ul class="menu_list row">
+              <li th:each="f, i : ${foodList}" th:if="6 <= ${i.count} and ${i.count} <= 10">
+                <a style="text-decoration: none;" th:title="${f.name}" th:href="'/menu/'+${f.foodId}">
+                  <div class="menu_image_box">
+                    <img class="menu_image mb-2" th:src="${f.image}">
+                  </div>
+                  <div class="ms-2">
+                    <div class="text-muted small" th:text="${f.company.name}">회사이름</div>
+                    <div class="h6 text-dark fw-bold" th:text="${f.name}">메뉴이름</div>
+                  </div>
+                </a>
+              </li>
+            </ul>
+          </div>
+
+        </div>
+        <a class="carousel-control-prev w-auto" href="#food_carousel" role="button" data-bs-slide="prev">
+          <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+        </a>
+        <a class="carousel-control-next w-auto" href="#food_carousel" role="button" data-bs-slide="next">
+          <span class="carousel-control-next-icon" aria-hidden="true"></span>
+        </a>
+      </div>
+    </div>
+
+    <div class="text-center" >
+      <!-- 검색 결과가 10개 이상일 경우 -->
+      <a type="button" class="btn btn-light w-50" th:href="'/search/menu?keyword='+${searchWord}" th:if="${foodList.size() > 5}" >검색결과 더보기</a>
+      <!-- 검색 결과가 없을 경우 -->
+      <div class="h4 mt-5" th:if="${foodList.isEmpty()}">검색 결과가 없어요 😅</div>
+    </div>
+
+    <hr class="mt-5 mb-5">
+  </div>
+
+
+  <!-- 회사 검색 결과 CONTAINER -->
+  <div class="container">
+    <div class="h3 text-center fw-bold mb-4">
+      회사 검색 결과
+    </div>
+
+    <!-- COMPANY LIST -->
+    <div class="row mx-auto my-auto justify-content-center">
+      <div id="company_carousel" class="carousel slide" data-bs-ride="carousel">
+        <div class="carousel-inner" role="listbox">
+
+          <div class="carousel-item active">
+            <ul class="menu_list row">
+              <li th:each="c, i : ${companyList}" th:if="${i.count} <= 5">
+                <a style="text-decoration: none;" th:title="${c.name}" th:href="'/company/'+${c.companyId}">
+                  <div id="img" style="width: 250px; height: 200px;">
+                    <div>
+                      <img th:src="${c.image}">
+                    </div>
+                  </div>
+                  <div class="h6 text-dark fw-bold text-center" th:text="${c.name}">회사이름</div>
+                </a>
+              </li>
+            </ul>
+          </div>
+          <div class="carousel-item" th:if="${companyList.size() > 5}">
+            <ul class="menu_list row">
+              <li th:each="c, i : ${companyList}" th:if="6 <= ${i.count} <= 10">
+                <a style="text-decoration: none;" th:title="${c.name}" th:href="'/company/'+${c.companyId}">
+                  <div id="img" style="width: 250px; height: 200px;">
+                    <div>
+                      <img th:src="${c.image}">
+                    </div>
+                  </div>
+                  <div class="h6 text-dark fw-bold text-center" th:text="${c.name}">회사이름</div>
+                </a>
+              </li>
+            </ul>
+          </div>
+
+        </div>
+        <a class="carousel-control-prev w-auto" href="#company_carousel" role="button" data-bs-slide="prev">
+          <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+        </a>
+        <a class="carousel-control-next w-auto" href="#company_carousel" role="button" data-bs-slide="next">
+          <span class="carousel-control-next-icon" aria-hidden="true"></span>
+        </a>
+      </div>
+    </div>
+
+    <div class="text-center">
+      <!-- 검색 결과가 10개 이상일 경우 -->
+      <a type="button" class="btn btn-light w-50" th:href="'/search/company?keyword='+${searchWord}" th:if="${companyList.size() > 5}" >검색결과 더보기</a>
+      <!-- 검색 결과가 없을 경우 -->
+      <div class="h4 mt-5" th:if="${companyList.isEmpty()}">검색 결과가 없어요 😅</div>
+    </div>
+    
+    <hr class="mt-5 mb-5">
+  </div>
+
+  <!-- 유저 검색 결과 CONTAINER -->
+  <div class="container mb-5">
+    <div class="h3 text-center fw-bold mb-5">
+      유저 검색 결과
+    </div>
+
+    <ul class="d-flex flex-wrap">
+      <a style="text-decoration: none;" th:href="'/users/'+${u.userId}" th:each="u : ${userList}">
+        <li class="row border p-3 me-4 mb-3">
+          <div class="col-3 p-1">
+            <div class="profile_box">
+              <img class="profile" th:src="${u.profileImage}">
+            </div>
+          </div>
+          <div class="col-9 p-3 align-middle" style="width: 200px;">
+            <p class="text-dark fw-bold" th:text="${u.nickname}"></p>
+          </div>
+        </li>
+      </a>
+    </ul>
+
+    <!-- 검색 결과가 없을 경우 -->
+    <div class="text-center">
+      <div class="h4 mt-5" th:if="${userList.isEmpty()}">검색 결과가 없어요 😅</div>
+    </div>
+
+  </div>
+
+
+</html>

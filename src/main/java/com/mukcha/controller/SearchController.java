@@ -37,7 +37,31 @@ public class SearchController {
             userRepository.findAll(Search.userSearching(keyword))
         );
         model.addAttribute("searchWord", keyword);
-        return "search";
+        return "search/search";
+    }
+
+    @GetMapping(value = "/search/menu")
+    public String foodSearchList(
+        @RequestParam(required = false) String keyword,
+        Model model
+    ) {
+        model.addAttribute("foodList", 
+            foodRepository.findAll(Search.foodSearching(keyword))
+        );
+        model.addAttribute("searchWord", keyword);
+        return "search/list";
+    }
+
+    @GetMapping(value = "/search/company")
+    public String companySearchList(
+        @RequestParam(required = false) String keyword,
+        Model model
+    ) {
+        model.addAttribute("companyList", 
+            companyRepository.findAll(Search.companySearching(keyword))
+        );
+        model.addAttribute("searchWord", keyword);
+        return "search/list";
     }
 
 
