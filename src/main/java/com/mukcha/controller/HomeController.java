@@ -34,9 +34,9 @@ public class HomeController {
     @GetMapping(value = {"/", ""})
     public String home(Model model, @LoginUser SessionUser sessionUser) {
         // 별점순 TOP 10 메뉴
-        model.addAttribute("avgScoreTopTen", foodService.findTopTenOrderByScore());
+        model.addAttribute("scoreTopTen", foodService.findTopTenOrderByScore());
         // 최신 메뉴 TOP 10
-        model.addAttribute("newestTopTen", foodService.findTopTenNewest());
+        model.addAttribute("newestTen", foodService.findTopTenNewest());
         // login user 정보
         if (sessionUser != null) {
             UserDto user = userService.getSessionUserInfo(sessionUser);

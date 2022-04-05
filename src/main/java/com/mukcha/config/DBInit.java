@@ -2,6 +2,7 @@ package com.mukcha.config;
 
 import java.util.Optional;
 
+import com.mukcha.controller.CrawlingController;
 import com.mukcha.domain.Authority;
 import com.mukcha.domain.Category;
 import com.mukcha.domain.Company;
@@ -25,6 +26,7 @@ public class DBInit implements CommandLineRunner {
     private final UserService userService;
     private final CompanyService companyService;
     private final FoodService foodService;
+    private final CrawlingController crawlingController;
 
     @Override
     public void run(String... args) throws Exception {
@@ -52,6 +54,8 @@ public class DBInit implements CommandLineRunner {
             userService.signUp(admin);
             return Optional.of(userService.signUp(admin));
         });
+
+        crawlingController.crawling();
 
         // init company
         companyService.findByName("치킨플러스").or(() -> {
@@ -162,9 +166,6 @@ public class DBInit implements CommandLineRunner {
             foodService.save(food);
             return Optional.of(foodService.save(food));
         });
-
-
-
 
     } // end of run method
 

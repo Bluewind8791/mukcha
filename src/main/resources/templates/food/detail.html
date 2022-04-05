@@ -1,214 +1,215 @@
 <!DOCTYPE html>
 <html lang="ko" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org"
-    xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{layout/layout}">
+  xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{layout/layout}">
 
 
 <head>
-    <!-- DATE PICKER -->
-    <link href="/css/datepicker.min.css" rel="stylesheet" type="text/css">
-    <script src="/js/datepicker.js"></script>
-    <script src="/js/datepicker.ko.js"></script>
-    <!-- STAR-RATE -->
-    <link href="/css/starRate.css" rel="stylesheet" type="text/css">
-    <script type="text/javascript">
-        $(document).ready(function () {
-            $("input[type='radio']").click(function () {
-                var sim = $("input[type='radio']:checked").val();
-                if (sim < 3) {
-                    $('.myratings').css('color', 'red');
-                    $(".myratings").text(sim);
-                } else {
-                    $('.myratings').css('color', 'green');
-                    $(".myratings").text(sim);
-                }
-            });
-        });
-    </script>
-    <style>
-        @media (min-width: 710px) {
-            .container_menu {
-                max-width: 500px;
-            }
+  <!-- DATE PICKER -->
+  <link href="/css/datepicker.min.css" rel="stylesheet" type="text/css">
+  <script src="/js/datepicker.js"></script>
+  <script src="/js/datepicker.ko.js"></script>
+  <!-- STAR-RATE -->
+  <link href="/css/starRate.css" rel="stylesheet" type="text/css">
+  <script type="text/javascript">
+    $(document).ready(function () {
+      $("input[type='radio']").click(function () {
+        var sim = $("input[type='radio']:checked").val();
+        if (sim < 3) {
+          $('.myratings').css('color', 'red');
+          $(".myratings").text(sim);
+        } else {
+          $('.myratings').css('color', 'green');
+          $(".myratings").text(sim);
         }
-        .food_image {
-            width: 100%;
-        }
-    </style>
+      });
+    });
+  </script>
+  <style>
+    @media (min-width: 710px) {
+      .container_menu {
+        max-width: 500px;
+      }
+    }
+
+    .food_image {
+      width: 100%;
+    }
+  </style>
 </head>
 
-<div class="mb-5" layout:fragment="content" >
+<div class="mb-5" layout:fragment="content">
 
-    <div class="container mt-4 text-muted">
-        카테고리 > <span th:text="${ food.category }"></span>
+  <div class="container mt-4 text-muted">
+    카테고리 > <span th:text="${ food.category }"></span>
+  </div>
+
+  <div class="container container_menu mt-5 text-center">
+
+    <img class="food_image mb-4" th:src="${food.foodImage}">
+    <a style="text-decoration: none;" th:href="'/company/'+${food.companyId}">
+      <div class="text-muted h5" th:text="${food.companyName}">회사 이름</div>
+    </a>
+    <div class="h2 fw-bold" th:text="${food.foodName}">메뉴 이름</div>
+    <strong>
+      <div class="small mb-3" style="color: tomato;">
+        <span class="me-1">평균 별점 ★</span>
+        <span th:text="${food.averageScore}">0.0</span>
+      </div>
+    </strong>
+
+    <!-- 먹은 날짜 -->
+    <div sec:authorize="isAuthenticated()" th:if="${isReviewed == 'true'}">
+      <span class="small text-muted" th:if="${writtenReview.eatenDate != null}">먹은 날짜</span>
+      <span class="small text-muted" th:text="${writtenReview.eatenDate}"></span>
     </div>
 
-    <div class="container container_menu mt-5 text-center">
+    <!-- 로그인 사용자만 접근 -->
+    <div sec:authorize="isAuthenticated()">
+      <!-- 이미 리뷰를 적은 로그인 사용자 -->
+      <div th:if="${isReviewed == 'true'}">
+        <button type="button" class="btn btn-secondary w-25 mt-5 mb-3" data-bs-toggle="modal"
+          data-bs-target="#reviewModal">평가 수정하기</button>
+        <button type="button" class="btn btn-success w-25 mt-5 mb-3" data-bs-toggle="collapse"
+          data-bs-target="#openEatenDate">먹은 날짜</button>
+      </div>
 
-        <img class="food_image mb-4" th:src="${food.foodImage}">
-        <a style="text-decoration: none;" th:href="'/company/'+${food.companyId}">
-            <div class="text-muted h5" th:text="${food.companyName}">회사 이름</div>
-        </a>
-        <div class="h2 fw-bold" th:text="${food.foodName}">메뉴 이름</div>
-        <strong>
-            <div class="small mb-3" style="color: tomato;">
-                <span class="me-1">평균 별점 ★</span>
-                <span th:text="${food.averageScore}">0.0</span>
-            </div>
-        </strong>
-
-        <!-- 먹은 날짜 -->
-        <div sec:authorize="isAuthenticated()" th:if="${isReviewed == 'true'}">
-            <span class="small text-muted" th:if="${writtenReview.eatenDate != null}" >먹은 날짜</span>
-            <span class="small text-muted" th:text="${writtenReview.eatenDate}" ></span>
+      <form th:action="@{/menu/api/eaten/}+${food.foodId}" method="POST">
+        <div id="openEatenDate" class="collapse mt-3 mb-5">
+          <div class="d-flex justify-content-center">
+            <!-- DATE PICKER -->
+            <input class="form-control w-25 text-center" id="datepicker" name="eatenDate" type="text"
+              placeholder="먹은 날짜를 추가해주세요">
+            <input class="btn btn-primary ms-1" type="submit" value="확인">
+          </div>
         </div>
+      </form>
 
-        <!-- 로그인 사용자만 접근 -->
-        <div sec:authorize="isAuthenticated()">
-            <!-- 이미 리뷰를 적은 로그인 사용자 -->
-            <div th:if="${isReviewed == 'true'}">
-                <button type="button" class="btn btn-secondary w-25 mt-5 mb-3" data-bs-toggle="modal"
-                data-bs-target="#reviewModal">평가 수정하기</button>
-                <button type="button" class="btn btn-success w-25 mt-5 mb-3" data-bs-toggle="collapse"
-                data-bs-target="#openEatenDate">먹은 날짜</button>
+      <!-- 리뷰를 적지 않은 로그인 사용자 -->
+      <button type="button" class="btn btn-secondary w-50 mt-5 mb-5" data-bs-toggle="modal"
+        data-bs-target="#reviewModal" th:if="${isReviewed == 'false'}">평가하기
+      </button>
+
+      <form th:action="@{/menu/api/review/}+${food.foodId}" method="POST">
+        <!-- Review Modal -->
+        <div class="modal" id="reviewModal">
+          <div class="modal-dialog">
+            <div class="modal-content">
+              <!-- Modal Header -->
+              <div class="modal-header">
+                <h4 class="modal-title" th:text="${food.foodName}">Modal Heading</h4>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+              </div>
+              <!-- Modal body -->
+              <div class="modal-body">
+                <div class="container d-flex justify-content-center mt-1">
+                  <!-- 작성한 리뷰가 없는 경우 -->
+                  <div class="star_rate_card" th:if="${isReviewed == 'false'}">
+                    <div class="card-body text-center"> <span class="myratings"></span>
+                      <fieldset class="rating">
+                        <input type="radio" id="star5" name="rating" value="인생 메뉴에요!" />
+                        <label class="full" for="star5" title="인생 메뉴에요!"></label>
+                        <input type="radio" id="star4" name="rating" value="또 먹고 싶어요" />
+                        <label class="full" for="star4" title="또 먹고 싶어요"></label>
+                        <input type="radio" id="star3" name="rating" value="한 번은 먹을만해요" />
+                        <label class="full" for="star3" title="한 번은 먹을만해요"></label>
+                        <input type="radio" id="star2" name="rating" value="추천하고 싶지 않아요" />
+                        <label class="full" for="star2" title="추천하고 싶지 않아요"></label>
+                        <input type="radio" id="star1" name="rating" value="완전 별로였어요" />
+                        <label class="full" for="star1" title="완전 별로였어요"></label>
+                        <input type="radio" class="reset-option" name="rating" value="reset" />
+                      </fieldset>
+                    </div>
+                  </div> <!-- card end -->
+                  <!-- 작성한 리뷰가 있는 경우 th:text="${writtenReview.score.value}" -->
+                  <div class="star_rate_card" th:if="${isReviewed == 'true'}">
+                    <div class="card-body text-center"> <span class="myratings"></span>
+                      <fieldset class="rating">
+                        <input type="radio" id="star5" name="rating" value="인생 메뉴에요!"
+                          th:if="${writtenReview.score.value == 5}" checked />
+                        <input type="radio" id="star5" name="rating" value="인생 메뉴에요!" />
+                        <label class="full" for="star5" title="인생 메뉴에요!"></label>
+
+                        <input type="radio" id="star4" name="rating" value="또 먹고 싶어요"
+                          th:if="${writtenReview.score.value == 4}" checked />
+                        <input type="radio" id="star4" name="rating" value="또 먹고 싶어요" />
+                        <label class="full" for="star4" title="또 먹고 싶어요"></label>
+
+                        <input type="radio" id="star3" name="rating" value="한 번은 먹을만해요"
+                          th:if="${writtenReview.score.value == 3}" checked />
+                        <input type="radio" id="star3" name="rating" value="한 번은 먹을만해요" />
+                        <label class="full" for="star3" title="한 번은 먹을만해요"></label>
+
+                        <input type="radio" id="star2" name="rating" value="추천하고 싶지 않아요"
+                          th:if="${writtenReview.score.value == 2}" checked />
+                        <input type="radio" id="star2" name="rating" value="추천하고 싶지 않아요" />
+                        <label class="full" for="star2" title="추천하고 싶지 않아요"></label>
+
+                        <input type="radio" id="star1" name="rating" value="완전 별로였어요"
+                          th:if="${writtenReview.score.value == 1}" checked />
+                        <input type="radio" id="star1" name="rating" value="완전 별로였어요" />
+                        <label class="full" for="star1" title="완전 별로였어요"></label>
+
+                        <input type="radio" class="reset-option" name="rating" value="reset" />
+                      </fieldset>
+                    </div>
+                  </div> <!-- card end -->
+                </div>
+                <textarea class="form-control" rows="5" placeholder="먹어본 소감을 자유롭게 알려주세요" id="comment" name="comment"
+                  th:if="${isReviewed == 'false'}"></textarea>
+                <textarea class="form-control" rows="5" placeholder="먹어본 소감을 자유롭게 알려주세요" id="comment" name="comment"
+                  th:text="${writtenReview.comment}" th:if="${isReviewed == 'true'}"></textarea>
+              </div> <!-- Modal body end -->
+              <!-- Modal footer -->
+              <div class="modal-footer">
+                <div class="mt-2">
+                  <input type="submit" value="평가하기" class="btn btn-primary">
+                </div>
+              </div>
             </div>
-            
-            <form th:action="@{/menu/api/eaten/}+${food.foodId}" method="POST">
-                <div id="openEatenDate" class="collapse mt-3 mb-5" >
-                    <div class="d-flex justify-content-center">
-                        <!-- DATE PICKER -->
-                        <input class="form-control w-25 text-center" id="datepicker" name="eatenDate" type="text" placeholder="먹은 날짜를 추가해주세요" >
-                        <input class="btn btn-primary ms-1" type="submit" value="확인" >
-                    </div>
-                </div>
-            </form>
-            
-            <!-- 리뷰를 적지 않은 로그인 사용자 -->
-            <button type="button" class="btn btn-secondary w-50 mt-5 mb-5" data-bs-toggle="modal"
-                data-bs-target="#reviewModal" th:if="${isReviewed == 'false'}">평가하기
-            </button>
-        
-            <form th:action="@{/menu/api/review/}+${food.foodId}" method="POST">
-                <!-- Review Modal -->
-                <div class="modal" id="reviewModal">
-                    <div class="modal-dialog">
-                        <div class="modal-content">
-                            <!-- Modal Header -->
-                            <div class="modal-header">
-                                <h4 class="modal-title" th:text="${food.foodName}">Modal Heading</h4>
-                                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                            </div>
-                            <!-- Modal body -->
-                            <div class="modal-body">
-                                <div class="container d-flex justify-content-center mt-1">
-                                    <!-- 작성한 리뷰가 없는 경우 -->
-                                    <div class="star_rate_card" th:if="${isReviewed == 'false'}">
-                                        <div class="card-body text-center"> <span class="myratings"></span>
-                                            <fieldset class="rating">
-                                                <input type="radio" id="star5" name="rating" value="인생 메뉴에요!" />
-                                                <label class="full" for="star5" title="인생 메뉴에요!"></label>
-                                                <input type="radio" id="star4" name="rating" value="또 먹고 싶어요" />
-                                                <label class="full" for="star4" title="또 먹고 싶어요"></label>
-                                                <input type="radio" id="star3" name="rating" value="한 번은 먹을만해요" />
-                                                <label class="full" for="star3" title="한 번은 먹을만해요"></label>
-                                                <input type="radio" id="star2" name="rating" value="추천하고 싶지 않아요" />
-                                                <label class="full" for="star2" title="추천하고 싶지 않아요"></label>
-                                                <input type="radio" id="star1" name="rating" value="완전 별로였어요" />
-                                                <label class="full" for="star1" title="완전 별로였어요"></label>
-                                                <input type="radio" class="reset-option" name="rating" value="reset" />
-                                            </fieldset>
-                                        </div>
-                                    </div> <!-- card end -->
-                                    <!-- 작성한 리뷰가 있는 경우 th:text="${writtenReview.score.value}" -->
-                                    <div class="star_rate_card" th:if="${isReviewed == 'true'}">
-                                        <div class="card-body text-center"> <span class="myratings"></span>
-                                            <fieldset class="rating">
-                                                <input type="radio" id="star5" name="rating" value="인생 메뉴에요!" 
-                                                th:if="${writtenReview.score.value == 5}" checked/>
-                                                <input type="radio" id="star5" name="rating" value="인생 메뉴에요!" />
-                                                <label class="full" for="star5" title="인생 메뉴에요!"></label>
+          </div>
+        </div><!-- Review Modal end-->
+      </form>
+    </div> <!-- authorize end -->
 
-                                                <input type="radio" id="star4" name="rating" value="또 먹고 싶어요" 
-                                                th:if="${writtenReview.score.value == 4}" checked/>
-                                                <input type="radio" id="star4" name="rating" value="또 먹고 싶어요" />
-                                                <label class="full" for="star4" title="또 먹고 싶어요"></label>
-                                                
-                                                <input type="radio" id="star3" name="rating" value="한 번은 먹을만해요" 
-                                                th:if="${writtenReview.score.value == 3}" checked/>
-                                                <input type="radio" id="star3" name="rating" value="한 번은 먹을만해요" />
-                                                <label class="full" for="star3" title="한 번은 먹을만해요"></label>
-                                                
-                                                <input type="radio" id="star2" name="rating" value="추천하고 싶지 않아요" 
-                                                th:if="${writtenReview.score.value == 2}" checked/>
-                                                <input type="radio" id="star2" name="rating" value="추천하고 싶지 않아요" />
-                                                <label class="full" for="star2" title="추천하고 싶지 않아요"></label>
-
-                                                <input type="radio" id="star1" name="rating" value="완전 별로였어요" 
-                                                th:if="${writtenReview.score.value == 1}" checked/>
-                                                <input type="radio" id="star1" name="rating" value="완전 별로였어요" />
-                                                <label class="full" for="star1" title="완전 별로였어요"></label>
-
-                                                <input type="radio" class="reset-option" name="rating" value="reset" />
-                                            </fieldset>
-                                        </div>
-                                    </div> <!-- card end -->
-                                </div>
-                                <textarea class="form-control" rows="5" placeholder="먹어본 소감을 자유롭게 알려주세요"
-                                    id="comment" name="comment" th:if="${isReviewed == 'false'}"></textarea>
-                                <textarea class="form-control" rows="5" placeholder="먹어본 소감을 자유롭게 알려주세요"
-                                    id="comment" name="comment" 
-                                    th:text="${writtenReview.comment}" th:if="${isReviewed == 'true'}"></textarea>
-                            </div> <!-- Modal body end --> 
-                            <!-- Modal footer -->
-                            <div class="modal-footer">
-                                <div class="mt-2">
-                                    <input type="submit" value="평가하기" class="btn btn-primary">
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div><!-- Review Modal end-->
-            </form>
-        </div> <!-- authorize end -->
-
-        <!-- REVIEW LIST -->
-        <ul class="container d-flex justify-content-center" th:each="r : ${reviewList}">
-            <div class="card w-50">
-                <div class="card-header">
-                    <div class="d-flex justify-content-between">
-                        <div class="fw-bold" th:text="${r.user.nickname}">username</div>
-                        <!-- 별점 개수 -->
-                        <div class="rounded bg-white border-dark">
-                            <span>⭐</span>
-                            <span th:text="${r.score.getValue()}">score</span>
-                        </div>
-                    </div>
-                </div>
-                <div class="card-body d-flex">
-                    <div class="align-content-start" th:text="${r.comment}">comment</div>
-                </div>
-                <div class="card-footer d-flex"></div>
-                <!-- <div class="card-footer d-flex">❤</div> -->
+    <!-- REVIEW LIST -->
+    <ul class="container d-flex justify-content-center" th:each="r : ${reviewList}">
+      <div class="card w-100">
+        <div class="card-header">
+          <div class="d-flex justify-content-between">
+            <div class="fw-bold" th:text="${r.user.nickname}">username</div>
+            <!-- 별점 개수 -->
+            <div class="rounded bg-white border-dark">
+              <span>⭐</span>
+              <span th:text="${r.score.getValue()}">score</span>
             </div>
-        </ul>
+          </div>
+        </div>
+        <div class="card-body d-flex">
+          <div class="align-content-start" th:text="${r.comment}">comment</div>
+        </div>
+        <div class="card-footer d-flex"></div>
+        <!-- <div class="card-footer d-flex">❤</div> -->
+      </div>
+    </ul>
 
-        <!-- 더보기 -->
-        <a type="button" class="btn btn-light text-secondary w-50" th:href="@{/menu/reviews/}+${food.foodId}" >더보기</a>
+    <!-- 더보기 -->
+    <a type="button" class="btn btn-light text-secondary w-75" th:href="@{/menu/reviews/}+${food.foodId}">더보기</a>
 
 
 
-</div>
+  </div>
 
-<script>
+  <script>
     var start = new Date(); // 현재 날짜를 시작 날짜로
     var min_date = new Date(2019, 12, 1);
 
     $("#datepicker").datepicker({
-        language: 'ko',
-        startDate: start,
-        inline: false,
-        maxDate: start,
-        minDate: min_date
+      language: 'ko',
+      startDate: start,
+      inline: false,
+      maxDate: start,
+      minDate: min_date
     }); 
-</script>
+  </script>
 
 </html>

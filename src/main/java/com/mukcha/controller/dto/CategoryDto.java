@@ -11,5 +11,8 @@ public class CategoryDto {
     private int chickenReviewCount;
     private int pizzaReviewCount;
     private int burgerReviewCount;
+    private int tteokReviewCount;
+    private int pastaReviewCount;
+    private int sideReviewCount;
 
 }

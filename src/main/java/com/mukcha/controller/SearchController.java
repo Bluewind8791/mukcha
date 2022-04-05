@@ -27,13 +27,13 @@ public class SearchController {
         @RequestParam(required = false) String keyword,
         Model model
     ) {
-        model.addAttribute("foodSearchList", 
+        model.addAttribute("foodList", 
             foodRepository.findAll(Search.foodSearching(keyword))
         );
-        model.addAttribute("companySearchList", 
+        model.addAttribute("companyList", 
             companyRepository.findAll(Search.companySearching(keyword))
         );
-        model.addAttribute("userSearchList", 
+        model.addAttribute("userList", 
             userRepository.findAll(Search.userSearching(keyword))
         );
         model.addAttribute("searchWord", keyword);

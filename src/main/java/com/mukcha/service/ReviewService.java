@@ -80,6 +80,18 @@ public class ReviewService {
                     categoryDto.setBurgerReviewCount(
                         reviews.stream().filter(r -> r.getFood().getCategory().equals(c)).collect(Collectors.toList()).size()
                     );
+                case TTEOKBOKKI:
+                    categoryDto.setTteokReviewCount(
+                        reviews.stream().filter(r -> r.getFood().getCategory().equals(c)).collect(Collectors.toList()).size()
+                    );
+                case PASTA:
+                    categoryDto.setTteokReviewCount(
+                        reviews.stream().filter(r -> r.getFood().getCategory().equals(c)).collect(Collectors.toList()).size()
+                    );
+                case SIDEMENU:
+                    categoryDto.setTteokReviewCount(
+                        reviews.stream().filter(r -> r.getFood().getCategory().equals(c)).collect(Collectors.toList()).size()
+                    );
                 default:
                     break;
             }

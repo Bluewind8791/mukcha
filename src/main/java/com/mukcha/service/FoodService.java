@@ -218,15 +218,25 @@ public class FoodService {
     }
 
     // 각 회사별 메뉴들을 카테고리 별로 가져온다
-    public Map<String, List<Food>> findAllByCategorySortByCompany(Category category) {
-        Map<String, List<Food>> foodMap = new HashMap<>();
+    public Map<String, List<FoodDto>> findAllByCategorySortByCompany(Category category) {
+        Map<String, List<FoodDto>> foodMap = new HashMap<>();
         for (Company company : companyRepository.findAll()) {
-            foodMap.put(company.getName(),
-                foodRepository.findAllByCompanyAndCategory(company, category)
-            );
+            List<Food> foods = foodRepository.findAllByCompanyAndCategory(company, category);
+            List<FoodDto> foodDtoList = new ArrayList<>();
+            foods.stream().forEach(food -> {
+                FoodDto foodDto = new FoodDto();
+                foodDto.setFoodId(food.getFoodId());
+                foodDto.setFoodName(food.getName());
+                foodDto.setCompanyName(food.getCompany().getName());
+                foodDto.setFoodImage(food.getImage());
+                foodDtoList.add(foodDto);
+            });
+            foodMap.put(company.getName(), foodDtoList);
         }
         return foodMap;
     }
+
+
 
 
 

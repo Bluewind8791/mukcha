@@ -13,53 +13,60 @@
     margin-right: auto;
 }
 
+/* Slider */
+.carousel-control-prev, .carousel-control-next {
+    margin-bottom: 30px;
+}
 
-/* 슬라이더 */
-.MultiCarousel { 
-    float: left; 
-    overflow: hidden; 
-    padding: 15px; 
-    width: 100%; 
-    position:relative; 
+.carousel-control-prev-icon {
+    background-image: url("data:image/svg+xml;charset=utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='%23000' viewBox='0 0 8 8'%3E%3Cpath d='M5.25 0l-4 4 4 4 1.5-1.5-2.5-2.5 2.5-2.5-1.5-1.5z'/%3E%3C/svg%3E");
 }
-.MultiCarousel
-.MultiCarousel-inner { 
-    transition: 1s ease all; 
-    float: left; 
+.carousel-control-next-icon {
+    background-image: url("data:image/svg+xml;charset=utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='%23000' viewBox='0 0 8 8'%3E%3Cpath d='M2.75 0l-1.5 1.5 2.5 2.5-2.5 2.5 1.5 1.5 4-4-4-4z'/%3E%3C/svg%3E");
 }
-.MultiCarousel
-.MultiCarousel-inner
-.item { 
-    float: left;
+
+
+.menu_image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
 }
-.MultiCarousel
-.MultiCarousel-inner
-.item > div { 
-    padding: 0px; 
-    margin: 0px;
-    margin-right: 10px;
-    /* text-align: center;  */
-    /* background:#f1f1f1;  */
-    /* color:#666; */
+
+.menu_list {
+    list-style: none;
+    padding: 0px;
+
 }
-.MultiCarousel .leftLst, 
-.MultiCarousel .rightLst { 
-    position: absolute; 
-    top: calc(50% - 50px);
-    border-radius: 50%;
-    background: whitesmoke;
+
+/* 메뉴 3개 */
+@media screen and (min-width: 570px) {
+    .menu_list > li {
+        width: 20%;
+    }
+    .menu_image_box {
+        height: 220px;
+        overflow: hidden;
+    }
 }
-.MultiCarousel 
-.leftLst { 
-    left:0; 
+
+/* 메뉴 4개 */
+@media screen and (min-width: 1000px) {
+    .menu_list > li {
+        width: 20%;
+    }
+    .menu_image_box {
+        height: 200px;
+        overflow: hidden;
+    }
 }
-.MultiCarousel 
-.rightLst { 
-    right:0; 
-}
-.MultiCarousel .leftLst.over, 
-.MultiCarousel .rightLst.over {
-    display: none;
-    pointer-events: none;
-    background: white;
+
+/* 메뉴 5개 */
+@media screen and (min-width: 1400px) {
+    .menu_list > li {
+        width: 20%;
+    }
+    .menu_image_box {
+        height: 170px;
+        overflow: hidden;
+    }
 }
