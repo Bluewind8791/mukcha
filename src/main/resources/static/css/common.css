@@ -35,22 +35,33 @@
 .menu_list {
     list-style: none;
     padding: 0px;
-
 }
 
 /* 메뉴 3개 */
-@media screen and (min-width: 570px) {
+@media screen and (min-width: 300px) {
+    h6, .h6 {
+        font-size: 12px;
+    }
+    .small {
+        font-size: 7px;
+    }
     .menu_list > li {
         width: 20%;
     }
     .menu_image_box {
-        height: 220px;
+        height: 100px;
         overflow: hidden;
     }
 }
 
 /* 메뉴 4개 */
 @media screen and (min-width: 1000px) {
+    h6, .h6 {
+        font-size: 1rem;
+    }
+    .small {
+        font-size: .875em;
+    }
     .menu_list > li {
         width: 20%;
     }

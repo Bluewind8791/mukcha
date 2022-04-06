@@ -14,7 +14,7 @@
   <div class="container mt-5">
     <div class="h4 fw-bold mb-4">별점순 TOP 10</div>
 
-      <div class="row mx-auto my-auto justify-content-center">
+      <div class="justify-content-center">
         <div id="ScoreTopTenCarousel" class="carousel slide" data-bs-ride="carousel">
             <div class="carousel-inner" role="listbox">
                 <div class="carousel-item active">
@@ -25,17 +25,15 @@
                           <img class="menu_image mb-2" th:src="${f.foodImage}">
                         </div>
                       </a>
-                      <div class="ms-2">
-                        <a style="text-decoration: none;" th:title="${f.companyName}" th:href="'/company/'+${f.companyId}">
-                          <div class="text-muted small" th:text="${f.companyName}">회사이름</div>
-                        </a>
-                        <a style="text-decoration: none;" th:title="${f.foodName}" th:href="'/menu/'+${f.foodId}">
-                          <h6 class="menu-name text-dark fw-bold" th:text="${f.foodName}">메뉴이름</h6>
-                        </a>
-                        <div class="small fw-bold" style="color: tomato;">
-                          <div class="me-1" style="float: left;">평균 별점 ★</div>
-                          <div class="fw-bold" style="float: left;" th:text="${f.averageScore}">평균별점</div>
-                        </div>
+                      <a style="text-decoration: none;" th:title="${f.companyName}" th:href="'/company/'+${f.companyId}">
+                        <div class="text-muted small" th:text="${f.companyName}">회사이름</div>
+                      </a>
+                      <a style="text-decoration: none;" th:title="${f.foodName}" th:href="'/menu/'+${f.foodId}">
+                        <h6 class="menu-name text-dark fw-bold" th:text="${f.foodName}">메뉴이름</h6>
+                      </a>
+                      <div class="small fw-bold" style="color: tomato;">
+                        <span class="me-1" style="float: left;">평균 별점 ★</span>
+                        <span class="fw-bold" style="float: left;" th:text="${f.averageScore}">평균별점</span>
                       </div>
                     </li>
                   </ul>
@@ -49,17 +47,15 @@
                           <img class="menu_image mb-2" th:src="${f.foodImage}">
                         </div>
                       </a>
-                      <div class="ms-2">
-                        <a style="text-decoration: none;" th:title="${f.companyName}" th:href="'/company/'+${f.companyId}">
-                          <div class="text-muted small" th:text="${f.companyName}">회사이름</div>
-                        </a>
-                        <a style="text-decoration: none;" th:title="${f.foodName}" th:href="'/menu/'+${f.foodId}">
-                          <h6 class="menu-name text-dark fw-bold" th:text="${f.foodName}">메뉴이름</h6>
-                        </a>
-                        <div class="small fw-bold" style="color: tomato;">
-                          <div class="me-1" style="float: left;">평균 별점 ★</div>
-                          <div class="fw-bold" style="float: left;" th:text="${f.averageScore}">평균별점</div>
-                        </div>
+                      <a style="text-decoration: none;" th:title="${f.companyName}" th:href="'/company/'+${f.companyId}">
+                        <div class="text-muted small" th:text="${f.companyName}">회사이름</div>
+                      </a>
+                      <a style="text-decoration: none;" th:title="${f.foodName}" th:href="'/menu/'+${f.foodId}">
+                        <h6 class="menu-name text-dark fw-bold" th:text="${f.foodName}">메뉴이름</h6>
+                      </a>
+                      <div class="small fw-bold" style="color: tomato;">
+                        <span class="me-1" style="float: left;">평균 별점 ★</span>
+                        <span class="fw-bold" style="float: left;" th:text="${f.averageScore}">평균별점</span>
                       </div>
                     </li>
                   </ul>
@@ -80,10 +76,9 @@
   <div class="container mt-5">
     <div class="h4 fw-bold mb-4">최신 메뉴</div>
 
-    <div class="row mx-auto my-auto justify-content-center">
+    <div class="justify-content-center">
       <div id="NewestTopTenCarousel" class="carousel slide" data-bs-ride="carousel">
           <div class="carousel-inner" role="listbox">
-
               <div class="carousel-item active">
                 <ul class="menu_list row">
                   <li th:each="f, i : ${newestTen}" th:if="${i.count} <= 5">
@@ -92,17 +87,15 @@
                         <img class="menu_image mb-2" th:src="${f.foodImage}">
                       </div>
                     </a>
-                    <div class="ms-2">
-                      <a style="text-decoration: none;" th:title="${f.companyName}" th:href="'/company/'+${f.companyId}">
-                        <div class="text-muted small" th:text="${f.companyName}">회사이름</div>
-                      </a>
-                      <a style="text-decoration: none;" th:title="${f.foodName}" th:href="'/menu/'+${f.foodId}">
-                        <h6 class="menu-name text-dark fw-bold" th:text="${f.foodName}">메뉴이름</h6>
-                      </a>
-                      <div class="small fw-bold" style="color: tomato;">
-                        <div class="me-1" style="float: left;">평균 별점 ★</div>
-                        <div class="fw-bold" style="float: left;" th:text="${f.averageScore}">평균별점</div>
-                      </div>
+                    <a style="text-decoration: none;" th:title="${f.companyName}" th:href="'/company/'+${f.companyId}">
+                      <div class="text-muted small" th:text="${f.companyName}">회사이름</div>
+                    </a>
+                    <a style="text-decoration: none;" th:title="${f.foodName}" th:href="'/menu/'+${f.foodId}">
+                      <h6 class="menu-name text-dark fw-bold" th:text="${f.foodName}">메뉴이름</h6>
+                    </a>
+                    <div class="small fw-bold" style="color: tomato;">
+                      <span class="me-1" style="float: left;">평균 별점 ★</span>
+                      <span class="fw-bold" style="float: left;" th:text="${f.averageScore}">평균별점</span>
                     </div>
                   </li>
                 </ul>
@@ -116,17 +109,15 @@
                         <img class="menu_image mb-2" th:src="${f.foodImage}">
                       </div>
                     </a>
-                    <div class="ms-2">
-                      <a style="text-decoration: none;" th:title="${f.companyName}" th:href="'/company/'+${f.companyId}">
-                        <div class="text-muted small" th:text="${f.companyName}">회사이름</div>
-                      </a>
-                      <a style="text-decoration: none;" th:title="${f.foodName}" th:href="'/menu/'+${f.foodId}">
-                        <h6 class="menu-name text-dark fw-bold" th:text="${f.foodName}">메뉴이름</h6>
-                      </a>
-                      <div class="small fw-bold" style="color: tomato;">
-                        <div class="me-1" style="float: left;">평균 별점 ★</div>
-                        <div class="fw-bold" style="float: left;" th:text="${f.averageScore}">평균별점</div>
-                      </div>
+                    <a style="text-decoration: none;" th:title="${f.companyName}" th:href="'/company/'+${f.companyId}">
+                      <div class="text-muted small" th:text="${f.companyName}">회사이름</div>
+                    </a>
+                    <a style="text-decoration: none;" th:title="${f.foodName}" th:href="'/menu/'+${f.foodId}">
+                      <h6 class="menu-name text-dark fw-bold" th:text="${f.foodName}">메뉴이름</h6>
+                    </a>
+                    <div class="small fw-bold" style="color: tomato;">
+                      <span class="me-1" style="float: left;">평균 별점 ★</span>
+                      <span class="fw-bold" style="float: left;" th:text="${f.averageScore}">평균별점</span>
                     </div>
                   </li>
                 </ul>
