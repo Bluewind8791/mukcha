@@ -88,19 +88,14 @@ public class ReviewServiceTest extends WithTest {
     }
 
     @Test
-    @DisplayName("4. 점수를 삭제하면 리뷰가 삭제된다.")
+    @DisplayName("4. 사용자가 해당 메뉴에 달았던 리뷰를 삭제한다.")
     void test_4() {
-        reviewTestHelper.createReview(food, user);
-
-        Food targetFood = foodService.findFood(food.getFoodId()).orElseThrow(() -> 
-            new IllegalArgumentException("해당 메뉴를 찾을 수 없습니다.")
-        );
-        // 현재 로그인한 유저가 작성한 해당 음식의 리뷰를 찾는다.
-        Review targetReview = reviewService.findReviewByFoodIdAndUserId(targetFood.getFoodId(), user.getUserId());
+        // set
+        Review review = reviewTestHelper.createReview(food, user);
         // delete
-        reviewService.deleteReview(targetReview);
-
-        assertFalse(reviewService.findReview(targetReview.getReviewId()).isPresent());
+        reviewService.deleteReview(food.getFoodId(), user.getUserId());
+        // assert
+        assertFalse(reviewService.findReview(review.getReviewId()).isPresent());
     }
 
     @Test

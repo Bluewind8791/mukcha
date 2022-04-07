@@ -49,7 +49,7 @@ public class Review extends BaseTimeEntity {
 
     // review -> food (연관관계 주인)
     @ManyToOne
-    @JoinColumn(name = "food_id", nullable = false)
+    @JoinColumn(name = "food_id", nullable = true)
     private Food food;
 
     // review -> user (연관관계 주인)
@@ -66,15 +66,3 @@ public class Review extends BaseTimeEntity {
     }
 
 }
-
-
-/**
-    public void setFood(Food food) {
-        // 기존 리뷰와의 관계 제거
-        if (this.food != null) {
-            this.food.getReviews().remove(this);
-        }
-        this.food = food;
-        food.getReviews().add(this);
-    }
-*/

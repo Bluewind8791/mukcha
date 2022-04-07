@@ -5,7 +5,7 @@ import com.mukcha.config.dto.LoginUser;
 import com.mukcha.config.dto.SessionUser;
 import com.mukcha.controller.dto.ReviewDto;
 import com.mukcha.controller.dto.UserDto;
-import com.mukcha.domain.Food;
+import com.mukcha.domain.ErrorMessage;
 import com.mukcha.domain.Review;
 import com.mukcha.service.FoodService;
 import com.mukcha.service.ReviewService;
@@ -49,7 +49,9 @@ public class FoodController {
             model.addAttribute("login_user_id", user.getUserId());
             model.addAttribute("login_user_nickname", user.getNickname());
             try { // 로그인한 유저가 리뷰를 적었다면
-                Review writtenReview = reviewService.findReviewByFoodIdAndUserId(foodId, user.getUserId());
+                Review writtenReview = reviewService.findReviewByFoodIdAndUserId(foodId, user.getUserId()).orElseThrow(() ->
+                    new IllegalArgumentException(ErrorMessage.REVIEW_NOT_FOUND.getMessage())
+                );
                 log.info("writtenReview: "+writtenReview);
                 model.addAttribute("isReviewed", "true");
                 model.addAttribute("writtenReview", writtenReview);
@@ -102,7 +104,6 @@ public class FoodController {
         return "redirect:/menu/"+foodId;
     }
 
-
     // 먹은 날짜를 저장
     @PostMapping(value = "/api/eaten/{foodId}")
     public String setEatenDate(
@@ -120,19 +121,16 @@ public class FoodController {
     }
 
 
-    // 리뷰를 삭제
-    @DeleteMapping(value = "/review/{foodId}")
-    public String deleteScore(@PathVariable Long foodId, @LoginUser SessionUser sessionUser) {
-        Food targetFood = foodService.findFood(foodId).orElseThrow(() -> 
-            new IllegalArgumentException("해당 메뉴를 찾을 수 없습니다.")
-        );
+    // 리뷰 삭제
+    @DeleteMapping(value = "/api/review/{foodId}")
+    public String deleteScore(
+        @PathVariable Long foodId,
+        @LoginUser SessionUser sessionUser
+    ) {
         if (sessionUser != null) {
             UserDto user = userService.getSessionUserInfo(sessionUser);
-            // 현재 로그인한 유저가 작성한 해당 음식의 리뷰를 찾는다.
-            Review targetReview = reviewService.findReviewByFoodIdAndUserId(foodId, user.getUserId());
             // 해당 음식의 리뷰를 삭제한다.
-            reviewService.deleteReview(targetReview);
-            log.info(">>> 회원 <"+user.getEmail()+"> 님의 <"+targetFood.getName()+"> 리뷰가 삭제 처리되었습니다.");
+            reviewService.deleteReview(foodId, user.getUserId());
         }
         return "redirect:/menu/"+foodId;
     }
