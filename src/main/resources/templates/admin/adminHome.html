@@ -1,207 +1,212 @@
 <!DOCTYPE html>
 <html lang="ko" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org"
-    xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{layout/layout}">
+  xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{layout/layout}">
 
 
 <div layout:fragment="content">
 
-    <style>        
-        #menu_image_url, #logo_url{
-            overflow: hidden;
-            text-overflow: ellipsis;
-            white-space: nowrap;
-        }
-    </style>
+  <style>
+    #menu_image_url,
+    #logo_url {
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+  </style>
 
-    <div class="container-fluid p-5 bg-danger text-white text-center">
-        <h2>관리자 페이지</h2>
+  <div class="container-fluid p-5 bg-danger text-white text-center">
+    <h2>관리자 페이지</h2>
+  </div>
+
+  <!-- Buttons -->
+  <div class="container p-5 text-center">
+    <button type="button" class="btn btn-primary w-50" data-bs-toggle="modal" data-bs-target="#companyModal">
+      회사 추가하기
+    </button>
+    <button type="button" class="btn btn-primary w-50 mt-3" data-bs-toggle="modal" data-bs-target="#menuModal">
+      메뉴 추가하기
+    </button>
+    <a href="/admin/crawling" class="btn btn-success w-50 mt-3 mb-3">크롤링 시작</a>
+    <p class="h4 mt-3 fw-bold">메뉴,회사 수정 삭제는 전체 리스트 보기를 눌러주세요</p>
+  </div>
+
+  <!-- 회사 추가 Modal -->
+  <div class="modal" id="companyModal">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <!-- Modal Header -->
+        <div class="modal-header">
+          <h4 class="modal-title">회사 추가</h4>
+          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        </div>
+        <form th:action="@{/admin/company}" method="POST">
+          <!-- Modal body -->
+          <div class="modal-body">
+            <div class="mb-3 mt-3">
+              <label>회사명</label>
+              <input class="form-control" placeholder="회사명을 적어주세요" name="companyName">
+            </div>
+            <div class="mb-3">
+              <label>회사 로고 이미지</label>
+              <input class="form-control" placeholder="회사 로고 URL를 넣어주세요" name="companyLogo">
+            </div>
+          </div>
+          <!-- Modal footer -->
+          <div class="modal-footer">
+            <button type="submit" class="btn btn-primary">Submit</button>
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+          </div>
+        </form>
+      </div>
     </div>
+  </div> <!-- end of 회사 추가 modal -->
 
-    <!-- Buttons -->
-    <div class="container p-5 text-center">
-        <button type="button" class="btn btn-primary w-50" data-bs-toggle="modal" data-bs-target="#companyModal">
-            회사 추가하기
-        </button>
-        <button type="button" class="btn btn-primary w-50 mt-3" data-bs-toggle="modal" data-bs-target="#menuModal">
-            메뉴 추가하기
-        </button>
-        <a href="/admin/crawling" class="btn btn-success w-50 mt-3 mb-3">크롤링 시작</a>
-        <p class="h4 mt-3 fw-bold">메뉴,회사 수정 삭제는 전체 리스트 보기를 눌러주세요</p>
+  <!-- 메뉴 추가 Modal -->
+  <div class="modal" id="menuModal">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <!-- Modal Header -->
+        <div class="modal-header">
+          <h4 class="modal-title">메뉴 추가</h4>
+          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        </div>
+        <form th:action="@{/admin/menu}" method="POST">
+          <!-- Modal body -->
+          <div class="modal-body">
+            <div class="mb-3 mt-3">
+              <label>메뉴 이름</label>
+              <input class="form-control" placeholder="메뉴 이름을 적어주세요" name="foodName">
+            </div>
+            <div class="mb-3">
+              <label>메뉴 이미지</label>
+              <input class="form-control" placeholder="메뉴 이미지 URL를 넣어주세요" name="foodImage">
+            </div>
+            <div class="mb-3">
+              <label>카테고리</label>
+              <select class="form-select" name="category">
+                <option>선택해주세요</option>
+                <option th:each="category : ${categoryList}" th:value="${category}" th:text="${category}">카테고리
+                </option>
+              </select>
+            </div>
+            <div class="mb-3">
+              <label>회사명</label>
+              <select class="form-select" name="companyName">
+                <option>선택해주세요</option>
+                <option th:each="company : ${companyList}" th:value="${company.name}" th:text="${company.name}">회사명
+                </option>
+              </select>
+            </div>
+          </div>
+          <!-- Modal footer -->
+          <div class="modal-footer">
+            <button type="submit" class="btn btn-primary">Submit</button>
+            <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Close</button>
+          </div>
+        </form>
+      </div>
     </div>
+  </div> <!-- end of 메뉴 추가 modal -->
 
-    <!-- 회사 추가 Modal -->
-    <div class="modal" id="companyModal">
-        <div class="modal-dialog">
-            <div class="modal-content">
+
+  <!-- Food List -->
+  <div class="container mt-3 mb-5">
+    <h2><strong>Menu List</strong></h2>
+    <table class="table table-hover">
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>카테고리</th>
+          <th>회사</th>
+          <th>이름</th>
+          <th>이미지</th>
+          <th>Update Time</th>
+          <th>Create Time</th>
+          <th>Image URL</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr th:each="f : ${foodList}">
+          <td><span th:text="${f.foodId}">ID</span></td>
+          <td><span th:text="${f.category}">category</span></td>
+          <td><span th:text="${f.company.name}">companyName</span></td>
+          <td><span th:text="${f.name}">Name</span></td>
+          <td><img th:src="${f.image}" height="50" data-bs-toggle="modal"
+              th:data-bs-target="'#fImageModal'+${f.foodId}"></td>
+          <div class="modal" th:id="'fImageModal'+${f.foodId}">
+            <div class="modal-dialog">
+              <div class="modal-content">
                 <!-- Modal Header -->
                 <div class="modal-header">
-                    <h4 class="modal-title">회사 추가</h4>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                  <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                 </div>
-                <form th:action="@{/admin/company}" method="POST">
-                    <!-- Modal body -->
-                    <div class="modal-body">
-                        <div class="mb-3 mt-3">
-                            <label>회사명</label>
-                            <input class="form-control" placeholder="회사명을 적어주세요" name="companyName">
-                        </div>
-                        <div class="mb-3">
-                            <label>회사 로고 이미지</label>
-                            <input class="form-control" placeholder="회사 로고 URL를 넣어주세요" name="companyLogo">
-                        </div>
-                    </div>
-                    <!-- Modal footer -->
-                    <div class="modal-footer">
-                        <button type="submit" class="btn btn-primary">Submit</button>
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                    </div>
-                </form>
+                <!-- Modal body -->
+                <div class="modal-body">
+                  <img class="img-fluid" th:src="${f.image}">
+                </div>
+              </div>
             </div>
-        </div>
-    </div> <!-- end of 회사 추가 modal -->
+          </div>
+          <td><span th:text="${f.updatedAt}">updatedAt</span></td>
+          <td><span th:text="${f.createdAt}">createdAt</span></td>
+          <td>
+            <div th:text="${f.image}" style="width: 100px;" id="menu_image_url">MenuImageUrl</div>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+    <!-- 더보기 -->
+    <a type="button" class="btn btn-light text-dark w-100" th:href="@{/admin/menus/}">전체 메뉴 리스트 보기</a>
+  </div>
 
-    <!-- 메뉴 추가 Modal -->
-    <div class="modal" id="menuModal">
-        <div class="modal-dialog">
-            <div class="modal-content">
+  <!-- Company List -->
+  <div class="container mt-3 mb-5">
+    <h2><strong>Company List</strong></h2>
+    <p></p>
+    <table class="table table-hover">
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>이름</th>
+          <th>Logo</th>
+          <th>Update Time</th>
+          <th>Create Time</th>
+          <th>Logo Image URL</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr th:each="c : ${companyList}">
+          <td><span th:text="${c.companyId}">ID</span></td>
+          <td><span th:text="${c.name}">companyName</span></td>
+          <td><img th:src="${c.image}" height="30" data-bs-toggle="modal"
+              th:data-bs-target="'#cLogoModal'+${c.companyId}"></td>
+          <div class="modal" th:id="'cLogoModal'+${c.companyId}">
+            <div class="modal-dialog">
+              <div class="modal-content">
                 <!-- Modal Header -->
                 <div class="modal-header">
-                    <h4 class="modal-title">메뉴 추가</h4>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                  <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                 </div>
-                <form th:action="@{/admin/menu}" method="POST">
-                    <!-- Modal body -->
-                    <div class="modal-body">
-                        <div class="mb-3 mt-3">
-                            <label>메뉴 이름</label>
-                            <input class="form-control" placeholder="메뉴 이름을 적어주세요" name="foodName">
-                        </div>
-                        <div class="mb-3">
-                            <label>메뉴 이미지</label>
-                            <input class="form-control" placeholder="메뉴 이미지 URL를 넣어주세요" name="foodImage">
-                        </div>
-                        <div class="mb-3">
-                            <label>카테고리</label>
-                            <select class="form-select" name="category">
-                                <option>선택해주세요</option>
-                                <option th:each="val : ${categoryList}" th:value="${val}" th:text="${val}">카테고리
-                                </option>
-                            </select>
-                        </div>
-                        <div class="mb-3">
-                            <label>회사명</label>
-                            <select class="form-select" name="company">
-                                <option>선택해주세요</option>
-                                <option th:each="val : ${companyList}" th:value="${val.name}" th:text="${val.name}">회사명
-                                </option>
-                            </select>
-                        </div>
-                    </div>
-                    <!-- Modal footer -->
-                    <div class="modal-footer">
-                        <button type="submit" class="btn btn-primary">Submit</button>
-                        <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Close</button>
-                    </div>
-                </form>
+                <!-- Modal body -->
+                <div class="modal-body">
+                  <img class="img-fluid" th:src="${c.image}">
+                </div>
+              </div>
             </div>
-        </div>
-    </div> <!-- end of 메뉴 추가 modal -->
-
-
-    <!-- Food List -->
-    <div class="container mt-3 mb-5">
-        <h2><strong>Menu List</strong></h2>
-        <table class="table table-hover">
-            <thead>
-                <tr>
-                    <th>ID</th>
-                    <th>카테고리</th>
-                    <th>회사</th>
-                    <th>이름</th>
-                    <th>이미지</th>
-                    <th>Update Time</th>
-                    <th>Create Time</th>
-                    <th>Image URL</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr th:each="f : ${foodList}">
-                    <td><span th:text="${f.foodId}">ID</span></td>
-                    <td><span th:text="${f.category}">category</span></td>
-                    <td><span th:text="${f.company.name}">companyName</span></td>
-                    <td><span th:text="${f.name}">Name</span></td>
-                    <td><img th:src="${f.image}" height="50" data-bs-toggle="modal" th:data-bs-target="'#fImageModal'+${f.foodId}"></td>
-                    <div class="modal" th:id="'fImageModal'+${f.foodId}">
-                        <div class="modal-dialog">
-                            <div class="modal-content">
-                                <!-- Modal Header -->
-                                <div class="modal-header">
-                                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                                </div>                
-                                <!-- Modal body -->
-                                <div class="modal-body">
-                                    <img class="img-fluid" th:src="${f.image}">
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <td><span th:text="${f.updatedAt}">updatedAt</span></td>
-                    <td><span th:text="${f.createdAt}">createdAt</span></td>
-                    <td><div th:text="${f.image}" style="width: 100px;" id="menu_image_url" >MenuImageUrl</div></td>
-                </tr>
-            </tbody>
-        </table>
-        <!-- 더보기 -->
-        <a type="button" class="btn btn-light text-dark w-100" th:href="@{/admin/menus/}" >전체 메뉴 리스트 보기</a>
-    </div>
-
-    <!-- Company List -->
-    <div class="container mt-3 mb-5">
-        <h2><strong>Company List</strong></h2>
-        <p></p>
-        <table class="table table-hover">
-            <thead>
-                <tr>
-                    <th>ID</th>
-                    <th>이름</th>
-                    <th>Logo</th>
-                    <th>Update Time</th>
-                    <th>Create Time</th>
-                    <th>Logo Image URL</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr th:each="c : ${companyList}">
-                    <td><span th:text="${c.companyId}">ID</span></td>
-                    <td><span th:text="${c.name}">companyName</span></td>
-                    <td><img th:src="${c.image}" height="30" data-bs-toggle="modal" th:data-bs-target="'#cLogoModal'+${c.companyId}"></td>
-                    <div class="modal" th:id="'cLogoModal'+${c.companyId}">
-                        <div class="modal-dialog">
-                            <div class="modal-content">
-                                <!-- Modal Header -->
-                                <div class="modal-header">
-                                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                                </div>                
-                                <!-- Modal body -->
-                                <div class="modal-body">
-                                    <img class="img-fluid" th:src="${c.image}">
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <td><span th:text="${c.updatedAt}">updatedAt</span></td>
-                    <td><span th:text="${c.createdAt}">createdAt</span></td>
-                    <td><div th:text="${c.image}" style="width: 300px;" id="logo_url" >LogoImageUrl</div></td>
-                </tr>
-            </tbody>
-        </table>
-        <!-- 더보기 -->
-        <a type="button" class="btn btn-light text-dark w-100" th:href="@{/admin/companies/}" >전체 회사 리스트 보기</a>
-    </div>
+          </div>
+          <td><span th:text="${c.updatedAt}">updatedAt</span></td>
+          <td><span th:text="${c.createdAt}">createdAt</span></td>
+          <td>
+            <div th:text="${c.image}" style="width: 300px;" id="logo_url">LogoImageUrl</div>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+    <!-- 더보기 -->
+    <a type="button" class="btn btn-light text-dark w-100" th:href="@{/admin/companies/}">전체 회사 리스트 보기</a>
+  </div>
 
 
 </div> <!-- end of container -->
 
 </html>
-
-

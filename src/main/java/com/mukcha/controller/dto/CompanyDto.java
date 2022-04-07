@@ -1,5 +1,7 @@
 package com.mukcha.controller.dto;
 
+import java.time.LocalDateTime;
+
 import javax.validation.constraints.NotBlank;
 
 import lombok.Getter;
@@ -14,5 +16,7 @@ public class CompanyDto {
     private String companyName;
 
     private String companyLogo;
+
+    private LocalDateTime companyUpdatedAt;
 
 }

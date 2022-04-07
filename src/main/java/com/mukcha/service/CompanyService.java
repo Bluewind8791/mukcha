@@ -1,7 +1,6 @@
 package com.mukcha.service;
 
 
-import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
@@ -50,22 +49,22 @@ public class CompanyService {
         return companyRepository.findByName(companyName);
     }
 
-    // 가장 최신의 10개 회사 가져오기
+    // 가장 최신의 10개 회사 가져오기 for admin controller
     @Transactional(readOnly = true)
     public List<Company> findCompanyTopTenNewest() {
         // get
-        List<Company> targetCompanyList = findAll();
+        List<Company> companies = findAll();
         // sort
-        if (targetCompanyList.size() > 2) {
-            Collections.sort(
-                targetCompanyList, Comparator.comparing(Company::getCreatedAt).reversed()
+        if (companies.size() > 2) {
+            companies.stream().sorted(
+                Comparator.comparing(Company::getUpdatedAt)).collect(Collectors.toList()
             );
         }
         // get top 10
-        if (targetCompanyList.size() < 10) {
-            return targetCompanyList;
+        if (companies.size() < 10) {
+            return companies;
         } else {
-            return targetCompanyList.stream().limit(10).collect(Collectors.toList());
+            return companies.stream().limit(10).collect(Collectors.toList());
         }
     }
 
