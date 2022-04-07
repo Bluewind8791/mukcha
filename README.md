@@ -8,7 +8,7 @@
 
 ## 설명
 
-- 해당 프로젝트는 Spring Boot, JPA, Bootstrap5 및 Thymeleaf 등의 기술을 메인으로 사용하여 만든 웹페이지 프로젝트입니다.
+- 해당 프로젝트는 Spring Boot, JPA, Bootstrap5 및 Thymeleaf 등의 기술을 메인으로 사용하여 만든 웹 페이지 프로젝트입니다.
 - 수많은 프렌차이즈의 각 프렌차이즈의 메뉴들을 DB에 추가하여, 사용자는 그 메뉴들을 각각 평가하고 코멘트 등의 방법으로 기록할 수 있습니다.
 
 ## 서비스 구현 목표
@@ -21,18 +21,26 @@
 - Spring Security 기술을 통한 보안 및 권한별 접근 페이지 차별화.
 - JPA Specification 기술을 사용한 검색 기능.
 - 회원에 한하여 메뉴에 대하여 평가(5점 만점), 코멘트, 먹은 날짜 기록 기능.
+- AWS EC2를 사용한 서버 구축.
+- AWS RDS 서버 DB 구축 (MySQL)
+- Travis CI 와 CodeDeploy를 이용한 자동 배포 시스템.
+- Nginx를 이용한 무중단 배포.
 
 ### *(구현예정)*
-- 다른 회원이 적은 코멘트에 좋아요 기능.
+
+- 메뉴 정보를 크롤링으로 긁어와서 DB에 저장할 수 있는 기능 (구현중)
+- 다른 회원이 적은 코멘트에 좋아요 기능 추가.
   - 메뉴 상세보기 페이지에서 좋아요 가장 많이 받은순의 코멘트로 정렬
-- 메뉴 정보를 크롤링으로 긁어와서 DB에 저장할 수 있는 기능
-  - 메뉴 이름
-  - 메뉴 사진
+
 
 ## 사용 기술
+
 - Spring Boot
 - Spring Security
 - JPA
 - Bootstrap 5
 - Thymeleaf
 - MySQL
+- Travis CI
+- CodeDeploy
+- Nginx
