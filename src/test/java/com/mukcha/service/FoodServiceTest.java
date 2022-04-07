@@ -60,6 +60,7 @@ public class FoodServiceTest extends WithTest {
     void test_2() {
         // set
         Food food = foodTestHelper.createFood("testFood", company, Category.CHICKEN, "menuImage");
+        companyTestHelper.createCompany("testCompany2", "imageUrl");
         // edit
         foodService.editFoodName(food.getFoodId(), "test2 food");
         foodService.editFoodImage(food.getFoodId(), "imageUrl2");

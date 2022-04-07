@@ -6,6 +6,7 @@ import java.util.List;
 
 import com.mukcha.domain.Category;
 import com.mukcha.domain.Company;
+import com.mukcha.domain.ErrorMessage;
 import com.mukcha.domain.Food;
 import com.mukcha.service.CompanyService;
 import com.mukcha.service.FoodService;
@@ -31,25 +32,158 @@ public class CrawlingController {
     private final FoodService foodService;
     private final CompanyService companyService;
 
-    private final String ERROR_MESSAGE = ">>> 해당 회사의 정보를 불러올 수 없습니다.";
-
-
     @GetMapping(value = "/crawling")
     public String crawling() {
         System.out.println(">>> CRAWLING START <<<");
         빅스타피자();
-        처갓집양념치킨();
-        // kfc();
-        // dominoPizza();
-        // 페리카나();
+        dominoPizza();
+        페리카나();
+        BBQ();
         // 치킨플러스();
-        // BBQ();
+        // kfc();
+        // 처갓집양념치킨();
         return "redirect:/admin";
     }
 
 
+    /**
+     * 메뉴 이름 뒤에 설명들도 함께 딸려오는 문제가 있음.
+    */
+    public void 처갓집양념치킨() {
+        Company company = isCompanyPresent("처갓집양념치킨", "/logo/logo-cheoga.png");
+        Document doc;
+        List<String> urlList = new ArrayList<>();
+        urlList.add("http://www.cheogajip.co.kr/bbs/board.php?bo_table=allmenu&page=1"); // 1페이지
+        urlList.add("http://www.cheogajip.co.kr/bbs/board.php?bo_table=allmenu&page=2"); // 2페이지
+        for (String url : urlList) {
+            try {
+                doc = Jsoup.connect(url).get();
+                // 메뉴 리스트 - #gall_ul > li:nth-child(1)
+                Elements menuList = doc.select("#gall_ul").select("li");
+                for (Element menu : menuList) {
+                    // #gall_ul > li:nth-child(1) > ul > li.gall_text_href
+                    Elements menuElement = menu.select("ul > li.gall_text_href").not("hr").not("ul").not("p").not("h3");
+                    String menuName = menuElement.text();
+                    if (menuName.length() == 0) {
+                        continue;
+                    }
+                    System.out.println(">>> name:"+menuName);
+                    String image = menu.select("ul > li.gall_href > img").attr("src");
+                    System.out.println(">>> image:"+image);
+                    saveFood(menuName, image, company);
+                }
+            } catch (IOException e) {
+                System.out.println(ErrorMessage.COMPANY_NOT_FOUND.getMessage() + company);
+                e.printStackTrace();
+            }
+        }
+    }
 
-    public void 빅스타피자() {
+    /**
+     * <img data-v-c16af4d8="" img-server="" alt="타워버거 세트할인" src="https://kfcapi.inicis.com/kfcs_api_img/KFCS/goods/DL_2275376_20220404112503357.png">
+     * 찍으면 <img img-server="" alt="쏘랑이블랙라벨치킨 5조각" data-v-c16af4d8> 에서 어떻게 url를 가져올 것인가.
+     */
+    public void kfc() {
+        Company company = isCompanyPresent("KFC", "");
+        Document doc;
+        List<String> urlList = new ArrayList<>();
+        urlList.add("https://www.kfckorea.com/menu/burger"); // 버거
+        urlList.add("https://www.kfckorea.com/menu/chicken"); // 치킨
+        try {
+            for (String url : urlList) {
+                doc = Jsoup.connect(url).get();
+                // 메뉴 리스트
+                Elements menuList = doc.select("div[menu-list= ]").select("section > ul > li");
+                for (Element li : menuList) {
+                    // 메뉴 이름을 가져온다 - section > ul > li:nth-child(1) > h3
+                    String foodName = li.select("h3").text();
+                    String[] name = foodName.split(" ");
+                    foodName = name[0].replace("1＋1", "");
+                    // 만약 같은 이름의 메뉴가 없다면
+                    if (!isFoodPresent(foodName)) {
+                        Elements imageE = li.select("div > a > img");
+                        String image = imageE.attr("src");
+                        System.out.println(">>> image: "+image+">");
+                        // 실행 전 체크할 것
+                        saveFood(foodName, image, company);
+                    }
+                }
+            }
+        } catch (IOException e1) {
+            System.out.println(ErrorMessage.COMPANY_NOT_FOUND.getMessage() + company.getName());
+            e1.printStackTrace();
+        }
+    }
+
+    /**
+     * 정확한 image URL는 모달을 통하여 가져올 수 밖에 없어서 못가져올듯
+     */
+    public void 치킨플러스() {
+        Company company = isCompanyPresent("치킨플러스", "");
+
+        List<String> urlList = new ArrayList<>();
+        urlList.add("http://www.chickenplus.co.kr/menu/default.aspx?menu=치킨메뉴");
+        urlList.add("http://www.chickenplus.co.kr/menu/default.aspx?menu=피자메뉴");
+        urlList.add( "http://www.chickenplus.co.kr/menu/default.aspx?menu=떡볶이메뉴");
+        Document doc;
+        try {
+            for (String url : urlList) {
+                doc = Jsoup.connect(url).get();
+                Elements lists = doc.select("div[class=mn_area]").select("div[groupname=MenuItem]");
+                System.out.println(">>> size: "+lists.size());
+                for (Element e : lists) {
+                    // menu name
+                    String foodName = e.select("div.mn1_txt > p.mn1_tit.menu_s_title").text();
+                    System.out.println(">>> food name: "+foodName);
+                    // 만약 같은 이름의 메뉴가 없다면 DB에 저장
+                    saveFood(foodName, "", company);
+                }
+            }
+        } catch (IOException e1) {
+            System.out.println(ErrorMessage.COMPANY_NOT_FOUND.getMessage() + company.getName());
+            e1.printStackTrace();
+        }
+    }
+
+
+    void BBQ() {
+        Document doc;
+        Company company = isCompanyPresent("BBQ", "");
+        String getFoodName;
+        String getImageUrl;
+        List<String> urlList = new ArrayList<>();
+        urlList.add("https://www.bbq.co.kr/menu/menuList.asp?cidx=113&cname=신메뉴"); // 신메뉴
+        urlList.add("https://www.bbq.co.kr/menu/menuList.asp?cidx=114&cname=황올+시그니처");
+        urlList.add("https://www.bbq.co.kr/menu/menuList.asp?cidx=124&cname=1인분+메뉴"); // 1인분 메뉴
+        urlList.add("https://www.bbq.co.kr/menu/menuList.asp?cidx=7&cname=황올한+양념"); // 황올한 양념
+        urlList.add("https://www.bbq.co.kr/menu/menuList.asp?cidx=8&cname=황올한+구이"); // 황올한 구이
+        try {
+            for (String url : urlList) {
+                doc = Jsoup.connect(url).get();
+                Elements boxes = doc.select("div[class=box]");
+                Elements foodName = doc.select("div[class=info]").select("p[class=name]");
+                Elements image = doc.select("div[class=box]").select("div[class=img]").select("a > img");
+                for (int i=0; i<boxes.size(); i++) {
+                    // menu name
+                    getFoodName = foodName.get(i).text();
+                    System.out.println(">>> "+getFoodName);
+                    // image URL
+                    getImageUrl = image.get(i).absUrl("src");
+                    System.out.println(">>> "+getImageUrl);
+                    // 만약 같은 이름의 메뉴가 없고 공백이 아니라면 DB 저장
+                    if (!isFoodPresent(getFoodName) && !getFoodName.isEmpty()) {
+                        saveFood(getFoodName, getImageUrl, company);
+                    }
+                }
+            }
+        } catch (IOException e) {
+            System.out.println(ErrorMessage.COMPANY_NOT_FOUND.getMessage() + company.getName());
+            e.printStackTrace();
+        }
+    }
+
+
+    void 빅스타피자() {
         Company company = isCompanyPresent("빅스타피자", "/logo/logo-bigstar_pizza.png");
         Document doc;
         String url = "http://www.bigstarpizza.co.kr/page/menu";
@@ -83,80 +217,13 @@ public class CrawlingController {
                 }
             }
         } catch (Exception e) {
-            System.out.println(ERROR_MESSAGE + company.getName());
+            System.out.println(ErrorMessage.COMPANY_NOT_FOUND.getMessage() + company.getName());
             e.printStackTrace();
         }
     }
 
 
-    /**
-     * 메뉴 이름 뒤에 설명들도 함께 딸려오는 문제가 있음.
-     */
-    private void 처갓집양념치킨() {
-        Company company = isCompanyPresent("처갓집양념치킨", "/logo/logo-cheoga.png");
-        Document doc;
-        List<String> urlList = new ArrayList<>();
-        urlList.add("http://www.cheogajip.co.kr/bbs/board.php?bo_table=allmenu&page=1"); // 1페이지
-        urlList.add("http://www.cheogajip.co.kr/bbs/board.php?bo_table=allmenu&page=2"); // 2페이지
-        for (String url : urlList) {
-            try {
-                doc = Jsoup.connect(url).get();
-                // 메뉴 리스트 - #gall_ul > li:nth-child(1)
-                Elements menuList = doc.select("#gall_ul").select("li");
-                for (Element menu : menuList) {
-                    // #gall_ul > li:nth-child(1) > ul > li.gall_text_href
-                    Elements menuElement = menu.select("ul > li.gall_text_href").not("hr").not("ul").not("p").not("h3");
-                    String menuName = menuElement.text();
-                    if (menuName.length() == 0) {
-                        continue;
-                    }
-                    System.out.println(">>> name:"+menuName);
-                    String image = menu.select("ul > li.gall_href > img").attr("src");
-                    System.out.println(">>> image:"+image);
-                    saveFood(menuName, image, company);
-                }
-            } catch (IOException e) {
-                System.out.println(ERROR_MESSAGE + company);
-                e.printStackTrace();
-            }
-        }
-    }
-
-
-    private void kfc() {
-        Company company = isCompanyPresent("KFC", "");
-        Document doc;
-        List<String> urlList = new ArrayList<>();
-        urlList.add("https://www.kfckorea.com/menu/burger"); // 버거
-        urlList.add("https://www.kfckorea.com/menu/chicken"); // 치킨
-        try {
-            for (String url : urlList) {
-                doc = Jsoup.connect(url).get();
-                // 메뉴 리스트
-                Elements menuList = doc.select("div[menu-list= ]").select("section > ul > li");
-                for (Element li : menuList) {
-                    // 메뉴 이름을 가져온다 - section > ul > li:nth-child(1) > h3
-                    String foodName = li.select("h3").text();
-                    String[] name = foodName.split(" ");
-                    foodName = name[0].replace("1＋1", "");
-                    // 만약 같은 이름의 메뉴가 없다면
-                    if (!isFoodPresent(foodName)) {
-                        Elements imageE = li.select("div > a > img");
-                        String image = imageE.attr("src");
-                        System.out.println(">>> image: "+image+">");
-                        // 실행 전 체크할 것
-                        saveFood(foodName, image, company);
-                    }
-                }
-            }
-        } catch (IOException e1) {
-            System.out.println(ERROR_MESSAGE + company.getName());
-            e1.printStackTrace();
-        }
-    }
-
-
-    private void dominoPizza() {
+    void dominoPizza() {
         Company company = isCompanyPresent("도미노피자", "/logo/domino.png");
         
         List<String> urlList = new ArrayList<>();
@@ -192,13 +259,12 @@ public class CrawlingController {
                 }
             }
         } catch (IOException e1) {
-            System.out.println(ERROR_MESSAGE + company.getName());
+            System.out.println(ErrorMessage.COMPANY_NOT_FOUND.getMessage() + company.getName());
             e1.printStackTrace();
         }
     }
 
-
-    private void 페리카나() {
+    void 페리카나() {
         Company company = isCompanyPresent("페리카나", "");
 
         List<String> urlList = new ArrayList<>();
@@ -231,74 +297,14 @@ public class CrawlingController {
                 }
             }
         } catch (IOException e1) {
-            System.out.println(ERROR_MESSAGE + company.getName());
+            System.out.println(ErrorMessage.COMPANY_NOT_FOUND.getMessage() + company.getName());
             e1.printStackTrace();
         }
     }
 
 
-    // 정확한 image URL는 모달을 통하여 가져올 수 밖에 없어서 못가져올듯
-    private void 치킨플러스() {
-        Company company = isCompanyPresent("치킨플러스", "");
-
-        List<String> urlList = new ArrayList<>();
-        urlList.add("http://www.chickenplus.co.kr/menu/default.aspx?menu=치킨메뉴");
-        urlList.add("http://www.chickenplus.co.kr/menu/default.aspx?menu=피자메뉴");
-        urlList.add( "http://www.chickenplus.co.kr/menu/default.aspx?menu=떡볶이메뉴");
-        Document doc;
-        try {
-            for (String url : urlList) {
-                doc = Jsoup.connect(url).get();
-                Elements lists = doc.select("div[class=mn_area]").select("div[groupname=MenuItem]");
-                System.out.println(">>> size: "+lists.size());
-                for (Element e : lists) {
-                    // menu name
-                    String foodName = e.select("div.mn1_txt > p.mn1_tit.menu_s_title").text();
-                    System.out.println(">>> food name: "+foodName);
-                    // 만약 같은 이름의 메뉴가 없다면 DB에 저장
-                    saveFood(foodName, "", company);
-                }
-            }
-        } catch (IOException e1) {
-            System.out.println(ERROR_MESSAGE + company.getName());
-            e1.printStackTrace();
-        }
-    }
 
 
-    private void BBQ() {
-        Document doc;
-        Company company = isCompanyPresent("BBQ", "");
-        String getFoodName;
-        String getImageUrl;
-        List<String> urlList = new ArrayList<>();
-        urlList.add("https://www.bbq.co.kr/menu/menuList.asp?cidx=124&cname=1%EC%9D%B8%EB%B6%84+%EB%A9%94%EB%89%B4");
-
-        try {
-            for (String url : urlList) {
-                doc = Jsoup.connect(url).get();
-                Elements boxes = doc.select("div[class=box]");
-                Elements foodName = doc.select("div[class=info]").select("p[class=name]");
-                Elements image = doc.select("div[class=box]").select("div[class=img]").select("a > img");
-        
-                for (int i=0; i<boxes.size(); i++) {
-                    // menu name
-                    getFoodName = foodName.get(i).text();
-                    System.out.println(">>> "+getFoodName);
-                    // image URL
-                    getImageUrl = image.get(i).absUrl("src");
-                    System.out.println(">>> "+getImageUrl);
-                    // 만약 같은 이름의 메뉴가 없다면 DB에 저장
-                    if (!isFoodPresent(getFoodName)) {
-                        saveFood(getFoodName, getImageUrl, company);
-                    }
-                }
-            }
-        } catch (IOException e) {
-            System.out.println(ERROR_MESSAGE + company.getName());
-            e.printStackTrace();
-        }
-    }
 
     // --- METHODS ---
 

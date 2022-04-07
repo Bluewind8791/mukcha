@@ -22,8 +22,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 
+@Slf4j
 @Service
 @Transactional
 @RequiredArgsConstructor
@@ -75,6 +77,7 @@ public class FoodService {
             findFood(foodId).ifPresent(f -> {
                 f.setCompany(com);
                 save(f);
+                log.info("해당 메뉴의 회사를 변경하였습니다."+f.toString());
             });
         });
     }
