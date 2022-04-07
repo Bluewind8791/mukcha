@@ -35,14 +35,17 @@ public class CrawlingController {
     @GetMapping(value = "/crawling")
     public String crawling() {
         System.out.println(">>> CRAWLING START <<<");
-        빅스타피자();
-        dominoPizza();
-        페리카나();
-        BBQ();
         // 치킨플러스();
         // kfc();
         // 처갓집양념치킨();
         return "redirect:/admin";
+    }
+
+    public void dbInitCrawling() {
+        빅스타피자();
+        dominoPizza();
+        페리카나();
+        BBQ();
     }
 
 

@@ -9,11 +9,14 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.web.authentication.rememberme.JdbcTokenRepositoryImpl;
 import org.springframework.security.web.authentication.rememberme.PersistentTokenBasedRememberMeServices;
 import org.springframework.security.web.authentication.rememberme.PersistentTokenRepository;
+import org.springframework.security.web.firewall.DefaultHttpFirewall;
+import org.springframework.security.web.firewall.HttpFirewall;
 
 import lombok.RequiredArgsConstructor;
 
@@ -31,6 +34,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception {
         http
             .csrf().disable()
+            .formLogin().disable()
             .headers(
                 headers -> {
                     headers.frameOptions().disable();// for h2-console
@@ -64,7 +68,17 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         ;
     }
 
+    /**
+     * The request was rejected because the URL contained a potentially malicious String "//"
+     * 더블 슬래쉬 허용 FireWall로 변환
+     */
+    @Override
+    public void configure(WebSecurity web) throws Exception {
+        web.httpFirewall(defaltHttpFireWall());
+    }
 
+
+    // >>> BEANS <<<
     @Bean
     public PersistentTokenBasedRememberMeServices rememberMeServices() {
         PersistentTokenBasedRememberMeServices rememberMeServices = new PersistentTokenBasedRememberMeServices(
@@ -89,28 +103,34 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     }
 
     @Bean
+    public HttpFirewall defaltHttpFireWall() {
+        return new DefaultHttpFirewall();
+    }
+
+
+    @Override
+    protected void configure(AuthenticationManagerBuilder auth) throws Exception {
+        auth.inMemoryAuthentication()
+                .withUser("user")
+                .password("{noop}pass")
+                .roles("USER")
+        ;
+    }
+
+    @Bean
     @Override
     public AuthenticationManager authenticationManagerBean() throws Exception {
         return super.authenticationManagerBean();
     }
 
-    @Override
-    protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-        auth.inMemoryAuthentication()
-                .withUser("Admin")
-                .password("qwe1")
-                .roles("ADMIN")
-        ;
-    }
-    // @Bean
-    // public AuthenticationSuccessHandler successHandler() {
-    //     return new LoginSuccessHandler();
-    // }
-    // @Bean
-    // public AuthenticationFailureHandler failureHandler() {
-    //     return new LoginFailureHandler();
-    // }
-
-
-
 }
+/*
+    @Bean
+    public AuthenticationSuccessHandler successHandler() {
+        return new LoginSuccessHandler();
+    }
+    @Bean
+    public AuthenticationFailureHandler failureHandler() {
+        return new LoginFailureHandler();
+    }
+*/
