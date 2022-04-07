@@ -40,8 +40,8 @@ public class UserController {
         // Login User
         if (sessionUser != null) {
             UserDto user = userService.getSessionUserInfo(sessionUser);
-            model.addAttribute("userId", user.getUserId());
-            model.addAttribute("nickname", user.getNickname());
+            model.addAttribute("login_user_id", user.getUserId());
+            model.addAttribute("login_user_nickname", user.getNickname());
             model.addAttribute("user", user);
         }
         return "user/editForm";
@@ -54,8 +54,8 @@ public class UserController {
         // Login User
         if (sessionUser != null) {
             UserDto user = userService.getSessionUserInfo(sessionUser);
-            model.addAttribute("userId", user.getUserId());
-            model.addAttribute("nickname", user.getNickname());
+            model.addAttribute("login_user_id", user.getUserId());
+            model.addAttribute("login_user_nickname", user.getNickname());
         }
         return "user/deleteForm";
     }

@@ -46,8 +46,8 @@ public class FoodController {
     ) {
         if (sessionUser != null) {
             UserDto user = userService.getSessionUserInfo(sessionUser);
-            model.addAttribute("userId", user.getUserId());
-            model.addAttribute("nickname", user.getNickname());
+            model.addAttribute("login_user_id", user.getUserId());
+            model.addAttribute("login_user_nickname", user.getNickname());
             try { // 로그인한 유저가 리뷰를 적었다면
                 Review writtenReview = reviewService.findReviewByFoodIdAndUserId(foodId, user.getUserId());
                 log.info("writtenReview: "+writtenReview);
@@ -71,8 +71,8 @@ public class FoodController {
     public String viewAllReviews(@PathVariable Long foodId, Model model, @LoginUser SessionUser sessionUser) {
         if (sessionUser != null) {
             UserDto user = userService.getSessionUserInfo(sessionUser);
-            model.addAttribute("userId", user.getUserId());
-            model.addAttribute("nickname", user.getNickname());
+            model.addAttribute("login_user_id", user.getUserId());
+            model.addAttribute("login_user_nickname", user.getNickname());
         }
         model.addAttribute("foodName", foodService.findFood(foodId).get().getName());
         model.addAttribute("reviewList", reviewService.findAllReviewByFoodId(foodId));

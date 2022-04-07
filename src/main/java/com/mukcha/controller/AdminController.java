@@ -11,6 +11,7 @@ import com.mukcha.controller.dto.FoodDto;
 import com.mukcha.controller.dto.UserDto;
 import com.mukcha.domain.Category;
 import com.mukcha.domain.Company;
+import com.mukcha.domain.ErrorMessage;
 import com.mukcha.domain.Food;
 import com.mukcha.service.CompanyService;
 import com.mukcha.service.FoodService;
@@ -47,8 +48,8 @@ public class AdminController {
     public String adminHome(Model model, @LoginUser SessionUser sessionUser) {
         if (sessionUser != null) {
             UserDto user = userService.getSessionUserInfo(sessionUser);
-            model.addAttribute("userId", user.getUserId());
-            model.addAttribute("nickname", user.getNickname());
+            model.addAttribute("login_user_id", user.getUserId());
+            model.addAttribute("login_user_nickname", user.getNickname());
         }
         log.info(">>> 관리자 페이지에 진입하였습니다.");
         model.addAttribute("foodList", foodService.findFoodTopTenNewest());
@@ -65,8 +66,8 @@ public class AdminController {
     public String viewAllMenus(Model model, @LoginUser SessionUser sessionUser) {
         if (sessionUser != null) {
             UserDto user = userService.getSessionUserInfo(sessionUser);
-            model.addAttribute("userId", user.getUserId());
-            model.addAttribute("nickname", user.getNickname());
+            model.addAttribute("login_user_id", user.getUserId());
+            model.addAttribute("login_user_nickname", user.getNickname());
         }
         // 카테고리 리스트
         List<Category> categoryList = List.of(Category.values());
@@ -104,8 +105,8 @@ public class AdminController {
     public String viewAllCompanies(Model model, @LoginUser SessionUser sessionUser) {
         if (sessionUser != null) {
             UserDto user = userService.getSessionUserInfo(sessionUser);
-            model.addAttribute("userId", user.getUserId());
-            model.addAttribute("nickname", user.getNickname());
+            model.addAttribute("login_user_id", user.getUserId());
+            model.addAttribute("login_user_nickname", user.getNickname());
         }
         model.addAttribute("companyList", companyService.findAll());
         return "admin/adminCompanyList";
@@ -221,9 +222,9 @@ public class AdminController {
         return null;
     }
 
-    private Company transCompany(String company) {
-        return companyService.findByName(company).orElseThrow(() ->
-            new IllegalArgumentException("존재하지 않는 회사입니다.")
+    private Company transCompany(String companyName) {
+        return companyService.findByName(companyName).orElseThrow(() ->
+            new IllegalArgumentException(ErrorMessage.COMPANY_NOT_FOUND.getMessage()+companyName)
         );
     }
 

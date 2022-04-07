@@ -33,16 +33,17 @@ public class HomeController {
     // Root page
     @GetMapping(value = {"/", ""})
     public String home(Model model, @LoginUser SessionUser sessionUser) {
+        // login user 정보
+        if (sessionUser != null) {
+            UserDto user = userService.getSessionUserInfo(sessionUser);
+            model.addAttribute("login_user_id", user.getUserId());
+            model.addAttribute("login_user_nickname", user.getNickname());
+        }
         // 별점순 TOP 10 메뉴
         model.addAttribute("scoreTopTen", foodService.findTopTenOrderByScore());
         // 최신 메뉴 TOP 10
         model.addAttribute("newestTen", foodService.findTopTenNewest());
-        // login user 정보
-        if (sessionUser != null) {
-            UserDto user = userService.getSessionUserInfo(sessionUser);
-            model.addAttribute("userId", user.getUserId());
-            model.addAttribute("nickname", user.getNickname());
-        }
+        
         return "home";
     }
 
@@ -63,8 +64,8 @@ public class HomeController {
         // Login User
         if (sessionUser != null) {
             UserDto user = userService.getSessionUserInfo(sessionUser);
-            model.addAttribute("userId", user.getUserId());
-            model.addAttribute("nickname", user.getNickname());
+            model.addAttribute("login_user_id", user.getUserId());
+            model.addAttribute("login_user_nickname", user.getNickname());
             model.addAttribute("login_email", user.getEmail());
         }
         // Category List
@@ -92,8 +93,15 @@ public class HomeController {
     public String viewReviewInCategory(
         @PathVariable Long userId,
         @PathVariable Category category,
-        Model model
+        Model model,
+        @LoginUser SessionUser sessionUser
     ) {
+        // Login User
+        if (sessionUser != null) {
+            UserDto user = userService.getSessionUserInfo(sessionUser);
+            model.addAttribute("login_user_id", user.getUserId());
+            model.addAttribute("login_user_nickname", user.getNickname());
+        }
         model.addAttribute("reviewList", 
             reviewService.getReviewByCategoryAndUserId(userId, category)
         );

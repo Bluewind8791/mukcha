@@ -35,8 +35,8 @@ public class CategoryController {
     ) {
         if (sessionUser != null) {
             UserDto user = userService.getSessionUserInfo(sessionUser);
-            model.addAttribute("userId", user.getUserId());
-            model.addAttribute("nickname", user.getNickname());
+            model.addAttribute("login_user_id", user.getUserId());
+            model.addAttribute("login_user_nickname", user.getNickname());
         }
         // 카테고리 이름으로 카테고리를 찾아서 넘겨준다
         Category thisCategory = Category.valueOf(categoryName);

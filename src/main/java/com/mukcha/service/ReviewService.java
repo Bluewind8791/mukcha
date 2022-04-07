@@ -163,6 +163,7 @@ public class ReviewService {
         return reviewRepository.findAllByFoodIdOrderByCreatedDesc(foodId, PageRequest.of(pageNum-1, size));
     }
 
+    // 해당 유저가 쓴 리뷰 중 해당 카테고리의 모든 리뷰를 가져온다
     @Transactional(readOnly = true)
     public List<Review> getReviewByCategoryAndUserId(Long userId, Category category) {
         List<Review> reviews = findAllByUserId(userId);

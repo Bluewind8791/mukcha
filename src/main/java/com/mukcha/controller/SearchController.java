@@ -1,10 +1,14 @@
 package com.mukcha.controller;
 
 
+import com.mukcha.config.dto.LoginUser;
+import com.mukcha.config.dto.SessionUser;
+import com.mukcha.controller.dto.UserDto;
 import com.mukcha.domain.Search;
 import com.mukcha.repository.CompanyRepository;
 import com.mukcha.repository.FoodRepository;
 import com.mukcha.repository.UserRepository;
+import com.mukcha.service.UserService;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -20,13 +24,20 @@ public class SearchController {
     private final FoodRepository foodRepository;
     private final CompanyRepository companyRepository;
     private final UserRepository userRepository;
+    private final UserService userService;
 
 
     @GetMapping(value = "/search")
     public String search(
         @RequestParam(required = false) String keyword,
-        Model model
+        Model model,
+        @LoginUser SessionUser sessionUser
     ) {
+        if (sessionUser != null) {
+            UserDto user = userService.getSessionUserInfo(sessionUser);
+            model.addAttribute("login_user_id", user.getUserId());
+            model.addAttribute("login_user_nickname", user.getNickname());
+        }
         model.addAttribute("foodList", 
             foodRepository.findAll(Search.foodSearching(keyword))
         );
@@ -43,8 +54,14 @@ public class SearchController {
     @GetMapping(value = "/search/menu")
     public String foodSearchList(
         @RequestParam(required = false) String keyword,
-        Model model
+        Model model,
+        @LoginUser SessionUser sessionUser
     ) {
+        if (sessionUser != null) {
+            UserDto user = userService.getSessionUserInfo(sessionUser);
+            model.addAttribute("login_user_id", user.getUserId());
+            model.addAttribute("login_user_nickname", user.getNickname());
+        }
         model.addAttribute("foodList", 
             foodRepository.findAll(Search.foodSearching(keyword))
         );
@@ -55,8 +72,14 @@ public class SearchController {
     @GetMapping(value = "/search/company")
     public String companySearchList(
         @RequestParam(required = false) String keyword,
-        Model model
+        Model model,
+        @LoginUser SessionUser sessionUser
     ) {
+        if (sessionUser != null) {
+            UserDto user = userService.getSessionUserInfo(sessionUser);
+            model.addAttribute("login_user_id", user.getUserId());
+            model.addAttribute("login_user_nickname", user.getNickname());
+        }
         model.addAttribute("companyList", 
             companyRepository.findAll(Search.companySearching(keyword))
         );
