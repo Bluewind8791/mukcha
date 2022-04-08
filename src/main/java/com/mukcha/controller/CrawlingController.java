@@ -35,12 +35,10 @@ public class CrawlingController {
     @GetMapping(value = "/crawling")
     public String crawling() {
         System.out.println(">>> CRAWLING START <<<");
-        sinjeon();
-        dongdaemunYupdduk();
-        baedduck();
         // 치킨플러스();
         // kfc();
         // 처갓집양념치킨();
+        // dongdaemunYupdduk();
         return "redirect:/admin";
     }
 
@@ -49,6 +47,8 @@ public class CrawlingController {
         dominoPizza();
         페리카나();
         BBQ();
+        sinjeon();
+        baedduck();
     }
 
 

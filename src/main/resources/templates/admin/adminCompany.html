@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org"
+  xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{layout/layout}">
+
+
+<div layout:fragment="content">
+  <style>
+    #menu_image_url,
+    #logo_url {
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+  </style>
+
+
+
+  <div class="container-fluid p-5 bg-danger text-white text-center">
+    <h2>관리자 페이지</h2>
+  </div>
+
+  <div class="container mt-4">
+    <a type="button" class="btn" href="/admin">
+      < 뒤로가기 </a>
+  </div>
+
+  <div class="container p-5 text-center">
+    <button type="button" class="btn btn-primary w-50 mb-3" data-bs-toggle="modal" data-bs-target="#menuModal">
+      메뉴 추가하기
+    </button>
+    <a data-bs-toggle="modal" th:href="'#delCompany'+${companyId}" role="button">
+      <button class="btn btn-danger w-50">
+        회사 삭제하기
+      </button>
+    </a>
+    <div class="text-center h4 mt-5">회사 수정 및 삭제는 해당 회사의 이름을 클릭해주세요.</div>
+  </div>
+
+
+  <!-- Food List -->
+  <div class="container mt-3 mb-5">
+    <h2><strong>Menu List</strong></h2>
+    <table class="table table-hover">
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>카테고리</th>
+          <th>회사</th>
+          <th>메뉴명</th>
+          <th>이미지</th>
+          <th>Update Time</th>
+          <th>Create Time</th>
+          <th>Image URL</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr th:each="f : ${foodList}">
+          <td><span th:text="${f.foodId}">ID</span></td>
+          <td><span th:text="${f.category}">카테고리</span></td>
+          <td><span th:if="${f.company.name != null}" th:text="${f.company.name}">회사이름</span></td>
+          <td><span th:text="${f.name}" data-bs-toggle="modal"
+              th:data-bs-target="'#editMenuModal'+${f.foodId}">메뉴명</span></td>
+          <td><img th:src="${f.image}" height="50" data-bs-toggle="modal"
+              th:data-bs-target="'#fImageModal'+${f.foodId}"></td>
+          <td><span th:text="${f.updatedAt}">updatedAt</span></td>
+          <td><span th:text="${f.createdAt}">createdAt</span></td>
+          <td>
+            <div th:text="${f.image}" style="width: 250px;" id="menu_image_url">
+              메뉴이미지 URL
+            </div>
+          </td>
+          <!-- 메뉴 이미지 크기보기 -->
+          <div class="modal" th:id="'fImageModal'+${f.foodId}">
+            <div class="modal-dialog">
+              <div class="modal-content">
+                <!-- Modal Header -->
+                <div class="modal-header">
+                  <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <!-- Modal body -->
+                <div class="modal-body">
+                  <img class="img-fluid" th:src="${f.image}">
+                </div>
+              </div>
+            </div>
+          </div>
+          <!-- 메뉴 수정 모달1 -->
+          <div class="modal fade" th:id="'editMenuModal'+${f.foodId}" aria-hidden="true"
+            aria-labelledby="editModalToggleLabel" tabindex="-1">
+            <div class="modal-dialog modal-dialog-centered">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <h5 class="modal-title fw-bold me-2" id="editModalToggleLabel">메뉴 수정</h5>
+                  <span class="me-2"> - </span><span th:text="${f.name}">메뉴이름</span>
+                  <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <form th:action="@{/admin/menus/edit/}+${f.foodId}" method="POST">
+                  <div class="modal-body">
+                    <div class="mb-3 mt-3">
+                      <label>메뉴 이름</label>
+                      <input class="form-control" placeholder="메뉴 이름을 적어주세요" name="foodName" th:value="${f.name}">
+                    </div>
+                    <div class="mb-3">
+                      <label>메뉴 이미지</label>
+                      <input class="form-control" placeholder="메뉴 이미지 URL를 넣어주세요" name="foodImage"
+                        th:value="${f.image}">
+                    </div>
+                    <div class="mb-3">
+                      <label>카테고리</label>
+                      <select class="form-select" name="category">
+                        <option th:value="${f.category}" th:text="${f.category}">해당 카테고리</option>
+                        <option th:each="cate : ${categoryList}" th:value="${cate}" th:text="${cate}">카테고리
+                        </option>
+                      </select>
+                    </div>
+                    <div class="mb-3">
+                      <label>회사명</label>
+                      <select class="form-select" name="companyName">
+                        <option th:value="${f.company.name}" th:text="${f.company.name}">해당 회사</option>
+                        <option th:each="com : ${companyList}" th:value="${com.companyName}"
+                          th:text="${com.companyName}">회사명
+                        </option>
+                      </select>
+                    </div>
+                  </div>
+                  <div class="modal-footer">
+                    <button type="submit" class="btn btn-success">수정하기</button>
+                    <a class="btn btn-secondary" data-bs-dismiss="modal">취소</a>
+                    <a class="btn btn-danger" th:data-bs-target="'#deleteMenuModal'+${f.foodId}" data-bs-toggle="modal"
+                      data-bs-dismiss="modal">메뉴 삭제하기
+                    </a>
+                  </div>
+                </form>
+              </div>
+            </div>
+          </div>
+          <!-- 메뉴 삭제 모달2 -->
+          <!-- <form th:action="@{/admin/menus/delete/}+${f.foodId}" th:method="DELETE">
+            <input type="hidden" name="_method" value="delete">
+            <div class="modal fade" th:id="'deleteMenuModal'+${f.foodId}" aria-hidden="true"
+              aria-labelledby="deleteModalToggleLabel" tabindex="-1">
+              <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                  <div class="modal-header">
+                    <h5 class="modal-title fw-bold me-2" id="deleteModalToggleLabel">메뉴 삭제</h5>
+                    <span class="me-2"> - </span><span th:text="${f.name}">메뉴이름</span>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                  </div>
+                  <div class="modal-body">
+                    <p class="h3 fw-bold" style="color: tomato;">경고</p>
+                    <p class="fw-bold" style="color: tomato;">정말 해당 메뉴를 삭제하시겠습니까?</p>
+                    <p>메뉴를 삭제하시면 해당 메뉴의 모든 리뷰는 삭제됩니다.</p>
+                  </div>
+                  <div class="modal-footer">
+                    <a class="btn btn-secondary" th:data-bs-target="'#editMenuModal'+${f.foodId}" data-bs-toggle="modal"
+                      data-bs-dismiss="modal">돌아가기</a>
+                    <button class="btn btn-danger" type="submit">삭제하기</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </form> -->
+
+          <!-- 메뉴 추가 Modal -->
+          <div class="modal" id="menuModal">
+            <div class="modal-dialog">
+              <div class="modal-content">
+                <!-- Modal Header -->
+                <div class="modal-header">
+                  <h4 class="modal-title">메뉴 추가</h4>
+                  <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <form th:action="@{/admin/menu}" method="POST">
+                  <!-- Modal body -->
+                  <div class="modal-body">
+                    <div class="mb-3 mt-3">
+                      <label>메뉴 이름</label>
+                      <input class="form-control" placeholder="메뉴 이름을 적어주세요" name="foodName">
+                    </div>
+                    <div class="mb-3">
+                      <label>메뉴 이미지</label>
+                      <input class="form-control" placeholder="메뉴 이미지 URL를 넣어주세요" name="foodImage">
+                    </div>
+                    <div class="mb-3">
+                      <label>카테고리</label>
+                      <select class="form-select" name="category">
+                        <option th:value="${f.category}" th:text="${f.category}">해당 카테고리</option>
+                        <option th:each="category : ${categoryList}" th:value="${category}" th:text="${category}">카테고리
+                        </option>
+                      </select>
+                    </div>
+                    <div class="mb-3">
+                      <label>회사명</label>
+                      <select class="form-select" name="companyName">
+                        <option th:value="${f.company.name}" th:text="${f.company.name}">해당 회사</option>
+                        <option th:each="company : ${companyList}" th:value="${company.companyName}"
+                          th:text="${company.companyName}">회사명
+                        </option>
+                      </select>
+                    </div>
+                  </div>
+                  <!-- Modal footer -->
+                  <div class="modal-footer">
+                    <button type="submit" class="btn btn-primary">Submit</button>
+                    <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Close</button>
+                  </div>
+                </form>
+              </div>
+            </div>
+          </div> <!-- end of 메뉴 추가 modal -->
+
+          <!-- 회사 삭제 MODAL -->
+          <form th:action="@{/admin/companies/delete/}+${companyId}" th:method="DELETE">
+            <input type="hidden" name="_method" value="delete">
+            <div class="modal fade" th:id="'delCompany'+${companyId}" aria-hidden="true"
+              aria-labelledby="exampleModalToggleLabel" tabindex="-1">
+              <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                  <div class="modal-header">
+                    <h4 class="modal-title fw-bold" style="color: tomato;" id="exampleModalToggleLabel">‼ 경고 ‼</h4>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                  </div>
+                  <div class="modal-body">
+                    <p class="h5 fw-bold" style="color: tomato;">정말 해당 회사를 삭제하시겠습니까?</p>
+                    <span> > </span><span class="fw-bold" th:text="${f.company.name}"></span><span>
+                      < </span>
+                        <p>회사를 삭제하시면 해당 회사와 연결된 메뉴 또한 모두 삭제되며, 해당 메뉴에 작성된 리뷰 또한 모두 삭제되며 되돌릴 수 없습니다.</p>
+                  </div>
+                  <div class="modal-footer">
+                    <button class="btn btn-danger" type="submit">삭제하기</button>
+                    <a class="btn btn-secondary" data-bs-dismiss="modal">취소</a>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </form>
+
+        </tr>
+      </tbody>
+
+    </table>
+  </div>
+
+
+
+
+
+</div> <!-- end of container -->
+
+</html>
+<!-- 
+  <div class="container mt-3 mb-5">
+    <h2><strong>Company List</strong></h2>
+    <p></p>
+    <table class="table table-hover">
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>이름</th>
+          <th>Logo</th>
+          <th>Update Time</th>
+          <th>Create Time</th>
+          <th>Logo Image URL</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr th:each="c : ${companyList}">
+          <td><span th:text="${c.companyId}">ID</span></td>
+          <td>
+            <span th:text="${c.name}" data-bs-toggle="modal"
+              th:data-bs-target="'#editCompanyModal'+${c.companyId}">companyName</span>
+          </td>
+          <td><img th:src="${c.image}" height="30" data-bs-toggle="modal"
+              th:data-bs-target="'#cLogoModal'+${c.companyId}"></td>
+          <td><span th:text="${c.updatedAt}">updatedAt</span></td>
+          <td><span th:text="${c.createdAt}">createdAt</span></td>
+          <td>
+            <div th:text="${c.image}" style="width: 300px;" id="logo_url">LogoImageUrl</div>
+          </td>
+          <div class="modal" th:id="'cLogoModal'+${c.companyId}">
+            <div class="modal-dialog">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                  <img class="img-fluid" th:src="${c.image}">
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="modal" th:id="'editCompanyModal'+${c.companyId}">
+            <div class="modal-dialog">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <h4 class="modal-title">회사 추가</h4>
+                  <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <form th:action="@{/admin/companies/edit/}+${c.companyId}" method="POST">
+                  <div class="modal-body">
+                    <div class="mb-3 mt-3">
+                      <label>회사명</label>
+                      <input class="form-control" placeholder="회사명을 적어주세요" name="companyName" th:value="${c.name}">
+                    </div>
+                    <div class="mb-3">
+                      <label>회사 로고 이미지</label>
+                      <input class="form-control" placeholder="회사 로고 URL를 넣어주세요" name="companyLogo"
+                        th:value="${c.image}">
+                    </div>
+                  </div>
+                  <div class="modal-footer">
+                    <button type="submit" class="btn btn-primary">저장</button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">취소</button>
+                    
+                  </div>
+                </form>
+              </div>
+            </div>
+          </div>
+          
+        </tr>
+      </tbody>
+    </table>
+  </div>
+-->

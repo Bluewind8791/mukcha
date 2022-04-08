@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import javax.servlet.http.HttpServletRequest;
+
 import com.mukcha.config.dto.LoginUser;
 import com.mukcha.config.dto.SessionUser;
 import com.mukcha.controller.dto.CompanyDto;
@@ -25,7 +27,6 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -42,8 +43,9 @@ public class AdminController {
     private final FoodService foodService;
     private final UserService userService;
 
+    /* >>> VIEW <<< */
 
-    // VIEW - ROOT PAGE
+    // ROOT PAGE
     @GetMapping(value = {"/", ""})
     public String adminHome(Model model, @LoginUser SessionUser sessionUser) {
         if (sessionUser != null) {
@@ -52,8 +54,12 @@ public class AdminController {
             model.addAttribute("login_user_nickname", user.getNickname());
         }
         log.info(">>> 관리자 페이지에 진입하였습니다.");
+        // 회사 추가하기
+        // 크롤링 시작
+        // 모든 회사 리스트
+        model.addAttribute("companyList", companyService.findAll());
+        // 최근 메뉴 리스트 10개
         model.addAttribute("foodList", foodService.findFoodTopTenNewest());
-        model.addAttribute("companyList", companyService.findCompanyTopTenNewest());
         // Category List
         List<Category> categoryList = List.of(Category.values());
         model.addAttribute("categoryList", categoryList);
@@ -61,7 +67,30 @@ public class AdminController {
     }
 
 
-    // VIEW - 모든 메뉴 리스트
+    // 해당 회사의 모든 메뉴 리스트 
+    // /admin/company/'+${c.companyId}
+    @GetMapping(value = "/company/{companyId}")
+    public String viewAllCompanies(
+        Model model,
+        @LoginUser SessionUser sessionUser,
+        @PathVariable Long companyId
+    ) {
+        if (sessionUser != null) {
+            UserDto user = userService.getSessionUserInfo(sessionUser);
+            model.addAttribute("login_user_id", user.getUserId());
+            model.addAttribute("login_user_nickname", user.getNickname());
+        }
+        model.addAttribute("foodList", companyService.getFoodListInfo(companyId));
+        // 모든 회사 이름만
+        model.addAttribute("companyList", companyService.findAllCompanyName());
+        // Category List
+        List<Category> categoryList = List.of(Category.values());
+        model.addAttribute("categoryList", categoryList);
+        return "admin/adminCompany";
+    }
+
+
+    // 모든 메뉴 리스트
     @GetMapping(value = "/menus")
     public String viewAllMenus(Model model, @LoginUser SessionUser sessionUser) {
         if (sessionUser != null) {
@@ -100,18 +129,6 @@ public class AdminController {
     }
 
 
-    // VIEW - 모든 회사 리스트
-    @GetMapping(value = "/companies")
-    public String viewAllCompanies(Model model, @LoginUser SessionUser sessionUser) {
-        if (sessionUser != null) {
-            UserDto user = userService.getSessionUserInfo(sessionUser);
-            model.addAttribute("login_user_id", user.getUserId());
-            model.addAttribute("login_user_nickname", user.getNickname());
-        }
-        model.addAttribute("companyList", companyService.findAll());
-        return "admin/adminCompanyList";
-    }
-
 
     //>>> METHODS <<<
 
@@ -120,7 +137,7 @@ public class AdminController {
     public String addCompany(
             @ModelAttribute CompanyDto companyDto,
             Model model,
-            RedirectAttributes redirectAttributes
+            HttpServletRequest request
     ) {
         Company company = Company.builder()
                             .name(companyDto.getCompanyName())
@@ -129,7 +146,8 @@ public class AdminController {
         ;
         Company savedCompany = companyService.save(company);
         log.info("회사가 생성되었습니다." + savedCompany.toString());
-        return "redirect:/admin/";
+        String referer = request.getHeader("Referer"); // 헤더에서 이전 페이지를 읽는다.
+        return "redirect:"+ referer; // 이전 페이지로 리다이렉트
     }
 
 
@@ -138,7 +156,7 @@ public class AdminController {
     public String addMenu(
             @ModelAttribute FoodDto foodDto,
             Model model,
-            RedirectAttributes redirectAttributes
+            HttpServletRequest request
     ) {
         Food food = Food.builder()
                         .name(foodDto.getFoodName())
@@ -149,7 +167,8 @@ public class AdminController {
         ;
         Food savedFood = foodService.save(food);
         log.info("메뉴가 생성되었습니다." + savedFood.toString());
-        return "redirect:/admin/";
+        String referer = request.getHeader("Referer"); // 헤더에서 이전 페이지를 읽는다.
+        return "redirect:"+ referer; // 이전 페이지로 리다이렉트
     }
 
 
@@ -163,7 +182,7 @@ public class AdminController {
         } else {
             log.info("회사 <"+name+"> 이 삭제되었습니다.");
         }
-        return "redirect:/admin/companies/";
+        return "redirect:/admin";
     }
 
 
@@ -197,14 +216,16 @@ public class AdminController {
     @PostMapping(value = "/menus/edit/{foodId}")
     public String editFood(
         @PathVariable Long foodId,
-        FoodDto foodDto
+        FoodDto foodDto,
+        HttpServletRequest request
     ) {
         System.out.println(">>> company name:"+foodDto.getCompanyName());
         foodService.editFoodName(foodId, foodDto.getFoodName());
         foodService.editFoodImage(foodId, foodDto.getFoodImage());
         foodService.editFoodCompany(foodId, foodDto.getCompanyName());
         foodService.editFoodCategory(foodId, transCategory(foodDto.getCategory()));
-        return "redirect:/admin/menus/";
+		String referer = request.getHeader("Referer"); // 헤더에서 이전 페이지를 읽는다.
+        return "redirect:"+ referer; // 이전 페이지로 리다이렉트
     }
 
 

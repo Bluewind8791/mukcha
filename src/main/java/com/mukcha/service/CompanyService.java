@@ -1,11 +1,13 @@
 package com.mukcha.service;
 
 
+import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import com.mukcha.controller.dto.CompanyDto;
 import com.mukcha.domain.Company;
 import com.mukcha.domain.Food;
 import com.mukcha.repository.CompanyRepository;
@@ -61,10 +63,10 @@ public class CompanyService {
             );
         }
         // get top 10
-        if (companies.size() < 10) {
-            return companies;
-        } else {
+        if (companies.size() > 10) {
             return companies.stream().limit(10).collect(Collectors.toList());
+        } else {
+            return companies;
         }
     }
 
@@ -129,6 +131,18 @@ public class CompanyService {
         findCompany(companyId).ifPresent(com -> {
             companyRepository.updateCompanyName(companyId, companyName);
         });
+    }
+
+    // DTO로 변환하여 모든 회사의 이름만 가져오기
+    public List<CompanyDto> findAllCompanyName() {
+        List<CompanyDto> companyDtoList = new ArrayList<>();
+        List<Company> companies = findAll();
+        companies.stream().forEach(com -> {
+            CompanyDto companyDto = new CompanyDto();
+            companyDto.setCompanyName(com.getName());
+            companyDtoList.add(companyDto);
+        });
+        return companyDtoList;
     }
 
 
