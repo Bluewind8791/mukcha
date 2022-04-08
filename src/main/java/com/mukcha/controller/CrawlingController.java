@@ -35,6 +35,9 @@ public class CrawlingController {
     @GetMapping(value = "/crawling")
     public String crawling() {
         System.out.println(">>> CRAWLING START <<<");
+        sinjeon();
+        dongdaemunYupdduk();
+        baedduck();
         // 치킨플러스();
         // kfc();
         // 처갓집양념치킨();
@@ -46,6 +49,41 @@ public class CrawlingController {
         dominoPizza();
         페리카나();
         BBQ();
+    }
+
+
+    /**
+     * 이미지를 가져올 때 아이콘이 있는 메뉴는 아이콘만 가져오는 현상이 있음.
+     */
+    void dongdaemunYupdduk() {
+        Company company = isCompanyPresent("불닭발땡초동대문엽기떡볶이", "https://www.yupdduk.com/images/logo61.png");
+        Document doc;
+        String url = "https://www.yupdduk.com/sub/hotmenu?mode=1";
+        try {
+            doc = Jsoup.connect(url).get();
+            Elements tap = doc.select("#cust1div"); // 떡볶이 메뉴
+            yupddukCrawling(tap, company);
+            tap = doc.select("#cust5div");  // 닭발 메뉴
+            yupddukCrawling(tap, company);
+        } catch (IOException e) {
+            System.out.println(ErrorMessage.COMPANY_NOT_FOUND.getMessage() + company.getName());
+            e.printStackTrace();
+        }
+    }
+    private void yupddukCrawling(Elements tap, Company company) {
+        Elements menuList = tap.select("div[class=col-lg-4]");
+        for (Element menu : menuList) {
+            String menuName = menu.select("p[class=mpnone hotmenutitle]").text();
+            if (!isFoodPresent(menuName) && !menuName.isEmpty()) {
+                String image = menu.select("div").select("img").attr("src").replace("..", "");
+                if (image.contains("icon")) {
+                    image = "";
+                } else {
+                    image = "https://www.yupdduk.com" + image;
+                }
+                saveFood(menuName, image, company);
+            }
+        }
     }
 
 
@@ -70,9 +108,7 @@ public class CrawlingController {
                     if (menuName.length() == 0) {
                         continue;
                     }
-                    System.out.println(">>> name:"+menuName);
                     String image = menu.select("ul > li.gall_href > img").attr("src");
-                    System.out.println(">>> image:"+image);
                     saveFood(menuName, image, company);
                 }
             } catch (IOException e) {
@@ -106,7 +142,6 @@ public class CrawlingController {
                     if (!isFoodPresent(foodName)) {
                         Elements imageE = li.select("div > a > img");
                         String image = imageE.attr("src");
-                        System.out.println(">>> image: "+image+">");
                         // 실행 전 체크할 것
                         saveFood(foodName, image, company);
                     }
@@ -148,6 +183,61 @@ public class CrawlingController {
         }
     }
 
+
+
+
+    void baedduck() {
+        Company company = isCompanyPresent("배달떡볶이(배떡)", "http://baedduck.co.kr/theme/bae-default/layout/assets/img/brand_04.png");
+        Document doc;
+        String url = "http://baedduck.co.kr/subpage/menu";
+        try {
+            doc = Jsoup.connect(url).get();
+            Elements menus = doc.select("div[class=menu-item]");
+            for (Element menu : menus) {
+                String menuName = menu.select("p").text();
+                if (menuName.contains("예정")) {
+                    continue;
+                }
+                if (!isFoodPresent(menuName) && !menuName.isEmpty()) {
+                    String image = menu.select("img").attr("src");
+                    image = "http://baedduck.co.kr" + image;
+                    saveFood(menuName, image, company);
+                }
+            }
+        } catch (IOException e) {
+            System.out.println(ErrorMessage.COMPANY_NOT_FOUND.getMessage() + company.getName());
+            e.printStackTrace();
+        }
+    }
+
+    void sinjeon() {
+        Company company = isCompanyPresent("신전떡볶이", "http://sinjeon.co.kr/img/common/logo_2022.png");
+        Document doc;
+        List<String> urlList = new ArrayList<>();
+        urlList.add("http://sinjeon.co.kr/doc/menu03.php"); // 떡볶이
+        urlList.add("http://sinjeon.co.kr/doc/menu04.php"); // 튀김
+        urlList.add("http://sinjeon.co.kr/doc/menu05.php"); // 라이스
+        for (String url : urlList) {
+            try {
+                doc = Jsoup.connect(url).get();
+                // 메뉴이름: li:nth-child(1) > a > p > span
+                Elements menuList = doc.select("li[class=cars]");
+                for (Element menu : menuList) {
+                    String menuName = menu.select("a > p > span").text();
+                    // 만약 같은 이름의 메뉴가 없고 공백이 아니라면 DB 저장
+                    if (!isFoodPresent(menuName) && !menuName.isEmpty()) {
+                        // 이미지: li:nth-child(1) > a > img
+                        String image = menu.select("a > img").attr("src");
+                        image = "http://sinjeon.co.kr" + image;
+                        saveFood(menuName, image, company);
+                    }
+                }
+            } catch (IOException e) {
+                System.out.println(ErrorMessage.COMPANY_NOT_FOUND.getMessage() + company.getName());
+                e.printStackTrace();
+            }
+        }
+    }
 
     void BBQ() {
         Document doc;
