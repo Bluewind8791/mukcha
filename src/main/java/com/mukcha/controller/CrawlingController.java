@@ -43,12 +43,12 @@ public class CrawlingController {
     }
 
     public void dbInitCrawling() {
-        빅스타피자();
-        dominoPizza();
-        페리카나();
-        BBQ();
-        sinjeon();
-        baedduck();
+        // 빅스타피자();
+        // dominoPizza();
+        // 페리카나();
+        // BBQ();
+        // sinjeon();
+        // baedduck();
     }
 
 
@@ -259,10 +259,8 @@ public class CrawlingController {
                 for (int i=0; i<boxes.size(); i++) {
                     // menu name
                     getFoodName = foodName.get(i).text();
-                    System.out.println(">>> "+getFoodName);
                     // image URL
                     getImageUrl = image.get(i).absUrl("src");
-                    System.out.println(">>> "+getImageUrl);
                     // 만약 같은 이름의 메뉴가 없고 공백이 아니라면 DB 저장
                     if (!isFoodPresent(getFoodName) && !getFoodName.isEmpty()) {
                         saveFood(getFoodName, getImageUrl, company);
@@ -293,7 +291,6 @@ public class CrawlingController {
                     if (menuName.length() == 0 || menuName.length() >= 12 || menuName.contains("반반")) {
                         continue;
                     }
-                    System.out.println(">>> menu name: "+menuName);
                     // 만약 같은 이름의 메뉴가 없다면
                     if (!isFoodPresent(menuName)) {
                         // 메뉴 이미지를 가져온다 - #s1-1 > div.menu_list > div:nth-child(1) > div.menu_img > img
@@ -303,7 +300,6 @@ public class CrawlingController {
                             continue;
                         }
                         image = "http://www.bigstarpizza.co.kr" + image;
-                        System.out.println(">>> image: " + image);
                         // save DB
                         saveFood(menuName, image, company);
                     }
@@ -318,7 +314,6 @@ public class CrawlingController {
 
     void dominoPizza() {
         Company company = isCompanyPresent("도미노피자", "/logo/domino.png");
-        
         List<String> urlList = new ArrayList<>();
         urlList.add("https://web.dominos.co.kr/goods/list?dsp_ctgr=C0101"); // 메뉴
         urlList.add("https://web.dominos.co.kr/goods/onePizzalist"); // 1인 메뉴
@@ -328,7 +323,6 @@ public class CrawlingController {
                 doc = Jsoup.connect(url).get();
                 // #content > div > div > article > div:nth-child(6)
                 Elements menuList = doc.select("#content > div > div > article").select("div[class=menu-list]");
-                System.out.println(">>> list size: "+menuList.size());
                 for (Element e : menuList) {
                     // second list: #content > div > div > article > div:nth-child(6) > ul > li:nth-child(1)
                     Elements secondList = e.select("ul > li");
@@ -343,8 +337,6 @@ public class CrawlingController {
                         ;
                         // 만약 같은 이름의 메뉴가 없거나 공백이 아니라면 DB에 저장
                         if (!isFoodPresent(foodName)) {
-                            System.out.println(">>> food:"+foodName+"|");
-                            System.out.println(">>> image:"+image+"|");
                             // 실행 전 체크할 것
                             saveFood(foodName, image, company);
                         }
@@ -359,7 +351,6 @@ public class CrawlingController {
 
     void 페리카나() {
         Company company = isCompanyPresent("페리카나", "");
-
         List<String> urlList = new ArrayList<>();
         urlList.add("https://pelicana.co.kr/menu/menu_original.html"); // 오리지널
         urlList.add("https://pelicana.co.kr/menu/menu_sunsal.html"); // 순살
@@ -374,14 +365,11 @@ public class CrawlingController {
             for (String url : urlList) {
                 doc = Jsoup.connect(url).get();
                 Elements lists = doc.select("#contents > ul.menu_list.menu_pop > li");
-                System.out.println(">>> size: "+lists.size());
                 for (Element e : lists) {
                     // image url: #contents > ul.menu_list.menu_pop > li:nth-child(1) > a > figure > img
                     String image = e.select("a > figure > img").first().absUrl("src");
-                    System.out.println(">>> image: "+image);
                     // menu name: #contents > ul.menu_list.menu_pop > li:nth-child(1) > a > figure > figcaption
                     String foodName = e.select("a > figure > figcaption").text();
-                    System.out.println(">>> food: "+foodName);
                     // 만약 같은 이름의 메뉴가 없다면 DB에 저장
                     if (!isFoodPresent(foodName)) {
                         // 실행 전 체크할 것

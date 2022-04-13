@@ -41,6 +41,8 @@ dependencies {
 	implementation('org.springframework.boot:spring-boot-starter-validation')
 	// jsoup HTML parser library @ https://jsoup.org/
 	implementation('org.jsoup:jsoup:1.14.3')
+	// https://mvnrepository.com/artifact/org.seleniumhq.selenium/selenium-server
+	implementation 'org.seleniumhq.selenium:selenium-server:3.141.59'
 	// https://mvnrepository.com/artifact/org.json/json
 	implementation('org.json:json:20211205')
 	// MySQL
@@ -51,6 +53,8 @@ dependencies {
 	implementation('org.springframework.boot:spring-boot-starter-actuator')
 	// OAuth2
 	implementation('org.springframework.boot:spring-boot-starter-oauth2-client')
+	// https://mvnrepository.com/artifact/org.springframework.cloud/spring-cloud-starter-aws
+	implementation 'org.springframework.cloud:spring-cloud-starter-aws:2.2.6.RELEASE'
 }
 
 test {
