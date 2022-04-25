@@ -11,8 +11,8 @@
 ## 설명
 
 
-- IDE Tool은 Visual Studio Code 을 사용하여 개발하였습니다.
-- Spring Framework 위에서 Spring Boot 와 Gradle 및 JPA를 사용하였습니다.
+- IDE Tool은 Visual Studio Code을 사용하였습니다.
+- Spring Framework 위에서 Spring Boot 및 JPA를 사용하여 REST API를 개발하였습니다.
 - DBMS는 MYSQL을 사용하였으며, 현재는 AWS RDS를 사용하여 AWS EC2 서버와 연결하여 서비스하고 있습니다.
 - AWS EC2를 사용하여 서버를 구축하고 배포하고 있습니다.
 - Travis CI와 AWS CodeDeploy를 사용하여 Git에 수정된 코드가 push되면 자동 배포되도록 구축하였습니다.
