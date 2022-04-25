@@ -45,6 +45,61 @@ public class SeleniumCrawling {
     Company company;
 
 
+
+    /** >>> 굽네치킨 <<< */
+    @Test
+    void goobne() throws InterruptedException {
+        company = isCompanyPresent("굽네치킨", "https://mukcha-bucket.s3.ap-northeast-2.amazonaws.com/logo/logo_goobne.jpg");
+        System.setProperty(WEB_DRIVER_ID, WEB_DRIVER_PATH);
+        ChromeOptions options = new ChromeOptions();
+        // options.addArguments("headless"); // 브라우저 보이지 않기
+        WebDriver driver = new ChromeDriver(options);
+        driver.get("https://www.goobne.co.kr/menu/menu_list.jsp"); // WebDriver을 해당 url로 이동한다.
+        //브라우저 이동시 생기는 로드시간을 기다린다.
+		//HTTP 응답속도보다 자바의 컴파일 속도가 더 빠르기 때문에 임의적으로 대기한다.
+		Thread.sleep(2000);
+        goobneMoveTab(driver, "치킨 시리즈", Category.CHICKEN);
+        goobneMoveTab(driver, "피자 시리즈", Category.PIZZA);
+        driver.close();
+    }
+
+    private void goobneMoveTab(WebDriver driver, String tabName, Category category) {
+        List<WebElement> menuTabs = driver.findElements(By.tagName("a")); // 모든 a tag를 가져온다
+        for (int i=0; i<menuTabs.size(); i++) {
+			// span tag 중 "프리미엄"라는 텍스트를 가진 WebElement를 클릭한다.
+			if (menuTabs.get(i).getText().equals(tabName)) {
+				menuTabs.get(i).click();
+                System.out.println("<<< 탭 진입 - "+tabName);
+				break;
+			}
+		}
+		try {
+            Thread.sleep(2000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        goobneCrawling(driver, category);
+    }
+
+    private void goobneCrawling(WebDriver driver, Category category) {
+        List<WebElement> menuList = driver.findElements(By.xpath("//*[@id=\"menu_list\"]/li"));
+        for (WebElement menu : menuList) {
+            String menuName = menu.findElement(By.xpath("p/span")).getText();
+            // 반반메뉴 제외 & DB에 같은 이름이 없다면 진행
+            if (!menuName.contains("반반") && !isFoodPresent(menuName)) {
+                System.out.println("<<< menu name: " + menuName);
+                String image = menu.findElement(By.xpath("img")).getAttribute("src");
+                System.out.println("<<< image: " + image);
+                String imageUrl = saveImage(menuName, image, "goobne");
+                // saveFood
+                saveFood(menuName, imageUrl, company, category);
+            }
+        }
+    }
+
+
+
+    /** >>> 버거킹 <<< */
     @Test
     void burgerking() throws InterruptedException {
         company = isCompanyPresent("버거킹", "https://mukcha-bucket.s3.ap-northeast-2.amazonaws.com/logo/logo_burgerking.png");
@@ -63,8 +118,6 @@ public class SeleniumCrawling {
         burgerkingMoveTabAndCrawling(driver, "사이드", Category.SIDEMENU);
         driver.close();
     }
-
-
     private void burgerkingMoveTabAndCrawling(WebDriver driver, String tabName, Category category) {
         List<WebElement> menuTabs = driver.findElements(By.tagName("span")); // 모든 span tag를 가져온다
         for (int i=0; i<menuTabs.size(); i++) {
@@ -82,8 +135,6 @@ public class SeleniumCrawling {
         }
         burgerkingCrawling(driver, category);
     }
-
-
     private void burgerkingCrawling(WebDriver driver, Category category) {
         List<WebElement> menus = driver.findElements(By.xpath("//*[@id=\"app\"]/div/div[3]/div[2]/div/div[2]/ul/li"));
         for (WebElement menu : menus) {
@@ -130,6 +181,25 @@ public class SeleniumCrawling {
 
     /** >>> METHOD <<< */
 
+    private String saveImage(String menuName, String originImageUrl, String companyName) {
+        BufferedImage saveImage = null;
+        try {
+            saveImage = ImageIO.read(new URL(originImageUrl));
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        String fileName = "/image/"+companyName+"_"+getEncodedFilename(menuName)+".png";
+        File file = new File(fileName);
+        try {
+            ImageIO.write(saveImage, "png", file);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return s3Uploader.upload(file, "image");
+    }
+
     private String getEncodedFilename(String displayFileName) {
         String encodedFilename = null;
         try {
@@ -141,10 +211,9 @@ public class SeleniumCrawling {
     }
 
     private Company isCompanyPresent(String companyName, String companyLogo) {
-        Company company = companyService.findByName(companyName).orElse(
+        return companyService.findByName(companyName).orElse(
             createCompany(companyName, companyLogo)
         );
-        return company;
     }
 
     private Company createCompany(String companyName, String companyLogo) {
@@ -169,7 +238,7 @@ public class SeleniumCrawling {
                 .build()
         ;
         foodService.save(food);
-        log.info(">>> 메뉴<+"+food.getName()+"> 이 DB에 생성되었습니다." + food.toString());
+        log.info(">>> 메뉴<"+food.getName()+"> 이 DB에 생성되었습니다." + food.toString());
     }
 
     private Boolean isFoodPresent(String foodName) {
