@@ -32,7 +32,7 @@ public class UserServiceTest extends WithTest {
         // create
         User user = userTestHelper.createUser("ben@user.test", "TestUser");
         // find
-        User savedUser = userService.findUser(user.getUserId()).get();
+        User savedUser = userService.findUser(user.getUserId());
         // test
         assertEquals("ben@user.test", savedUser.getEmail());
         assertEquals("TestUser", savedUser.getNickname());

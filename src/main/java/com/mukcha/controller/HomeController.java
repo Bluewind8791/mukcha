@@ -6,7 +6,6 @@ import com.mukcha.config.dto.LoginUser;
 import com.mukcha.config.dto.SessionUser;
 import com.mukcha.controller.dto.UserDto;
 import com.mukcha.domain.Category;
-import com.mukcha.domain.ErrorMessage;
 import com.mukcha.domain.User;
 import com.mukcha.service.FoodService;
 import com.mukcha.service.ReviewService;
@@ -72,9 +71,7 @@ public class HomeController {
         List<Category> categoryList = List.of(Category.values());
         model.addAttribute("categoryList", categoryList);
         // DTO로 변환한 유저 정보 -> 서비스단으로 옮길 것
-        User user = userService.findUser(userId).orElseThrow(() -> 
-            new IllegalArgumentException(ErrorMessage.USER_NOT_FOUND.getMessage())
-        );
+        User user = userService.findUser(userId);
         UserDto userDto = UserDto.builder()
                             .email(user.getEmail())
                             .nickname(user.getNickname())

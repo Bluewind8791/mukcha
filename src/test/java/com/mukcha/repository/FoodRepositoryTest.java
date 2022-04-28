@@ -1,57 +1,74 @@
 package com.mukcha.repository;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+
+import java.util.List;
+import java.util.Optional;
+
 import com.mukcha.domain.Category;
-import com.mukcha.domain.Company;
 import com.mukcha.domain.Food;
-import com.mukcha.repository.helper.RepositoryTestHelper;
+import com.mukcha.repository.helper.WithRepositoryTest;
 
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.transaction.annotation.Transactional;
 
+
 @Transactional
 @SpringBootTest
 @ActiveProfiles("local")
-public class FoodRepositoryTest {
-
-    @Autowired private FoodRepository foodRepository;
-    @Autowired private CompanyRepository companyRepository;
-
-    private RepositoryTestHelper repositoryTestHelper;
-
-    Company company;
-    Food food;
+public class FoodRepositoryTest extends WithRepositoryTest {
 
     @BeforeEach
     void before() {
-        this.repositoryTestHelper = new RepositoryTestHelper(foodRepository, companyRepository);
-        this.company = repositoryTestHelper.createCompany("TestCompany1", "imageUrl");
-        this.food = repositoryTestHelper.createFood("TestFood1", company, Category.CHICKEN, "testImage");
+        prepareTest();
+    }
+
+
+    @Test
+    void testFindByName() {
+        // when
+        Food foundFood = foodRepository.findByName("testFood").get();
+        // then
+        assertEquals("testFood", foundFood.getName());
+        assertEquals("testFoodImage", foundFood.getImage());
     }
 
     @Test
-    @DisplayName("1. findAll Test") // 22.3.5
-    void test_1() {
-        System.out.println(">>> findAll: "+foodRepository.findAll());
+    void testFindAllByCategory() {
+        List<Food> foundFoods = foodRepository.findAllByCategory(Category.CHICKEN);
+        assertNotNull(foundFoods);
     }
 
     @Test
-    @DisplayName("2. getCategories Test") // 22.3.5
-    void test_2() {
-        System.out.println(">>> getAllCategories: "+foodRepository.findAllCategories());
+    void testFindAllByCompany() {
+        List<Food> foundFoods = foodRepository.findAllByCompany(company);
+        Food foundFood = foundFoods.get(0);
+        assertEquals("testFood", foundFood.getName());
     }
 
     @Test
-    @DisplayName("3. findByName Test") // 22.3.5
-    void test_3() {
-        System.out.println(">>> findByName: "+foodRepository.findByName("TestFood1"));
+    void testFindAllCategories() {
+        List<String> categories = foodRepository.findAllCategories();
+        assertNotNull(categories);
     }
 
+    @Test
+    void testDeleteById() {
+        foodRepository.deleteById(food.getFoodId());
+        assertEquals(Optional.empty(), foodRepository.findById(food.getFoodId()));
+    }
 
+    @Test
+    void testFindAllByCompanyAndCategory() {
+        List<Food> foundFoods = foodRepository.findAllByCompanyAndCategory(company, Category.CHICKEN);
+        Food foundFood = foundFoods.get(0);
+        assertEquals("testFood", foundFood.getName());
+        assertEquals("testFoodImage", foundFood.getImage());
+    }
 
 
 }

@@ -123,13 +123,13 @@ public class CompanyService {
 
     public void editCompanyLogo(Long companyId, String companyLogo) {
         findCompany(companyId).ifPresent(com -> {
-            companyRepository.updateCompanyImage(companyId, companyLogo);
+            com.editCompanyImageUrl(companyLogo);
         });
     }
 
     public void editCompanyName(Long companyId, String companyName) {
         findCompany(companyId).ifPresent(com -> {
-            companyRepository.updateCompanyName(companyId, companyName);
+            com.editCompanyName(companyName);
         });
     }
 

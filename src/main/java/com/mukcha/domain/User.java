@@ -24,7 +24,6 @@ import javax.persistence.Table;
 import org.hibernate.annotations.Where;
 
 
-
 @Getter
 @Entity
 @Builder
@@ -94,6 +93,22 @@ public class User extends BaseTimeEntity { //  implements UserDetails
 
     public void editProfileImage(String profileImageUrl) {
         this.profileImage = profileImageUrl;
+    }
+
+    public void editEmail(String email) {
+        this.email = email;
+    }
+
+    public void editNickname(String nickname) {
+        this.nickname = nickname;
+    }
+
+    public void editGender(Gender gender) {
+        this.gender = gender;
+    }
+
+    public void editBirthyear(String birthyear) {
+        this.birthYear = birthyear;
     }
 
     public void disableUser() {

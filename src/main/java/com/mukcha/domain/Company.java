@@ -21,7 +21,6 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 
-
 @Getter
 @Entity
 @Builder
@@ -46,8 +45,17 @@ public class Company extends BaseTimeEntity {
     @ToString.Exclude
     private List<Food> foods = new ArrayList<>();
 
+
     public void addFood(Food food) {
         this.foods.add(food);
+    }
+
+    public void editCompanyImageUrl(String imageUrl) {
+        this.image = imageUrl;
+    }
+
+    public void editCompanyName(String companyName) {
+        this.name = companyName;
     }
 
 }

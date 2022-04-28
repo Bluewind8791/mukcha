@@ -6,6 +6,7 @@ import java.util.Optional;
 
 import com.mukcha.config.dto.SessionUser;
 import com.mukcha.controller.dto.UserDto;
+import com.mukcha.domain.ErrorMessage;
 import com.mukcha.domain.Gender;
 import com.mukcha.domain.User;
 import com.mukcha.repository.UserRepository;
@@ -36,12 +37,8 @@ public class UserService {
         }
         // set enable
         user.enableUser();
-        userRepository.save(user);
-        User savedUser = findByEmail(user.getEmail()).orElseThrow(() ->
-            new IllegalArgumentException("회원가입에 실패하였습니다.")
-        );
-        log.info("회원가입이 진행되었습니다.");
-        return savedUser;
+        log.info("회원가입이 진행되었습니다." + user.toString());
+        return userRepository.save(user);
     }
 
 
@@ -58,52 +55,77 @@ public class UserService {
 
 
     /* FINDING SERVICES */
-    public Optional<User> findUser(Long userId) {
-        return userRepository.findById(userId);
+    public User findUser(Long userId) {
+        return userRepository.findById(userId).orElseThrow(() -> 
+            new IllegalArgumentException(ErrorMessage.USER_NOT_FOUND.getMessage())
+        );
     }
-    public Optional<User> findByEmail(String email) {
+
+    public User findByEmail(String email) {
+        return userRepository.findByEmail(email).orElseThrow(() -> 
+            new IllegalArgumentException(ErrorMessage.USER_NOT_FOUND.getMessage())
+        );
+    }
+
+    public Optional<User> findByEmailOr(String email) {
         return userRepository.findByEmail(email);
     }
-    public Optional<User> findByNickname(String nickname) {
-        return userRepository.findByNickname(nickname);
+
+    public User findByNickname(String nickname) {
+        return userRepository.findByNickname(nickname).orElseThrow(() -> 
+            new IllegalArgumentException(ErrorMessage.USER_NOT_FOUND.getMessage())
+        );
     }
 
 
     /* UPDATE SERVICES */
     public void updateEmail(Long userId, String email) {
-        userRepository.updateEmail(userId, email);
+        User user = findUser(userId);
+        user.editEmail(email);
+        userRepository.save(user);
     }
+
     public void updateNickname(Long userId, String nickname) {
-        userRepository.updateNickname(userId, nickname);
+        User user = findUser(userId);
+        user.editNickname(nickname);
+        userRepository.save(user);
     }
-    public void updateProfileImage(Long userId, String profileImage) {
-        userRepository.updateProfileImage(userId, profileImage);
+
+    public void updateProfileImage(Long userId, String profileImageUrl) {
+        User user = findUser(userId);
+        user.editProfileImage(profileImageUrl);
+        userRepository.save(user);
     }
+
     public void updateGender(Long userId, String stringGender) {
+        User user = findUser(userId);
         Gender gender = transClassGender(stringGender);
-        userRepository.updateGender(userId, gender);
+        user.editGender(gender);
+        userRepository.save(user);
     }
+
     public void updateBirthYear(Long userId, String birthYear) {
-        userRepository.updateBirthday(userId, birthYear);
+        User user = findUser(userId);
+        user.editBirthyear(birthYear);
+        userRepository.save(user);
     }
 
 
     // 로그인된 회원의 정보를 불러옵니다
     public UserDto getSessionUserInfo(SessionUser sessionUser) {
-        UserDto user = new UserDto();
-        findByEmail(sessionUser.getEmail()).ifPresent(u -> {
-            user.setUserId(u.getUserId());
-            user.setEmail(u.getEmail());
-            user.setNickname(u.getNickname());
-            user.setProfileImage(u.getProfileImage());
-            if (u.getGender() != null) {
-                user.setGender(u.getGender().toString());
-            }
-            if (u.getBirthYear() != null) {
-                user.setBirthYear(u.getBirthYear());
-            }
-        });
-        return user;
+        UserDto userDto = new UserDto();
+        User u = findByEmail(sessionUser.getEmail());
+        userDto.setUserId(u.getUserId());
+        userDto.setEmail(u.getEmail());
+        userDto.setNickname(u.getNickname());
+        userDto.setProfileImage(u.getProfileImage());
+        if (u.getGender() != null) {
+            userDto.setGender(u.getGender().toString());
+        }
+        if (u.getBirthYear() != null) {
+            userDto.setBirthYear(u.getBirthYear());
+        }
+        return userDto;
     }
 
     // 성별 클래스 전환 for DTO
@@ -121,9 +143,10 @@ public class UserService {
     // 회원 삭제 (enabled = false)
     @Transactional(rollbackFor = {RuntimeException.class})
     public void disableUser(Long userId) {
-        updateProfileImage(userId, null); // delete 프로필 사진
-        updateNickname(userId, null); // delete 
-        userRepository.disableUser(userId); // enable=false 처리
+        User user = findUser(userId);
+        user.editNickname(null); // nickname null 처리
+        user.disableUser(); // disable 처리
+        userRepository.save(user);
     }
 
 
