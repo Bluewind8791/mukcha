@@ -16,10 +16,11 @@ public class ReviewTestHelper {
     private final ReviewService reviewService;
 
     public Review makeReview(Food food, User user) {
-        Review review = new Review();
-        review.setFood(food);
-        review.setUser(user);
-        review.setScore(Score.BAD);
+        Review review = Review.builder()
+                            .food(food)
+                            .user(user)
+                            .score(Score.BAD)
+                            .build();
         return review;
     }
 
@@ -29,7 +30,7 @@ public class ReviewTestHelper {
 
     public Review createReviewWithScore(Food food, User user, Score score) {
         Review review = makeReview(food, user);
-        review.setScore(score);
+        review.editScore(score);
         return reviewService.save(review);
     }
 

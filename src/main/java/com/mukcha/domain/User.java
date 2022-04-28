@@ -1,7 +1,7 @@
 package com.mukcha.domain;
 
-import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.Getter;
 import lombok.Builder;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
@@ -25,7 +25,7 @@ import org.hibernate.annotations.Where;
 
 
 
-@Data
+@Getter
 @Entity
 @Builder
 @NoArgsConstructor
@@ -70,7 +70,6 @@ public class User extends BaseTimeEntity { //  implements UserDetails
 
 
     // >>> METHODS <<<
-
     public User update(String nickname, String profileImage){
         this.nickname = nickname;
         this.profileImage = profileImage;
@@ -87,6 +86,22 @@ public class User extends BaseTimeEntity { //  implements UserDetails
         } catch (NullPointerException e) {
             return "";
         }
+    }
+
+    public void setAuthority(Authority authority) {
+        this.authority = authority;
+    }
+
+    public void editProfileImage(String profileImageUrl) {
+        this.profileImage = profileImageUrl;
+    }
+
+    public void disableUser() {
+        this.enabled = false;
+    }
+
+    public void enableUser() {
+        this.enabled = true;
     }
 
 

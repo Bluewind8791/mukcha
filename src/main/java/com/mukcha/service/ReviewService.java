@@ -113,10 +113,10 @@ public class ReviewService {
 
     /* EDIT METHODS */
     public void editReviewScore(Review review, Score score) {
-        review.setScore(score);
+        review.editScore(score);
     }
     public void editReviewComment(Review review, String comment) {
-        review.setComment(comment);
+        review.editComment(comment);
     }
     public void editReviewEatenDate(Review review, LocalDate eatenDate) {
         review.setEatenDate(eatenDate);
@@ -147,14 +147,15 @@ public class ReviewService {
             review = findReviewByFoodIdAndUserId(foodId, userId).orElseThrow(() ->
                 new IllegalArgumentException(ErrorMessage.REVIEW_NOT_FOUND.getMessage()+"/foodId="+foodId+"/userId"+userId)
             );
-            review.setScore(score);
-            review.setComment(comment);
+            review.editScore(score);
+            review.editComment(comment);
         } catch (Exception e) {
-            review = new Review();
-            review.setFood(foodRepository.findById(foodId).get());
-            review.setUser(userRepository.findById(userId).get());
-            review.setScore(score);
-            review.setComment(comment);
+            review = Review.builder()
+                .food(foodRepository.findById(foodId).get())
+                .user(userRepository.findById(userId).get())
+                .score(score)
+                .comment(comment)
+                .build();
         }
         return save(review);
     }

@@ -21,13 +21,13 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 
 
-@Data
+@Getter
 @Entity
 @Builder
 @NoArgsConstructor
@@ -54,7 +54,6 @@ public class Food extends BaseTimeEntity {
     @JoinColumn(name = "company_id")
     private Company company;
 
-
     // food -> review (readOnly)
     @JsonIgnore // json 변환 시, 무한루프 방지
     @Builder.Default
@@ -62,6 +61,22 @@ public class Food extends BaseTimeEntity {
     @OneToMany(mappedBy = "food", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     private List<Review> reviews = new ArrayList<>();
 
+
+    public void setCategory(Category category) {
+        this.category = category;
+    }
+
+    public void editFoodName(String name) {
+        this.name = name;
+    }
+
+    public void editImageUrl(String imageUrl) {
+        this.image = imageUrl;
+    }
+
+    public void setCompany(Company company) {
+        this.company = company;
+    }
 
 }
 

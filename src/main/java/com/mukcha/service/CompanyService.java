@@ -83,7 +83,7 @@ public class CompanyService {
 
 
     // 해당 회사의 메뉴를 추가한다
-    public void companyAddFood(Long companyId ,Food food) {
+    public void companyAddFood(Long companyId, Food food) {
         // find company
         companyRepository.findById(companyId).ifPresentOrElse(company -> {
             // company foods 에 food 가 없다면

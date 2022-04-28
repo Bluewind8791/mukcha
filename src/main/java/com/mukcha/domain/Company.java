@@ -1,7 +1,7 @@
 package com.mukcha.domain;
 
-import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.Getter;
 import lombok.Builder;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
@@ -22,7 +22,7 @@ import javax.persistence.Table;
 
 
 
-@Data
+@Getter
 @Entity
 @Builder
 @NoArgsConstructor
@@ -47,8 +47,7 @@ public class Company extends BaseTimeEntity {
     private List<Food> foods = new ArrayList<>();
 
     public void addFood(Food food) {
-        this.getFoods().add(food);
-        food.setCompany(this);
+        this.foods.add(food);
     }
 
 }

@@ -20,7 +20,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 
 @Transactional
-@SpringBootTest // 22.3.31
+@SpringBootTest
 @ActiveProfiles("local")
 public class CompanyServiceTest extends WithTest {
 

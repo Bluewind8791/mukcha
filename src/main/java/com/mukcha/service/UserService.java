@@ -32,10 +32,10 @@ public class UserService {
     public User signUp(User user) {
         // 프로필 이미지가 없을 경우 기본 프로필로 대체
         if (user.getProfileImage() == null) {
-            user.setProfileImage("/profile/blank.png");
+            user.editProfileImage("/profile/blank.png");
         }
         // set enable
-        user.setEnabled(true);
+        user.enableUser();
         userRepository.save(user);
         User savedUser = findByEmail(user.getEmail()).orElseThrow(() ->
             new IllegalArgumentException("회원가입에 실패하였습니다.")

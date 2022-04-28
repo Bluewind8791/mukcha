@@ -12,16 +12,16 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
-import groovy.transform.builder.Builder;
-import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.NonNull;
 import lombok.ToString;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 
 
-@Data
+@Getter
 @Entity
 @Builder
 @NoArgsConstructor
@@ -63,6 +63,18 @@ public class Review extends BaseTimeEntity {
 
     public void setUserToNull() {
         this.user = null;
+    }
+
+    public void editScore(Score score) {
+        this.score = score;
+    }
+
+    public void editComment(String comment) {
+        this.comment = comment;
+    }
+
+    public void setEatenDate(LocalDate eatenDate) {
+        this.eatenDate = eatenDate;
     }
 
 }

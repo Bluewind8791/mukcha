@@ -46,7 +46,7 @@ public class FoodService {
     // 음식 이름을 수정한다
     public Optional<Food> editFoodName(Long foodId, String name) {
         return foodRepository.findById(foodId).map(food -> {
-            food.setName(name);
+            food.editFoodName(name);
             foodRepository.save(food);
             return food;
         });
@@ -54,7 +54,7 @@ public class FoodService {
     // 음식 이미지 url 을 수정한다
     public Optional<Food> editFoodImage(Long foodId, String imageUrl) {
         return foodRepository.findById(foodId).map(food -> {
-            food.setImage(imageUrl);
+            food.editImageUrl(imageUrl);
             foodRepository.save(food);
             return food;
         });

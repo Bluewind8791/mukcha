@@ -5,6 +5,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 
 import com.mukcha.controller.dto.CategoryDto;
 import com.mukcha.domain.Category;
@@ -25,7 +26,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 
 @Transactional
-@SpringBootTest // 22.03.31
+@SpringBootTest
 @ActiveProfiles("local")
 public class ReviewServiceTest extends WithTest {
 
@@ -164,7 +165,20 @@ public class ReviewServiceTest extends WithTest {
     }
 
 
+    @Test
+    @DisplayName("9. 유저가 해당 메뉴에 리뷰를 썼는지 알아본다.")
+    void test_9() {
+        // set - user 는 리뷰를 쓰고 user2는 리뷰를 쓰지 않음.
+        User user2 = userTestHelper.createUser("test2@user.test", "test2");
+        reviewTestHelper.createReview(food, user);
 
+        // assert
+        // 'user'의 리뷰를 찾으면 not null 이고 어떠한 exception도 없어야 한다.
+        assertDoesNotThrow(() -> reviewService.findReviewByFoodIdAndUserId(food.getFoodId(), user.getUserId()));
+        assertNotNull(reviewService.findReviewByFoodIdAndUserId(food.getFoodId(), user.getUserId()));
+        // 'user2'의 리뷰는 empty이다.
+        assertEquals(Optional.empty(), reviewService.findReviewByFoodIdAndUserId(food.getFoodId(), user2.getUserId()) );
+    }
 
 
 }

@@ -2,11 +2,7 @@ package com.mukcha.service;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-import java.util.NoSuchElementException;
 
-import com.mukcha.domain.Category;
-import com.mukcha.domain.Company;
-import com.mukcha.domain.Food;
 import com.mukcha.domain.User;
 import com.mukcha.service.helper.WithTest;
 
@@ -20,7 +16,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 
 @Transactional
-@SpringBootTest // 22.03.31
+@SpringBootTest
 @ActiveProfiles("local")
 public class UserServiceTest extends WithTest {
 
@@ -49,27 +45,10 @@ public class UserServiceTest extends WithTest {
         assertThrows(DataIntegrityViolationException.class, () -> userTestHelper.createUser("test1@test.com", "TestUser2"));
     }
 
-    @Test
-    @DisplayName("3. 유저가 해당 메뉴에 리뷰를 썼는지 알아본다.")
-    void test_3() {
-        User user = userTestHelper.createUser("test1@user.test", "test1");
-        User user2 = userTestHelper.createUser("test2@user.test", "test2");
-        Company company = companyTestHelper.createCompany("testcompany", "imageUrl");
-        Food food = foodTestHelper.createFood("testfood", company, Category.CHICKEN, "image");
-        reviewTestHelper.createReview(food, user);
-
-        assertDoesNotThrow(() -> reviewService.findReviewByFoodIdAndUserId(food.getFoodId(), user.getUserId()));
-        assertNotNull(reviewService.findReviewByFoodIdAndUserId(food.getFoodId(), user.getUserId()));
-        assertThrows(NoSuchElementException.class, 
-            () -> reviewService.findReviewByFoodIdAndUserId(food.getFoodId(), user2.getUserId())
-        );
-    }
-
-
 }
 /*
     @Test
-    @DisplayName("9. 회원 탈퇴를 진행한다.")
+    @DisplayName("9. 회원 탈퇴를 진행한다. (구현예정)")
     void test_9() {
         User user1 = userTestHelper.createUser("test1@user.test", "test1");
         User user2 = userTestHelper.createUser("test2@user.test", "test2");
