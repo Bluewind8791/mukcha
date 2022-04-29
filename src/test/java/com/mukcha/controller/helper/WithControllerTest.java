@@ -16,9 +16,9 @@ public class WithControllerTest {
     protected int port;
 
     @Autowired protected TestRestTemplate restTemplate;
-
     @Autowired protected CompanyRepository companyRepository;
     @Autowired protected FoodRepository foodRepository;
+
 
     protected Company createCompany(String companyName, String companyLogo) {
         return companyRepository.save(Company.builder()

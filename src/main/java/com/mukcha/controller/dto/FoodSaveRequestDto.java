@@ -9,9 +9,11 @@ import com.mukcha.domain.Food;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 
 @Getter
+@Setter
 @NoArgsConstructor
 public class FoodSaveRequestDto {
 

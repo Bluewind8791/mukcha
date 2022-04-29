@@ -43,11 +43,11 @@ public class CrawlingController {
     }
 
     public void dbInitCrawling() {
-        // 빅스타피자();
+        빅스타피자();
         // dominoPizza();
-        // 페리카나();
+        페리카나();
         // BBQ();
-        // sinjeon();
+        sinjeon();
         // baedduck();
     }
 

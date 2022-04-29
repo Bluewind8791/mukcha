@@ -48,7 +48,7 @@ public class FoodService {
 
     public Long save(FoodSaveRequestDto requestDto) {
         Company com = companyRepository.findByName(requestDto.getCompanyName()).orElseThrow(() -> 
-        new IllegalArgumentException(ErrorMessage.COMPANY_NOT_FOUND.getMessage())
+            new IllegalArgumentException(ErrorMessage.COMPANY_NOT_FOUND.getMessage() + requestDto.getCompanyName())
         );
         requestDto.setCompanyEntity(com);
         log.info(">>> 메뉴가 생성되었습니다." + requestDto.toString());

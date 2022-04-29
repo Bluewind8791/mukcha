@@ -45,7 +45,7 @@ public class AdminApiControllerTest extends WithControllerTest {
             .companyName(companyName)
             .build()
         ;
-        String url = "http://localhost:" + port + "/api/menus";
+        String url = "http://localhost:" + port + "/admin/api/menus";
         // when
         ResponseEntity<Long> responseEntity = restTemplate.postForEntity(url, requestDto, Long.class);
         // then
@@ -74,7 +74,7 @@ public class AdminApiControllerTest extends WithControllerTest {
             .foodImage(expectImage)
             .category(expectCategory.name())
             .build();
-        String url = "http://localhost:" + port + "/api/menus/" + updateId;
+        String url = "http://localhost:" + port + "/admin/api/menus/" + updateId;
         HttpEntity<FoodUpdateRequestDto> httpEntity = new HttpEntity<FoodUpdateRequestDto>(requestDto);
         // when
         ResponseEntity<Long> responseEntity = restTemplate.exchange(url, HttpMethod.PUT, httpEntity, Long.class);
@@ -94,7 +94,7 @@ public class AdminApiControllerTest extends WithControllerTest {
         Company savedCompany = createCompany("testCompany", "testLogo");
         Food savedFood = createFood(savedCompany, "testName", "testImage", Category.CHICKEN);
         Long targetId = savedFood.getFoodId();
-        String url = "http://localhost:" + port + "/api/menus/{foodId}";
+        String url = "http://localhost:" + port + "/admin/api/menus/{foodId}";
         Map<String, Long> params = new HashMap<>();
         params.put("foodId", targetId);
         // when
@@ -113,7 +113,7 @@ public class AdminApiControllerTest extends WithControllerTest {
             .companyName(companyName)
             .companyLogo(companyLogo)
             .build();
-        String url = "http://localhost:" + port + "/api/companies";
+        String url = "http://localhost:" + port + "/admin/api/companies";
         // when
         ResponseEntity<Long> responseEntity = restTemplate.postForEntity(url, companyRequestDto, Long.class);
         // then
@@ -136,7 +136,7 @@ public class AdminApiControllerTest extends WithControllerTest {
             .companyName(expectName)
             .companyLogo(expectLogo)
             .build();
-        String url = "http://localhost:" + port + "/api/companies/" + updateId;
+        String url = "http://localhost:" + port + "/admin/api/companies/" + updateId;
         HttpEntity<CompanyRequestDto> requestEntity = new HttpEntity<CompanyRequestDto>(requestDto);
         // when
         ResponseEntity<Long> responseEntity = restTemplate.exchange(url, HttpMethod.PUT, requestEntity, Long.class);
@@ -155,7 +155,7 @@ public class AdminApiControllerTest extends WithControllerTest {
         Company savedCompany = createCompany("testCompany", "testLogo");
         createFood(savedCompany, "testName", "testImage", Category.CHICKEN);
         Long targetId = savedCompany.getCompanyId();
-        String url = "http://localhost:" + port + "/api/companies/{companyId}";
+        String url = "http://localhost:" + port + "/admin/api/companies/{companyId}";
         Map<String, Long> params = new HashMap<>();
         params.put("companyId", targetId);
         // when

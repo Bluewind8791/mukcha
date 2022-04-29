@@ -4,8 +4,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import javax.servlet.http.HttpServletRequest;
-
 import com.mukcha.config.dto.LoginUser;
 import com.mukcha.config.dto.SessionUser;
 import com.mukcha.controller.dto.CompanyRequestDto;
@@ -20,11 +18,8 @@ import com.mukcha.service.UserService;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import lombok.RequiredArgsConstructor;
@@ -42,7 +37,6 @@ public class AdminController {
     private final FoodService foodService;
     private final UserService userService;
 
-    /* >>> VIEW <<< */
 
     // ROOT PAGE
     @GetMapping(value = {"/", ""})
@@ -67,7 +61,6 @@ public class AdminController {
 
 
     // 해당 회사의 모든 메뉴 리스트 
-    // /admin/company/'+${c.companyId}
     @GetMapping(value = "/company/{companyId}")
     public String viewAllCompanies(
         Model model,
@@ -79,9 +72,10 @@ public class AdminController {
             model.addAttribute("login_user_id", user.getUserId());
             model.addAttribute("login_user_nickname", user.getNickname());
         }
+        // 해당 회사의 이름
+        model.addAttribute("thisCompanyName", companyService.findCompany(companyId).getName());
+        // 해당 회사의 모든 메뉴들
         model.addAttribute("foodList", companyService.getFoodList(companyId));
-        // 모든 회사 이름만
-        model.addAttribute("companyList", companyService.findAllCompanyName());
         // Category List
         List<Category> categoryList = List.of(Category.values());
         model.addAttribute("categoryList", categoryList);
@@ -97,7 +91,7 @@ public class AdminController {
             model.addAttribute("login_user_id", user.getUserId());
             model.addAttribute("login_user_nickname", user.getNickname());
         }
-        // 카테고리 리스트
+        // 모든 카테고리 리스트
         List<Category> categoryList = List.of(Category.values());
         model.addAttribute("categoryList", categoryList);
         // 메뉴 정보 -> DTO 변경
@@ -125,109 +119,6 @@ public class AdminController {
         });
         model.addAttribute("companyList", companyDtoList);
         return "admin/adminMenuList";
-    }
-
-
-
-    //>>> METHODS <<<
-
-    // 회사 추가 메소드
-    @PostMapping(value = "/company")
-    public String addCompany(
-            @ModelAttribute CompanyRequestDto companyDto,
-            Model model,
-            HttpServletRequest request
-    ) {
-        Company company = Company.builder()
-                            .name(companyDto.getCompanyName())
-                            .image(companyDto.getCompanyLogo())
-                            .build()
-        ;
-        Company savedCompany = companyService.save(company);
-        log.info("회사가 생성되었습니다." + savedCompany.toString());
-        String referer = request.getHeader("Referer"); // 헤더에서 이전 페이지를 읽는다.
-        return "redirect:"+ referer; // 이전 페이지로 리다이렉트
-    }
-
-
-    // 메뉴(음식) 추가 메소드
-    @PostMapping(value = "/menu")
-    public String addMenu(
-            @ModelAttribute FoodDto foodDto,
-            Model model,
-            HttpServletRequest request
-    ) {
-        Food food = Food.builder()
-                        .name(foodDto.getFoodName())
-                        .image(foodDto.getFoodImage())
-                        .category(transCategory(foodDto.getCategory()))
-                        .company(companyService.findByName(foodDto.getCompanyName()))
-                        .build()
-        ;
-        Food savedFood = foodService.save(food);
-        log.info("메뉴가 생성되었습니다." + savedFood.toString());
-        String referer = request.getHeader("Referer"); // 헤더에서 이전 페이지를 읽는다.
-        return "redirect:"+ referer; // 이전 페이지로 리다이렉트
-    }
-
-
-    // 회사 삭제 메소드
-    @DeleteMapping(value = "/companies/delete/{companyId}")
-    public String deleteCompany(@PathVariable Long companyId) {
-        companyService.deleteCompany(companyId);
-        return "redirect:/admin";
-    }
-
-
-    // 메뉴 삭제 메소드
-    @DeleteMapping(value = "/menus/delete/{foodId}")
-    public String deleteFood(@PathVariable Long foodId) {
-        foodService.deleteFood(foodId);
-        return "redirect:/admin/menus/";
-    }
-
-
-    // 회사 수정 메소드
-    @PostMapping(value = "/companies/edit/{companyId}")
-    public String editCompany(
-        @PathVariable Long companyId,
-        CompanyRequestDto companyDto
-    ) {
-        companyService.editCompanyName(companyId, companyDto.getCompanyName());
-        companyService.editCompanyLogo(companyId, companyDto.getCompanyLogo());
-        return "redirect:/admin/companies/";
-    }
-
-
-    // 메뉴 수정 메소드
-    @PostMapping(value = "/menus/edit/{foodId}")
-    public String editFood(
-        @PathVariable Long foodId,
-        FoodDto foodDto,
-        HttpServletRequest request
-    ) {
-        System.out.println(">>> company name:"+foodDto.getCompanyName());
-        // foodService.editFoodName(foodId, foodDto.getFoodName());
-        // foodService.editFoodImage(foodId, foodDto.getFoodImage());
-        foodService.editFoodCompany(foodId, foodDto.getCompanyName());
-        // foodService.editFoodCategory(foodId, transCategory(foodDto.getCategory()));
-		String referer = request.getHeader("Referer"); // 헤더에서 이전 페이지를 읽는다.
-        return "redirect:"+ referer; // 이전 페이지로 리다이렉트
-    }
-
-
-
-    private Category transCategory(String category) {
-        String upperCategory = category.toUpperCase();
-        Category arr[] = Category.values();
-        for (Category c : arr) {
-            // 동일한 카테고리가 존재한다면
-            if (upperCategory.equals(c.toString())) {
-                return c;
-            }
-        }
-        // 해당 카테고리가 존재하지 않을 시
-        return null;
     }
 
 

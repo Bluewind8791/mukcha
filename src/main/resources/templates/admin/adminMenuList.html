@@ -87,7 +87,7 @@
                   <span class="me-2"> - </span><span th:text="${f.foodName}">메뉴이름</span>
                   <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
-                <form th:action="@{/admin/menus/edit/}+${f.foodId}" method="POST">
+                <form th:action="@{/admin/api/menus/}+${f.foodId}" method="PUT">
                   <div class="modal-body">
                     <div class="mb-3 mt-3">
                       <label>메뉴 이름</label>
