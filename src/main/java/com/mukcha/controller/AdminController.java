@@ -8,12 +8,11 @@ import javax.servlet.http.HttpServletRequest;
 
 import com.mukcha.config.dto.LoginUser;
 import com.mukcha.config.dto.SessionUser;
-import com.mukcha.controller.dto.CompanyDto;
+import com.mukcha.controller.dto.CompanyRequestDto;
 import com.mukcha.controller.dto.FoodDto;
 import com.mukcha.controller.dto.UserDto;
 import com.mukcha.domain.Category;
 import com.mukcha.domain.Company;
-import com.mukcha.domain.ErrorMessage;
 import com.mukcha.domain.Food;
 import com.mukcha.service.CompanyService;
 import com.mukcha.service.FoodService;
@@ -80,7 +79,7 @@ public class AdminController {
             model.addAttribute("login_user_id", user.getUserId());
             model.addAttribute("login_user_nickname", user.getNickname());
         }
-        model.addAttribute("foodList", companyService.getFoodListInfo(companyId));
+        model.addAttribute("foodList", companyService.getFoodList(companyId));
         // 모든 회사 이름만
         model.addAttribute("companyList", companyService.findAllCompanyName());
         // Category List
@@ -118,9 +117,9 @@ public class AdminController {
         model.addAttribute("foodList", foodDtoList);
         // 모든 회사 이름 -> DTO 변경
         List<Company> companies = companyService.findAll();
-        List<CompanyDto> companyDtoList = new ArrayList<>();
+        List<CompanyRequestDto> companyDtoList = new ArrayList<>();
         companies.stream().forEach(com -> {
-            CompanyDto companyDto = new CompanyDto();
+            CompanyRequestDto companyDto = new CompanyRequestDto();
             companyDto.setCompanyName(com.getName());
             companyDtoList.add(companyDto);
         });
@@ -135,7 +134,7 @@ public class AdminController {
     // 회사 추가 메소드
     @PostMapping(value = "/company")
     public String addCompany(
-            @ModelAttribute CompanyDto companyDto,
+            @ModelAttribute CompanyRequestDto companyDto,
             Model model,
             HttpServletRequest request
     ) {
@@ -162,7 +161,7 @@ public class AdminController {
                         .name(foodDto.getFoodName())
                         .image(foodDto.getFoodImage())
                         .category(transCategory(foodDto.getCategory()))
-                        .company(transCompany(foodDto.getCompanyName()))
+                        .company(companyService.findByName(foodDto.getCompanyName()))
                         .build()
         ;
         Food savedFood = foodService.save(food);
@@ -175,13 +174,7 @@ public class AdminController {
     // 회사 삭제 메소드
     @DeleteMapping(value = "/companies/delete/{companyId}")
     public String deleteCompany(@PathVariable Long companyId) {
-        String name = companyService.findCompany(companyId).get().getName();
         companyService.deleteCompany(companyId);
-        if (companyService.findCompany(companyId).isPresent()) {
-            log.info("회사 <"+name+"> 의 삭제에 실패하였습니다..");
-        } else {
-            log.info("회사 <"+name+"> 이 삭제되었습니다.");
-        }
         return "redirect:/admin";
     }
 
@@ -189,13 +182,7 @@ public class AdminController {
     // 메뉴 삭제 메소드
     @DeleteMapping(value = "/menus/delete/{foodId}")
     public String deleteFood(@PathVariable Long foodId) {
-        String name = foodService.findFood(foodId).get().getName();
         foodService.deleteFood(foodId);
-        if (foodService.findFood(foodId).isPresent()) {
-            log.info("메뉴 <"+name+"> 의 삭제가 실패하였습니다.");
-        } else {
-            log.info("메뉴 <"+name+"> 가 삭제되었습니다.");
-        }
         return "redirect:/admin/menus/";
     }
 
@@ -204,7 +191,7 @@ public class AdminController {
     @PostMapping(value = "/companies/edit/{companyId}")
     public String editCompany(
         @PathVariable Long companyId,
-        CompanyDto companyDto
+        CompanyRequestDto companyDto
     ) {
         companyService.editCompanyName(companyId, companyDto.getCompanyName());
         companyService.editCompanyLogo(companyId, companyDto.getCompanyLogo());
@@ -220,10 +207,10 @@ public class AdminController {
         HttpServletRequest request
     ) {
         System.out.println(">>> company name:"+foodDto.getCompanyName());
-        foodService.editFoodName(foodId, foodDto.getFoodName());
-        foodService.editFoodImage(foodId, foodDto.getFoodImage());
+        // foodService.editFoodName(foodId, foodDto.getFoodName());
+        // foodService.editFoodImage(foodId, foodDto.getFoodImage());
         foodService.editFoodCompany(foodId, foodDto.getCompanyName());
-        foodService.editFoodCategory(foodId, transCategory(foodDto.getCategory()));
+        // foodService.editFoodCategory(foodId, transCategory(foodDto.getCategory()));
 		String referer = request.getHeader("Referer"); // 헤더에서 이전 페이지를 읽는다.
         return "redirect:"+ referer; // 이전 페이지로 리다이렉트
     }
@@ -241,12 +228,6 @@ public class AdminController {
         }
         // 해당 카테고리가 존재하지 않을 시
         return null;
-    }
-
-    private Company transCompany(String companyName) {
-        return companyService.findByName(companyName).orElseThrow(() ->
-            new IllegalArgumentException(ErrorMessage.COMPANY_NOT_FOUND.getMessage()+companyName)
-        );
     }
 
 

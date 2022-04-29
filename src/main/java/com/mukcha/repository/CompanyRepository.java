@@ -15,10 +15,3 @@ public interface CompanyRepository extends JpaRepository<Company, Long>, JpaSpec
     Optional<Company> findByName(String name);
 
 }
-// @Modifying(clearAutomatically = true)
-// @Query("update Company set image=?2 where companyId=?1")
-// void updateCompanyImage(Long companyId, String image);
-
-// @Modifying(clearAutomatically = true)
-// @Query("update Company set name=?2 where companyId=?1")
-// void updateCompanyName(Long companyId, String name);

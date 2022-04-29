@@ -34,7 +34,7 @@ public class WithTest {
 
     protected void prepareTest() {
         // service
-        this.foodService = new FoodService(foodRepository, companyRepository, reviewRepository);
+        this.foodService = new FoodService(foodRepository, companyRepository, reviewRepository, companyService);
         this.companyService = new CompanyService(companyRepository, foodRepository);
         this.userService = new UserService(userRepository);
         this.reviewService = new ReviewService(reviewRepository, userRepository, foodRepository);

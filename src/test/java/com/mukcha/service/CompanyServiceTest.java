@@ -2,9 +2,9 @@ package com.mukcha.service;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.util.List;
-import java.util.Optional;
 
 import com.mukcha.domain.Category;
 import com.mukcha.domain.Company;
@@ -34,9 +34,7 @@ public class CompanyServiceTest extends WithTest {
     @DisplayName("1. 회사를 생성한다.")
     void test_1() {
         Company company = companyTestHelper.createCompany("test company", "companyLogo");
-        Company savedCompany = companyService.findCompany(company.getCompanyId()).orElseThrow(() -> 
-            new IllegalArgumentException("해당 회사를 찾을 수 없습니다.")
-        );
+        Company savedCompany = companyService.findCompany(company.getCompanyId());
         companyTestHelper.assertCompany(savedCompany, "test company", "companyLogo");
     }
 
@@ -79,16 +77,14 @@ public class CompanyServiceTest extends WithTest {
         companyService.editCompanyName(company.getCompanyId(), "ChickenPlus");
         companyService.editCompanyLogo(company.getCompanyId(), "NewCompanyLogo");
         // assert
-        Company savedCompany = companyService.findCompany(company.getCompanyId()).orElseThrow(() -> 
-            new IllegalArgumentException("해당 회사를 찾을 수 없습니다.")
-        );
+        Company savedCompany = companyService.findCompany(company.getCompanyId());
         assertEquals("ChickenPlus", savedCompany.getName());
         assertEquals("NewCompanyLogo", savedCompany.getImage());
     }
 
     @Test
-    @DisplayName("6. 회사를 삭제한다.")
-    void test_6() {
+    @DisplayName("5. 회사를 삭제한다.")
+    void test_5() {
         // set
         Company company = companyTestHelper.createCompany("test company", "companyLogo");
         Food food1 = foodTestHelper.createFood("food1", company, Category.CHICKEN, null);
@@ -97,13 +93,13 @@ public class CompanyServiceTest extends WithTest {
         // delete
         companyService.deleteCompany(companyId);
         // assert
-        assertEquals(Optional.empty(), companyService.findCompany(companyId));
+        assertThrows(IllegalArgumentException.class, () -> companyService.findCompany(companyId));
         assertNull(food1.getCompany());
     }
 
     @Test
-    @DisplayName("7. findCompanyTopTenNewest")
-    void test_7() {
+    @DisplayName("6. findCompanyTopTenNewest")
+    void test_6() {
         // set
         Company company = companyTestHelper.createCompany("test company", "companyLogo");
         foodTestHelper.createFood("food1", company, Category.CHICKEN, null);
@@ -116,27 +112,25 @@ public class CompanyServiceTest extends WithTest {
     }
 
 
-
-}
-/*
-    @Test // 22.3.6
-    @DisplayName("5. 회사의 음식을 삭제한다.")
-    void test_5() {
-        Company company = companyTestHelper.createCompany("test company", "companyLogo");
+    @Test
+    @DisplayName("회사의 해당 메뉴를 삭제한다.")
+    void testDeleteFood() {
+        // given
+        Company company = companyTestHelper.createCompany("testCompany", "companyLogo");
+        Long companyId = company.getCompanyId();
         Food food1 = foodTestHelper.createFood("food1", company, Category.CHICKEN, null);
         foodTestHelper.createFood("food2", company, Category.PIZZA, null);
-        
-        // 음식 -> 회사의 연관관계를 끊는다.
-        foodService.setNullCompanysFood(food1.getFoodId());
-
-        // 회사의 음식을 삭제한다.
-        companyService.companyRemoveFood(company.getCompanyId(), food1);
-
-        Company savedCompany = companyService.findCompany(company.getCompanyId()).get();
-        List<Food> foods = companyService.getFoodListInfo(savedCompany.getCompanyId());
-        
+        System.out.println(">>> company.getFoods: "+companyService.getFoodList(companyId).size());
+        // when
+        companyService.deleteFood(companyId, food1.getFoodId());
+        // then
+        Company savedCompany = companyService.findCompany(companyId);
+        List<Food> foods = companyService.getFoodList(savedCompany.getCompanyId());
         System.out.println(">>> company.getFoods: "+foods);
         assertEquals(1, foods.size());
         assertEquals("food2", foods.get(0).getName());
     }
-*/
+
+
+
+}

@@ -7,8 +7,9 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-import com.mukcha.controller.dto.CompanyDto;
+import com.mukcha.controller.dto.CompanyRequestDto;
 import com.mukcha.domain.Company;
+import com.mukcha.domain.ErrorMessage;
 import com.mukcha.domain.Food;
 import com.mukcha.repository.CompanyRepository;
 import com.mukcha.repository.FoodRepository;
@@ -32,9 +33,42 @@ public class CompanyService {
 
     // 회사 추가
     public Company save(Company company) {
-        log.info(">>> 회사 <"+company.getName()+">를 생성합니다.");
+        log.info(">>> 회사 <"+company.getName()+">를 생성합니다." + company.toString());
         return companyRepository.save(company);
     }
+
+    public Long save(CompanyRequestDto requestDto) {
+        log.info(">>> 회사 <"+requestDto.getCompanyName()+">를 생성합니다." + requestDto.toString());
+        return companyRepository.save(requestDto.toEntity()).getCompanyId();
+    }
+
+    // 회사 정보 수정
+    @Transactional
+    public Long update(Long companyId, CompanyRequestDto requestDto) {
+        Company company = findCompany(companyId);
+        company.update(requestDto.getCompanyName(), requestDto.getCompanyLogo());
+        return companyId;
+    }
+
+    // 회사 삭제
+    public void deleteCompany(Long companyId) {
+        Company targetCompany = findCompany(companyId);
+        // 삭제하려는 회사의 모든 음식을 찾고 연관관계를 끊는다
+        setNullcompanysFood(targetCompany);
+        companyRepository.delete(targetCompany);
+    }
+
+    // 회사의 모든 음식을 찾고 연관관계를 끊는다
+    private void setNullcompanysFood(Company company) {
+        // 해당 회사의 모든 음식을 찾는다
+        List<Food> originFoods = foodRepository.findAllByCompany(company);
+        if (originFoods.isEmpty()) {
+            return;
+        }
+        // 만약 회사에 메뉴들이 존재한다면
+        originFoods.forEach(f -> f.setCompanyNull());
+    }
+
 
     @Transactional(readOnly = true)
     public List<Company> findAll() {
@@ -42,12 +76,26 @@ public class CompanyService {
     }
 
     @Transactional(readOnly = true)
-    public Optional<Company> findCompany(Long companyId) {
+    public Company findCompany(Long companyId) {
+        return companyRepository.findById(companyId).orElseThrow(() -> 
+            new IllegalArgumentException(ErrorMessage.COMPANY_NOT_FOUND.getMessage() + companyId)
+        );
+    }
+
+    @Transactional(readOnly = true)
+    public Optional<Company> findCompanyOr(Long companyId) {
         return companyRepository.findById(companyId);
     }
 
     @Transactional(readOnly = true)
-    public Optional<Company> findByName(String companyName) {
+    public Company findByName(String companyName) {
+        return companyRepository.findByName(companyName).orElseThrow(() -> 
+            new IllegalArgumentException(ErrorMessage.COMPANY_NOT_FOUND.getMessage() + companyName)
+        );
+    }
+
+    @Transactional(readOnly = true)
+    public Optional<Company> findByNameOr(String companyName) {
         return companyRepository.findByName(companyName);
     }
 
@@ -71,16 +119,10 @@ public class CompanyService {
     }
 
     // 해당 회사의 모든 메뉴 가져오기
-    public List<Food> getFoodListInfo(Long companyId) {
-        Company company = findCompany(companyId).orElseThrow(
-            () -> new IllegalArgumentException("해당 회사를 찾을 수 없습니다.")
-        );
+    public List<Food> getFoodList(Long companyId) {
+        Company company = findCompany(companyId);
         return foodRepository.findAllByCompany(company);
     }
-
-
-
-
 
     // 해당 회사의 메뉴를 추가한다
     public void companyAddFood(Long companyId, Food food) {
@@ -94,73 +136,42 @@ public class CompanyService {
         }, () -> new IllegalArgumentException("해당 회사를 찾을 수 없습니다."));
     }
 
-
-
-    // DELETE company
-    public void deleteCompany(Long companyId) {
-        Company targetCompany = findCompany(companyId).orElseThrow(
-            () -> new IllegalArgumentException("해당 회사를 찾을 수 없습니다.")
-        );
-        // 음식과 회사의 연관관계를 끊는다
-        setNullcompanysFood(targetCompany);
-        companyRepository.delete(targetCompany);
-        if (findCompany(companyId).isPresent()) {
-            throw new IllegalArgumentException("삭제에 실패하였습니다.");
-        }
-    }
-
-    // company's food setCompany NULL
-    private void setNullcompanysFood(Company company) {
-        // 해당 회사의 모든 음식을 찾는다
-        List<Food> originFoods = foodRepository.findAllByCompany(company);
-        if (originFoods.isEmpty()) {
-            return;
-        }
-        // 만약 회사에 메뉴들이 존재한다면
-        originFoods.forEach(f -> f.setCompany(null));
-    }
-
-
     public void editCompanyLogo(Long companyId, String companyLogo) {
-        findCompany(companyId).ifPresent(com -> {
-            com.editCompanyImageUrl(companyLogo);
-        });
+        Company company = findCompany(companyId);
+        company.editCompanyImageUrl(companyLogo);
     }
 
     public void editCompanyName(Long companyId, String companyName) {
-        findCompany(companyId).ifPresent(com -> {
-            com.editCompanyName(companyName);
-        });
+        Company company = findCompany(companyId);
+        company.editCompanyName(companyName);
     }
 
     // DTO로 변환하여 모든 회사의 이름만 가져오기
-    public List<CompanyDto> findAllCompanyName() {
-        List<CompanyDto> companyDtoList = new ArrayList<>();
+    public List<CompanyRequestDto> findAllCompanyName() {
+        List<CompanyRequestDto> companyDtoList = new ArrayList<>();
         List<Company> companies = findAll();
         companies.stream().forEach(com -> {
-            CompanyDto companyDto = new CompanyDto();
+            CompanyRequestDto companyDto = new CompanyRequestDto();
             companyDto.setCompanyName(com.getName());
             companyDtoList.add(companyDto);
         });
         return companyDtoList;
     }
 
-
-
-
-}
-/*
-    // 해당 회사의 해당 메뉴를 삭제한다.
-    public void companyRemoveFood(Long companyId, Food food) {
-        // id 로 회사를 찾는다
-        Company company = companyRepository.findById(companyId).orElseThrow(
-            () -> new IllegalArgumentException("해당 회사를 찾을 수 없습니다.")
+    public void deleteFood(Long companyId, Long foodId) {
+        // 회사를 찾는다
+        Company company = findCompany(companyId);
+        Food targetFood = foodRepository.findById(foodId).orElseThrow(
+            () -> new IllegalArgumentException(ErrorMessage.MENU_NOT_FOUND.getMessage()+foodId)
         );
+        targetFood.setCompanyNull();
         List<Food> originFoods = company.getFoods();
         // 기존 food 리스트에 삭제하려는 food가 들어있다면
-        if (originFoods.contains(food)) {
-            originFoods.remove(food);
+        if (originFoods.contains(targetFood)) {
+            originFoods.remove(targetFood);
             companyRepository.save(company);
         }
     }
-*/
+
+
+}

@@ -58,4 +58,10 @@ public class Company extends BaseTimeEntity {
         this.name = companyName;
     }
 
+    public void update(String companyName, String companyLogo) {
+        this.name = companyName;
+        this.image = companyLogo;
+    }
+
+
 }

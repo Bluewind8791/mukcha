@@ -211,7 +211,7 @@ public class SeleniumCrawling {
     }
 
     private Company isCompanyPresent(String companyName, String companyLogo) {
-        return companyService.findByName(companyName).orElse(
+        return companyService.findByNameOr(companyName).orElse(
             createCompany(companyName, companyLogo)
         );
     }
@@ -242,7 +242,7 @@ public class SeleniumCrawling {
     }
 
     private Boolean isFoodPresent(String foodName) {
-        if (foodService.findByName(foodName).isPresent()) {
+        if (foodService.findByNameOr(foodName).isPresent()) {
             return true;
         } else {
             return false;

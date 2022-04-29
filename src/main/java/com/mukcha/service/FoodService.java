@@ -1,8 +1,11 @@
 package com.mukcha.service;
 
 import com.mukcha.controller.dto.FoodDto;
+import com.mukcha.controller.dto.FoodSaveRequestDto;
+import com.mukcha.controller.dto.FoodUpdateRequestDto;
 import com.mukcha.domain.Category;
 import com.mukcha.domain.Company;
+import com.mukcha.domain.ErrorMessage;
 import com.mukcha.domain.Food;
 import com.mukcha.domain.Review;
 import com.mukcha.repository.CompanyRepository;
@@ -34,47 +37,38 @@ public class FoodService {
     private final FoodRepository foodRepository;
     private final CompanyRepository companyRepository;
     private final ReviewRepository reviewRepository;
+    private final CompanyService companyService;
 
 
     // 음식을 생성한다.
     public Food save(Food food) {
+        log.info(">>> 메뉴가 생성되었습니다." + food.toString());
         return foodRepository.save(food);
     }
 
+    public Long save(FoodSaveRequestDto requestDto) {
+        Company com = companyRepository.findByName(requestDto.getCompanyName()).orElseThrow(() -> 
+        new IllegalArgumentException(ErrorMessage.COMPANY_NOT_FOUND.getMessage())
+        );
+        requestDto.setCompanyEntity(com);
+        log.info(">>> 메뉴가 생성되었습니다." + requestDto.toString());
+        return foodRepository.save(requestDto.toEntity()).getFoodId();
+    }
 
-    /* EDIT METHODS */
-    // 음식 이름을 수정한다
-    public Optional<Food> editFoodName(Long foodId, String name) {
-        return foodRepository.findById(foodId).map(food -> {
-            food.editFoodName(name);
-            foodRepository.save(food);
-            return food;
-        });
-    }
-    // 음식 이미지 url 을 수정한다
-    public Optional<Food> editFoodImage(Long foodId, String imageUrl) {
-        return foodRepository.findById(foodId).map(food -> {
-            food.editImageUrl(imageUrl);
-            foodRepository.save(food);
-            return food;
-        });
-    }
-    // 음식 카테고리를 수정한다
-    public void editFoodCategory(Long foodId, Category category) {
-        if (category == null) {
-            return;
-        }
-        foodRepository.findById(foodId).ifPresent(food -> {
-            food.setCategory(category);
-            foodRepository.save(food);
-        });
+    public Long update(Long foodId, FoodUpdateRequestDto requestDto) {
+        findFood(foodId).update(
+            requestDto.getFoodName(), 
+            requestDto.getFoodImage(),
+            Category.valueOf(requestDto.getCategory())
+        );
+        return foodId;
     }
 
     // 음식 회사를 수정한다
     public void editFoodCompany(Long foodId, String companyName) {
         // 해당 회사와 메뉴가 존재할 때만 메소드 실행
         companyRepository.findByName(companyName).ifPresent(com -> {
-            findFood(foodId).ifPresent(f -> {
+            findFoodOr(foodId).ifPresent(f -> {
                 f.setCompany(com);
                 save(f);
                 log.info("해당 메뉴의 회사를 변경하였습니다."+f.toString());
@@ -82,43 +76,48 @@ public class FoodService {
         });
     }
 
-
     // 음식을 삭제한다
     @Transactional
     public void deleteFood(Long foodId) {
-        Food targetFood = findFood(foodId).orElseThrow(
-            () -> new IllegalArgumentException("해당 음식을 찾을 수 없습니다.")
-        );
-        // 연결된 리뷰 모두 삭제 
+        Food targetFood = findFood(foodId);
+        // 연결된 리뷰 모두 삭제
         reviewRepository.deleteAllByFoodId(foodId);
-        // 회사 null 처리 ?
-        targetFood.setCompany(null);
+        // 연결된 회사의 null 처리
+        companyService.deleteFood(targetFood.getCompany().getCompanyId(), foodId);
         foodRepository.delete(targetFood);
-        if (findFood(foodId).isPresent()) {
-            throw new IllegalArgumentException("삭제에 실패하였습니다.");
-        }
     }
-
 
 
     /* FIND methods */
     // 해당 회사의 메뉴 이름과 같은 메뉴가 있는지
     public boolean isPresentFindByFoodNameAndCompanyName(String foodName, String companyName) {
         boolean isPresent;
-        if (findByName(foodName).isPresent()) {
-            if (findByName(foodName).get().getCompany().getName().equals(companyName))
+        if (findByNameOr(foodName).isPresent()) {
+            if (findByNameOr(foodName).get().getCompany().getName().equals(companyName))
                 isPresent = true;
         }
         isPresent = false;
         return isPresent;
     }
 
-    public Optional<Food> findFood(Long foodId) {
+    public Food findFood(Long foodId) {
+        return foodRepository.findById(foodId).orElseThrow(() -> 
+            new IllegalArgumentException(ErrorMessage.MENU_NOT_FOUND.getMessage() + foodId)
+        );
+    }
+
+    public Optional<Food> findFoodOr(Long foodId) {
         return foodRepository.findById(foodId);
     }
 
-    public Optional<Food> findByName(String foodName) {
+    public Optional<Food> findByNameOr(String foodName) {
         return foodRepository.findByName(foodName);
+    }
+
+    public Food findByName(String foodName) {
+        return foodRepository.findByName(foodName).orElseThrow(() -> 
+            new IllegalArgumentException(ErrorMessage.MENU_NOT_FOUND.getMessage() + foodName)
+        );
     }
 
     public List<String> categories() {
@@ -238,11 +237,6 @@ public class FoodService {
         }
         return foodMap;
     }
-
-
-
-
-
 
 
     private List<FoodDto> convertFoodToDto(List<Food> foods) {

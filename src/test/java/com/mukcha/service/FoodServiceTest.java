@@ -8,7 +8,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
 
 import com.mukcha.controller.dto.FoodDto;
@@ -48,30 +47,11 @@ public class FoodServiceTest extends WithTest {
         // create
         foodTestHelper.createFood("FoodTest1", company, Category.HAMBURGER, "image");
         // assert
-        Food savedFood = foodService.findByName("FoodTest1").get();
+        Food savedFood = foodService.findByNameOr("FoodTest1").get();
         assertEquals("FoodTest1", savedFood.getName());
         assertEquals(company, savedFood.getCompany());
         assertEquals(Category.HAMBURGER, savedFood.getCategory());
         assertEquals("image", savedFood.getImage());
-    }
-
-    @Test
-    @DisplayName("2. 음식 이름, 회사, 이미지, 카테고리를 수정한다.")
-    void test_2() {
-        // set
-        Food food = foodTestHelper.createFood("testFood", company, Category.CHICKEN, "menuImage");
-        companyTestHelper.createCompany("testCompany2", "imageUrl");
-        // edit
-        foodService.editFoodName(food.getFoodId(), "test2 food");
-        foodService.editFoodImage(food.getFoodId(), "imageUrl2");
-        foodService.editFoodCategory(food.getFoodId(), Category.PIZZA);
-        foodService.editFoodCompany(food.getFoodId(), "testCompany2");
-        // assert
-        Food savedFood = foodService.findFood(food.getFoodId()).get();
-        assertEquals("test2 food", savedFood.getName());
-        assertEquals("imageUrl2", savedFood.getImage());
-        assertEquals(Category.PIZZA, savedFood.getCategory());
-        assertEquals("testCompany2", savedFood.getCompany().getName());
     }
 
     @Test
@@ -91,7 +71,7 @@ public class FoodServiceTest extends WithTest {
         Food food = foodTestHelper.createFood("testFood", company, Category.CHICKEN, "menuImage");
         reviewTestHelper.createReviewWithScore(food, user, Score.BAD);  // 1
         reviewTestHelper.createReviewWithScore(food, user, Score.GOOD); // 4
-        Food savedFood = foodService.findByName(food.getName()).get();
+        Food savedFood = foodService.findByNameOr(food.getName()).get();
         // get
         double averageScore = foodService.getAverageScoreByFoodId(savedFood.getFoodId());
         // assert - (1+4)/2
@@ -115,7 +95,7 @@ public class FoodServiceTest extends WithTest {
         // get
         List<FoodDto> foodDtos = foodService.findTopTenOrderByScore();
         // assert
-        assertEquals(10, foodDtos.size());
+        assertEquals(5, foodDtos.size());
     }
 
     @Test
@@ -130,7 +110,7 @@ public class FoodServiceTest extends WithTest {
         // get
         List<FoodDto> allFoods = foodService.findTopTenNewest();
         // assert
-        assertEquals(10, allFoods.size());
+        assertEquals(5, allFoods.size());
     }
 
     @Test
@@ -143,7 +123,7 @@ public class FoodServiceTest extends WithTest {
 
         System.out.println(">>> food: "+food.toString());
         System.out.println(">>> review: "+reviewRepository.findAllByFoodId(food.getFoodId()));
-        System.out.println(">>> 회사의 음식정보: "+companyService.getFoodListInfo(company.getCompanyId()));
+        System.out.println(">>> 회사의 음식정보: "+companyService.getFoodList(company.getCompanyId()));
 
         // delete
         foodService.deleteFood(food.getFoodId());
@@ -152,12 +132,12 @@ public class FoodServiceTest extends WithTest {
         // 삭제 확인
         System.out.println(">>> review: "+reviewRepository.findAllByFoodId(foodId));
         System.out.println(">>> company: "+companyService.findCompany(company.getCompanyId()));
-        System.out.println(">>> 회사의 음식정보: "+companyService.getFoodListInfo(company.getCompanyId()));
+        System.out.println(">>> 회사의 음식정보: "+companyService.getFoodList(company.getCompanyId()));
         
         // assert
-        assertThrows(NoSuchElementException.class, () -> foodService.findByName("ttest1").get());
+        assertThrows(IllegalArgumentException.class, () -> foodService.findFood(foodId));
         // 해당 회사에 삭제한 음식이 있는지 검사
-        assertEquals(List.of(), companyService.getFoodListInfo(company.getCompanyId()));
+        assertEquals(List.of(), companyService.getFoodList(company.getCompanyId()));
     }
 
     @Test

@@ -76,7 +76,7 @@ public class FoodController {
             model.addAttribute("login_user_id", user.getUserId());
             model.addAttribute("login_user_nickname", user.getNickname());
         }
-        model.addAttribute("foodName", foodService.findFood(foodId).get().getName());
+        model.addAttribute("foodName", foodService.findFood(foodId).getName());
         model.addAttribute("reviewList", reviewService.findAllReviewByFoodId(foodId));
         return "food/reviews";
     }

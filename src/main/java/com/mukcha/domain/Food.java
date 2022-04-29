@@ -66,16 +66,19 @@ public class Food extends BaseTimeEntity {
         this.category = category;
     }
 
-    public void editFoodName(String name) {
-        this.name = name;
-    }
-
-    public void editImageUrl(String imageUrl) {
-        this.image = imageUrl;
-    }
 
     public void setCompany(Company company) {
         this.company = company;
+    }
+
+    public void update(String name, String image, Category category) {
+        this.name = name;
+        this.image = image;
+        this.category = category;
+    }
+
+    public void setCompanyNull() {
+        this.company = null;
     }
 
 }

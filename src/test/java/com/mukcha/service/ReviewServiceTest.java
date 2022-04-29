@@ -103,8 +103,8 @@ public class ReviewServiceTest extends WithTest {
     @DisplayName("5. 해당 음식의 모든 리뷰를 찾는다")
     void test_5() {
         foodTestHelper.createFood("ReviewTestFood2", company, Category.HAMBURGER, "");
-        Food food1 = foodService.findByName("ReviewTestFood").get();
-        Food food2 = foodService.findByName("ReviewTestFood2").get();
+        Food food1 = foodService.findByNameOr("ReviewTestFood").get();
+        Food food2 = foodService.findByNameOr("ReviewTestFood2").get();
         reviewTestHelper.createReview(food1, user);
         reviewTestHelper.createReview(food2, user);
 

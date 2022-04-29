@@ -31,15 +31,13 @@ public class CompanyController {
         Model model
     ) {
         // company Info
-        Company targetCompany = companyService.findCompany(companyId).orElseThrow(
-            () -> new IllegalArgumentException("해당 회사를 찾을 수 없습니다.")
-        );
+        Company targetCompany = companyService.findCompany(companyId);
         model.addAttribute("company", targetCompany);
         // Category List
         List<Category> categoryList = List.of(Category.values());
         model.addAttribute("categoryList", categoryList);
         // Company's food List        
-        List<Food> foods = companyService.getFoodListInfo(companyId);
+        List<Food> foods = companyService.getFoodList(companyId);
         Map<String, List<Food>> map = new HashMap<>();
         for (Category ctg : Category.values()) {
             map.put(ctg.name(),

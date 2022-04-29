@@ -403,7 +403,7 @@ public class CrawlingController {
 
 
     private Company isCompanyPresent(String companyName, String companyLogo) {
-        Company company = companyService.findByName(companyName).orElse(
+        Company company = companyService.findByNameOr(companyName).orElse(
             createCompany(companyName, companyLogo)
         );
         return company;
@@ -411,7 +411,7 @@ public class CrawlingController {
 
 
     private Boolean isFoodPresent(String foodName) {
-        if (foodService.findByName(foodName).isPresent()) {
+        if (foodService.findByNameOr(foodName).isPresent()) {
             return true;
         } else {
             return false;
