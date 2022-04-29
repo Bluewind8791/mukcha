@@ -40,9 +40,11 @@ out/
 application.yml
 application-local.yml
 src/main/resources/application-local.yml
+src/test/resources/application-test.yml
 
 ### Encrypt application.yml ###
 setting.tar
 
 ### DB Init ###
 src/main/java/com/mukcha/config/DBInit.java
+
