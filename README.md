@@ -35,7 +35,7 @@
 
 - AWS EC2를 사용하여 서버를 구축하고 배포하고 있습니다.
 - DBMS는 MYSQL을 사용하였으며, 현재는 AWS RDS를 사용하여 AWS EC2 서버와 연결하여 서비스하고 있습니다.
-- Travis CI와 AWS CodeDeploy를 사용하여 Git에 수정된 코드가 push되면 자동 배포되도록 구축하였습니다.
+- S3, Travis CI와 AWS CodeDeploy를 사용하여 Git에 수정된 코드가 push되면 자동 배포되도록 구축하였습니다.
 - Nginx를 사용하여 배포중에 서비스가 끊기지 않도록 무중단 배포를 구현하였습니다.
 
 
