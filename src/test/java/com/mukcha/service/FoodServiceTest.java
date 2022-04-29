@@ -116,28 +116,16 @@ public class FoodServiceTest extends WithTest {
     @Test
     @DisplayName("8. 음식을 삭제한다.")
     void test_8() {
-        // set
+        // given
         Food food = foodTestHelper.createFood("ttest1", company, Category.HAMBURGER, null);
         reviewTestHelper.createReview(food, user);
         Long foodId = food.getFoodId();
-
-        System.out.println(">>> food: "+food.toString());
-        System.out.println(">>> review: "+reviewRepository.findAllByFoodId(food.getFoodId()));
-        System.out.println(">>> 회사의 음식정보: "+companyService.getFoodList(company.getCompanyId()));
-
-        // delete
+        // when
         foodService.deleteFood(food.getFoodId());
         System.out.println(">>> 삭제 <<<");
-        
-        // 삭제 확인
-        System.out.println(">>> review: "+reviewRepository.findAllByFoodId(foodId));
-        System.out.println(">>> company: "+companyService.findCompany(company.getCompanyId()));
-        System.out.println(">>> 회사의 음식정보: "+companyService.getFoodList(company.getCompanyId()));
-        
-        // assert
+        // then
         assertThrows(IllegalArgumentException.class, () -> foodService.findFood(foodId));
-        // 해당 회사에 삭제한 음식이 있는지 검사
-        assertEquals(List.of(), companyService.getFoodList(company.getCompanyId()));
+        assertEquals(List.of(), companyService.findAllFoods(company.getCompanyId())); // 해당 회사에 삭제한 음식이 있는지 검사
     }
 
     @Test

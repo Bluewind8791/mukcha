@@ -87,7 +87,7 @@
                   <span class="me-2"> - </span><span th:text="${f.foodName}">메뉴이름</span>
                   <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
-                <form th:action="@{/admin/api/menus/}+${f.foodId}" method="PUT">
+                <form th:action="@{/admin/api/menus/}+${f.foodId}" th:method="PUT">
                   <div class="modal-body">
                     <div class="mb-3 mt-3">
                       <label>메뉴 이름</label>
@@ -101,7 +101,7 @@
                     <div class="mb-3">
                       <label>카테고리</label>
                       <select class="form-select" name="category">
-                        <option value="">선택해주세요</option>
+                        <option th:value="${f.category}" th:text="${f.category}" >선택해주세요</option>
                         <option th:each="cate : ${categoryList}" th:value="${cate}" th:text="${cate}">카테고리
                         </option>
                       </select>
@@ -109,7 +109,7 @@
                     <div class="mb-3">
                       <label>회사명</label>
                       <select class="form-select" name="companyName">
-                        <option value="">선택해주세요</option>
+                        <option th:value="${f.companyName}" th:text="${f.companyName}" >선택해주세요</option>
                         <option th:each="com : ${companyList}" th:value="${com.companyName}" th:text="${com.companyName}">회사명
                         </option>
                       </select>

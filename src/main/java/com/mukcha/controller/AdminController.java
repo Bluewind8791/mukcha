@@ -1,17 +1,11 @@
 package com.mukcha.controller;
 
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 import com.mukcha.config.dto.LoginUser;
 import com.mukcha.config.dto.SessionUser;
-import com.mukcha.controller.dto.CompanyRequestDto;
-import com.mukcha.controller.dto.FoodDto;
 import com.mukcha.controller.dto.UserDto;
 import com.mukcha.domain.Category;
-import com.mukcha.domain.Company;
-import com.mukcha.domain.Food;
 import com.mukcha.service.CompanyService;
 import com.mukcha.service.FoodService;
 import com.mukcha.service.UserService;
@@ -38,30 +32,27 @@ public class AdminController {
     private final UserService userService;
 
 
-    // ROOT PAGE
+    // 관리자 루트 페이지
     @GetMapping(value = {"/", ""})
     public String adminHome(Model model, @LoginUser SessionUser sessionUser) {
         if (sessionUser != null) {
             UserDto user = userService.getSessionUserInfo(sessionUser);
             model.addAttribute("login_user_id", user.getUserId());
             model.addAttribute("login_user_nickname", user.getNickname());
+            log.info(">>> 관리자 페이지에 진입하였습니다. " + user.getNickname());
         }
-        log.info(">>> 관리자 페이지에 진입하였습니다.");
-        // 회사 추가하기
-        // 크롤링 시작
         // 모든 회사 리스트
-        model.addAttribute("companyList", companyService.findAll());
+        model.addAttribute("companyList", companyService.findAllIntoDto());
         // 최근 메뉴 리스트 10개
-        model.addAttribute("foodList", foodService.findFoodTopTenNewest());
-        // Category List
+        model.addAttribute("foodList", foodService.findFoodTopTenNewestIntoDto());
+        // 모든 카테고리 리스트
         List<Category> categoryList = List.of(Category.values());
         model.addAttribute("categoryList", categoryList);
         return "admin/adminHome";
     }
 
-
-    // 해당 회사의 모든 메뉴 리스트 
-    @GetMapping(value = "/company/{companyId}")
+    // 해당 회사 정보 페이지
+    @GetMapping(value = "/companies/{companyId}")
     public String viewAllCompanies(
         Model model,
         @LoginUser SessionUser sessionUser,
@@ -75,15 +66,14 @@ public class AdminController {
         // 해당 회사의 이름
         model.addAttribute("thisCompanyName", companyService.findCompany(companyId).getName());
         // 해당 회사의 모든 메뉴들
-        model.addAttribute("foodList", companyService.getFoodList(companyId));
-        // Category List
+        model.addAttribute("foodList", companyService.findAllFoodsIntoDto(companyId));
+        // 모든 카테고리 리스트
         List<Category> categoryList = List.of(Category.values());
         model.addAttribute("categoryList", categoryList);
         return "admin/adminCompany";
     }
 
-
-    // 모든 메뉴 리스트
+    // 모든 메뉴 더보기 페이지
     @GetMapping(value = "/menus")
     public String viewAllMenus(Model model, @LoginUser SessionUser sessionUser) {
         if (sessionUser != null) {
@@ -94,30 +84,10 @@ public class AdminController {
         // 모든 카테고리 리스트
         List<Category> categoryList = List.of(Category.values());
         model.addAttribute("categoryList", categoryList);
-        // 메뉴 정보 -> DTO 변경
-        // foodName, foodId, foodImage, foodCategory, foodCompanyName
-        List<Food> foodList = foodService.findAll();
-        Collections.reverse(foodList); // 최신순 정렬
-        List<FoodDto> foodDtoList = new ArrayList<>();
-        foodList.stream().forEach(food -> {
-            FoodDto foodDto = new FoodDto();
-            foodDto.setFoodId(food.getFoodId());
-            foodDto.setFoodName(food.getName());
-            foodDto.setFoodImage(food.getImage());
-            foodDto.setCategory(food.getCategory().name());
-            foodDto.setCompanyName(food.getCompany().getName());
-            foodDtoList.add(foodDto);
-        });
-        model.addAttribute("foodList", foodDtoList);
-        // 모든 회사 이름 -> DTO 변경
-        List<Company> companies = companyService.findAll();
-        List<CompanyRequestDto> companyDtoList = new ArrayList<>();
-        companies.stream().forEach(com -> {
-            CompanyRequestDto companyDto = new CompanyRequestDto();
-            companyDto.setCompanyName(com.getName());
-            companyDtoList.add(companyDto);
-        });
-        model.addAttribute("companyList", companyDtoList);
+        // 모든 메뉴 리스트
+        model.addAttribute("foodList", foodService.findAllIntoDto());
+        // 모든 회사 리스트
+        model.addAttribute("companyList", companyService.findAllIntoDto());
         return "admin/adminMenuList";
     }
 

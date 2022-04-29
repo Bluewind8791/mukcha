@@ -31,11 +31,6 @@
       th:data-bs-target="'#delCompany'+${companyId}">
       회사 삭제하기
     </button>
-    <!-- <a data-bs-toggle="modal" th:href="'#delCompany'+${companyId}" role="button">
-      <button class="btn btn-danger w-50">
-        회사 삭제하기
-      </button>
-    </a> -->
     <div class="text-center h4 mt-5">회사 수정 및 삭제는 해당 회사의 이름을 클릭해주세요.</div>
   </div>
 
@@ -122,8 +117,8 @@
           <th>회사</th>
           <th>메뉴명</th>
           <th>이미지</th>
-          <th>Update Time</th>
-          <th>Create Time</th>
+          <!-- <th>Update Time</th> -->
+          <!-- <th>Create Time</th> -->
           <th>Image URL</th>
         </tr>
       </thead>
@@ -131,15 +126,15 @@
         <tr th:each="f : ${foodList}">
           <td><span th:text="${f.foodId}">ID</span></td>
           <td><span th:text="${f.category}">카테고리</span></td>
-          <td><span th:if="${f.company.name != null}" th:text="${f.company.name}">회사이름</span></td>
-          <td><span th:text="${f.name}" data-bs-toggle="modal"
+          <td><span th:if="${f.companyName != null}" th:text="${f.companyName}">회사이름</span></td>
+          <td><span th:text="${f.foodName}" data-bs-toggle="modal"
               th:data-bs-target="'#editMenuModal'+${f.foodId}">메뉴명</span></td>
-          <td><img th:src="${f.image}" height="50" data-bs-toggle="modal"
+          <td><img th:src="${f.foodImage}" height="50" data-bs-toggle="modal"
               th:data-bs-target="'#fImageModal'+${f.foodId}"></td>
-          <td><span th:text="${f.updatedAt}">updatedAt</span></td>
-          <td><span th:text="${f.createdAt}">createdAt</span></td>
+          <!-- <td><span th:text="${f.updatedAt}">updatedAt</span></td> -->
+          <!-- <td><span th:text="${f.createdAt}">createdAt</span></td> -->
           <td>
-            <div th:text="${f.image}" style="width: 250px;" id="menu_image_url">
+            <div th:text="${f.foodImage}" style="width: 250px;" id="menu_image_url">
               메뉴이미지 URL
             </div>
           </td>
@@ -153,7 +148,7 @@
                 </div>
                 <!-- Modal body -->
                 <div class="modal-body">
-                  <img class="img-fluid" th:src="${f.image}">
+                  <img class="img-fluid" th:src="${f.foodImage}">
                 </div>
               </div>
             </div>
@@ -166,7 +161,7 @@
               <div class="modal-content">
                 <div class="modal-header">
                   <h5 class="modal-title fw-bold me-2" id="editModalToggleLabel">메뉴 수정</h5>
-                  <span class="me-2"> - </span><span th:text="${f.name}">메뉴이름</span>
+                  <span class="me-2"> - </span><span th:text="${f.foodName}">메뉴이름</span>
                   <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <form th:action="@{/admin/api/menus/}+${f.foodId}" method="post">
@@ -174,12 +169,12 @@
                   <div class="modal-body">
                     <div class="mb-3 mt-3">
                       <label>메뉴 이름</label>
-                      <input class="form-control" placeholder="메뉴 이름을 적어주세요" name="foodName" th:value="${f.name}">
+                      <input class="form-control" placeholder="메뉴 이름을 적어주세요" name="foodName" th:value="${f.foodName}">
                     </div>
                     <div class="mb-3">
                       <label>메뉴 이미지</label>
                       <input class="form-control" placeholder="메뉴 이미지 URL를 넣어주세요" name="foodImage"
-                        th:value="${f.image}">
+                        th:value="${f.foodImage}">
                     </div>
                     <div class="mb-3">
                       <label>카테고리</label>
@@ -215,7 +210,7 @@
                 <div class="modal-content">
                   <div class="modal-header">
                     <h5 class="modal-title fw-bold me-2" id="deleteModalToggleLabel">메뉴 삭제</h5>
-                    <span class="me-2"> - </span><span th:text="${f.name}">메뉴이름</span>
+                    <span class="me-2"> - </span><span th:text="${f.foodName}">메뉴이름</span>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                   </div>
                   <div class="modal-body">

@@ -1,6 +1,7 @@
 package com.mukcha.service;
 
 import com.mukcha.controller.dto.FoodDto;
+import com.mukcha.controller.dto.FoodResponseDto;
 import com.mukcha.controller.dto.FoodSaveRequestDto;
 import com.mukcha.controller.dto.FoodUpdateRequestDto;
 import com.mukcha.domain.Category;
@@ -40,7 +41,6 @@ public class FoodService {
     private final CompanyService companyService;
 
 
-    // 음식을 생성한다.
     public Food save(Food food) {
         log.info(">>> 메뉴가 생성되었습니다." + food.toString());
         return foodRepository.save(food);
@@ -87,9 +87,7 @@ public class FoodService {
         foodRepository.delete(targetFood);
     }
 
-
-    /* FIND methods */
-    // 해당 회사의 메뉴 이름과 같은 메뉴가 있는지
+    // 해당 회사의 메뉴 이름과 같은 메뉴가 있는지 확인
     public boolean isPresentFindByFoodNameAndCompanyName(String foodName, String companyName) {
         boolean isPresent;
         if (findByNameOr(foodName).isPresent()) {
@@ -100,39 +98,64 @@ public class FoodService {
         return isPresent;
     }
 
+    @Transactional(readOnly = true)
     public Food findFood(Long foodId) {
         return foodRepository.findById(foodId).orElseThrow(() -> 
             new IllegalArgumentException(ErrorMessage.MENU_NOT_FOUND.getMessage() + foodId)
         );
     }
 
+    @Transactional(readOnly = true)
     public Optional<Food> findFoodOr(Long foodId) {
         return foodRepository.findById(foodId);
     }
 
+    @Transactional(readOnly = true)
     public Optional<Food> findByNameOr(String foodName) {
         return foodRepository.findByName(foodName);
     }
 
+    @Transactional(readOnly = true)
     public Food findByName(String foodName) {
         return foodRepository.findByName(foodName).orElseThrow(() -> 
             new IllegalArgumentException(ErrorMessage.MENU_NOT_FOUND.getMessage() + foodName)
         );
     }
 
+    @Transactional(readOnly = true)
     public List<String> categories() {
         return foodRepository.findAllCategories();
     }
 
+    @Transactional(readOnly = true)
     public List<Food> findAllByCategory(Category category) {
         return foodRepository.findAllByCategory(category);
     }
 
-    // Find All
     @Transactional(readOnly = true)
     public List<Food> findAll() {
         return foodRepository.findAll();
     }
+
+    // 최신순 기준 10개 메뉴 Dto로 가져오기
+    @Transactional(readOnly = true)
+    public List<FoodResponseDto> findFoodTopTenNewestIntoDto() {
+        List<Food> targetFoodList = findAll();
+        if (targetFoodList.size() > 2) { // sort
+            Collections.sort(
+                targetFoodList, Comparator.comparing(Food::getCreatedAt).reversed()
+            );
+        }
+        // get top 10
+        List<Food> topTenFoods = targetFoodList.stream().limit(10).collect(Collectors.toList());
+        List<FoodResponseDto> dtos = new ArrayList<>();
+        topTenFoods.forEach(food -> {
+            FoodResponseDto dto = new FoodResponseDto(food);
+            dtos.add(dto);
+        });
+        return dtos;
+    }
+
 
     // FoodDto로 변환하여 메뉴 정보 return
     @Transactional(readOnly = true)
@@ -175,7 +198,7 @@ public class FoodService {
         return foodDtos.stream().limit(10).collect(Collectors.toList());
     }
 
-    // 최신순 기준 10개 메뉴 FoodDto로 평균점수 포함하여 가져오기
+    // 최신순 기준 10개 메뉴 Dto로 평균점수 포함하여 가져오기
     @Transactional(readOnly = true)
     public List<FoodDto> findTopTenNewest() {
         // get
@@ -184,21 +207,6 @@ public class FoodService {
         if (targetFoodList.size() > 2) {
             Collections.sort(
                 targetFoodList, Comparator.comparing(FoodDto::getCreatedAt).reversed()
-            );
-        }
-        // get top 10
-        return targetFoodList.stream().limit(10).collect(Collectors.toList());
-    }
-
-    // 최신순 기준 10개 메뉴 가져오기
-    @Transactional(readOnly = true)
-    public List<Food> findFoodTopTenNewest() {
-        // get
-        List<Food> targetFoodList = findAll();
-        // sort
-        if (targetFoodList.size() > 2) {
-            Collections.sort(
-                targetFoodList, Comparator.comparing(Food::getCreatedAt).reversed()
             );
         }
         // get top 10
@@ -254,6 +262,17 @@ public class FoodService {
             foodDtos.add(foodDto);
         });
         return foodDtos;
+    }
+
+    public List<FoodResponseDto> findAllIntoDto() {
+        List<FoodResponseDto> dtos = new ArrayList<>();
+        List<Food> foodList = findAll();
+        Collections.reverse(foodList); // 최신순 정렬
+        foodList.forEach(food -> {
+            FoodResponseDto dto = new FoodResponseDto(food);
+            dtos.add(dto);
+        });
+        return dtos;
     }
 
 

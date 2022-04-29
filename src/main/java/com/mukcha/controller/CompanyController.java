@@ -37,7 +37,7 @@ public class CompanyController {
         List<Category> categoryList = List.of(Category.values());
         model.addAttribute("categoryList", categoryList);
         // Company's food List        
-        List<Food> foods = companyService.getFoodList(companyId);
+        List<Food> foods = companyService.findAllFoods(companyId);
         Map<String, List<Food>> map = new HashMap<>();
         for (Category ctg : Category.values()) {
             map.put(ctg.name(),

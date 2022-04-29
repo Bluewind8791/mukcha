@@ -8,6 +8,8 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import com.mukcha.controller.dto.CompanyRequestDto;
+import com.mukcha.controller.dto.CompanyResponseDto;
+import com.mukcha.controller.dto.FoodResponseDto;
 import com.mukcha.domain.Company;
 import com.mukcha.domain.ErrorMessage;
 import com.mukcha.domain.Food;
@@ -76,6 +78,17 @@ public class CompanyService {
     }
 
     @Transactional(readOnly = true)
+    public List<CompanyResponseDto> findAllIntoDto() {
+        List<Company> companies = findAll();
+        List<CompanyResponseDto> companyDtoList = new ArrayList<>();
+        companies.stream().forEach(com -> {
+            CompanyResponseDto responseDto = new CompanyResponseDto(com);
+            companyDtoList.add(responseDto);
+        });
+        return companyDtoList;
+    }
+
+    @Transactional(readOnly = true)
     public Company findCompany(Long companyId) {
         return companyRepository.findById(companyId).orElseThrow(() -> 
             new IllegalArgumentException(ErrorMessage.COMPANY_NOT_FOUND.getMessage() + companyId)
@@ -119,9 +132,18 @@ public class CompanyService {
     }
 
     // 해당 회사의 모든 메뉴 가져오기
-    public List<Food> getFoodList(Long companyId) {
-        Company company = findCompany(companyId);
-        return foodRepository.findAllByCompany(company);
+    public List<FoodResponseDto> findAllFoodsIntoDto(Long companyId) {
+        List<FoodResponseDto> dtos = new ArrayList<>();
+        List<Food> foods = foodRepository.findAllByCompany(findCompany(companyId));
+        foods.forEach(food -> {
+            FoodResponseDto dto = new FoodResponseDto(food);
+            dtos.add(dto);
+        });
+        return dtos;
+    }
+
+    public List<Food> findAllFoods(Long companyId) {
+        return foodRepository.findAllByCompany(findCompany(companyId));
     }
 
     // 해당 회사의 메뉴를 추가한다
@@ -144,18 +166,6 @@ public class CompanyService {
     public void editCompanyName(Long companyId, String companyName) {
         Company company = findCompany(companyId);
         company.editCompanyName(companyName);
-    }
-
-    // DTO로 변환하여 모든 회사의 이름만 가져오기
-    public List<CompanyRequestDto> findAllCompanyName() {
-        List<CompanyRequestDto> companyDtoList = new ArrayList<>();
-        List<Company> companies = findAll();
-        companies.stream().forEach(com -> {
-            CompanyRequestDto companyDto = new CompanyRequestDto();
-            companyDto.setCompanyName(com.getName());
-            companyDtoList.add(companyDto);
-        });
-        return companyDtoList;
     }
 
     public void deleteFood(Long companyId, Long foodId) {

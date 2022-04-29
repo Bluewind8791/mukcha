@@ -120,12 +120,12 @@ public class CompanyServiceTest extends WithTest {
         Long companyId = company.getCompanyId();
         Food food1 = foodTestHelper.createFood("food1", company, Category.CHICKEN, null);
         foodTestHelper.createFood("food2", company, Category.PIZZA, null);
-        System.out.println(">>> company.getFoods: "+companyService.getFoodList(companyId).size());
+        System.out.println(">>> company.getFoods: "+companyService.findAllFoodsIntoDto(companyId).size());
         // when
         companyService.deleteFood(companyId, food1.getFoodId());
         // then
         Company savedCompany = companyService.findCompany(companyId);
-        List<Food> foods = companyService.getFoodList(savedCompany.getCompanyId());
+        List<Food> foods = companyService.findAllFoods(savedCompany.getCompanyId());
         System.out.println(">>> company.getFoods: "+foods);
         assertEquals(1, foods.size());
         assertEquals("food2", foods.get(0).getName());

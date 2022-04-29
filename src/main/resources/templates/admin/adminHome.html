@@ -82,16 +82,16 @@
       <tbody>
         <tr th:each="c : ${companyList}">
           <td>
-            <a th:href="'/admin/company/'+${c.companyId}">
+            <a th:href="'/admin/companies/'+${c.companyId}">
               <span th:text="${c.companyId}">ID</span>
             </a>
           </td>
           <td>
-            <a th:href="'/admin/company/'+${c.companyId}">
-              <span th:text="${c.name}">companyName</span>
+            <a th:href="'/admin/companies/'+${c.companyId}">
+              <span th:text="${c.companyName}">companyName</span>
             </a>
           </td>
-          <td><img th:src="${c.image}" height="30" data-bs-toggle="modal"
+          <td><img th:src="${c.companyLogo}" height="30" data-bs-toggle="modal"
               th:data-bs-target="'#cLogoModal'+${c.companyId}"></td>
           <div class="modal" th:id="'cLogoModal'+${c.companyId}">
             <div class="modal-dialog">
@@ -102,7 +102,7 @@
                 </div>
                 <!-- Modal body -->
                 <div class="modal-body">
-                  <img class="img-fluid" th:src="${c.image}">
+                  <img class="img-fluid" th:src="${c.companyLogo}">
                 </div>
               </div>
             </div>
@@ -110,7 +110,7 @@
           <td><span th:text="${c.updatedAt}">updatedAt</span></td>
           <td><span th:text="${c.createdAt}">createdAt</span></td>
           <td>
-            <div th:text="${c.image}" style="width: 300px;" id="logo_url">LogoImageUrl</div>
+            <div th:text="${c.companyLogo}" style="width: 300px;" id="logo_url">LogoImageUrl</div>
           </td>
         </tr>
 
@@ -132,8 +132,8 @@
           <th>회사</th>
           <th>이름</th>
           <th>이미지</th>
-          <th>Update Time</th>
-          <th>Create Time</th>
+          <!-- <th>Update Time</th> -->
+          <!-- <th>Create Time</th> -->
           <th>Image URL</th>
         </tr>
       </thead>
@@ -141,9 +141,9 @@
         <tr th:each="f : ${foodList}">
           <td><span th:text="${f.foodId}">ID</span></td>
           <td><span th:text="${f.category}">category</span></td>
-          <td><span th:text="${f.company.name}">companyName</span></td>
-          <td><span th:text="${f.name}">Name</span></td>
-          <td><img th:src="${f.image}" height="50" data-bs-toggle="modal"
+          <td><span th:text="${f.companyName}">companyName</span></td>
+          <td><span th:text="${f.foodName}">Name</span></td>
+          <td><img th:src="${f.foodImage}" height="50" data-bs-toggle="modal"
               th:data-bs-target="'#fImageModal'+${f.foodId}"></td>
           <div class="modal" th:id="'fImageModal'+${f.foodId}">
             <div class="modal-dialog">
@@ -154,15 +154,15 @@
                 </div>
                 <!-- Modal body -->
                 <div class="modal-body">
-                  <img class="img-fluid" th:src="${f.image}">
+                  <img class="img-fluid" th:src="${f.foodImage}">
                 </div>
               </div>
             </div>
           </div>
-          <td><span th:text="${f.updatedAt}">updatedAt</span></td>
-          <td><span th:text="${f.createdAt}">createdAt</span></td>
+          <!-- <td><span th:text="${f.updatedAt}">updatedAt</span></td> -->
+          <!-- <td><span th:text="${f.createdAt}">createdAt</span></td> -->
           <td>
-            <div th:text="${f.image}" style="width: 100px;" id="menu_image_url">MenuImageUrl</div>
+            <div th:text="${f.foodImage}" style="width: 500px;" id="menu_image_url">MenuImageUrl</div>
           </td>
         </tr>
       </tbody>
