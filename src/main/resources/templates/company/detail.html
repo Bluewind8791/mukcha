@@ -32,7 +32,7 @@
     <!-- back button -->
     <a type="button" class="btn" onclick="window.history.back();">
       < 뒤로가기 </a>
-        <div class="h2 fw-bold" th:text="${company.name}">회사이름</div>
+        <div class="h2 fw-bold" th:text="${company.companyName}">회사이름</div>
   </div>
 
   <!-- CATEGORY -->
@@ -44,13 +44,13 @@
         <div class="carousel-item active">
           <ul class="menu_list row">
             <li th:each="f, i : ${foodList[ctg.toString()]}" th:if="${i.count} <= 5">
-              <a style="text-decoration: none;" th:title="${f.name}" th:href="'/menu/'+${f.foodId}">
+              <a style="text-decoration: none;" th:title="${f.foodName}" th:href="'/menu/'+${f.foodId}">
                 <div class="menu_image_box">
-                  <img class="menu_image mb-2" th:src="${f.image}">
+                  <img class="menu_image mb-2" th:src="${f.foodImage}">
                 </div>
                 <div class="ms-2">
-                  <div class="text-muted small" th:text="${f.company.name}">회사이름</div>
-                  <div class="h6 text-dark fw-bold" th:text="${f.name}">메뉴이름</div>
+                  <div class="text-muted small" th:text="${f.companyName}">회사이름</div>
+                  <div class="h6 text-dark fw-bold" th:text="${f.foodName}">메뉴이름</div>
                 </div>
               </a>
             </li>
@@ -60,13 +60,13 @@
         <div class="carousel-item" th:if="${foodList[ctg.toString()].size() > 5}">
           <ul class="menu_list row">
             <li th:each="f, i : ${foodList[ctg.toString()]}" th:if="6 <= ${i.count} and ${i.count} <= 10">
-              <a style="text-decoration: none;" th:title="${f.name}" th:href="'/menu/'+${f.foodId}">
+              <a style="text-decoration: none;" th:title="${f.foodName}" th:href="'/menu/'+${f.foodId}">
                 <div class="menu_image_box">
-                  <img class="menu_image mb-2" th:src="${f.image}">
+                  <img class="menu_image mb-2" th:src="${f.foodImage}">
                 </div>
                 <div class="ms-2">
-                  <div class="text-muted small" th:text="${f.company.name}">회사이름</div>
-                  <div class="h6 text-dark fw-bold" th:text="${f.name}">메뉴이름</div>
+                  <div class="text-muted small" th:text="${f.companyName}">회사이름</div>
+                  <div class="h6 text-dark fw-bold" th:text="${f.foodName}">메뉴이름</div>
                 </div>
               </a>
             </li>
@@ -76,13 +76,13 @@
         <div class="carousel-item" th:if="${foodList[ctg.toString()].size() > 10}">
           <ul class="menu_list row">
             <li th:each="f, i : ${foodList[ctg.toString()]}" th:if="11 <= ${i.count} and ${i.count} <= 15">
-              <a style="text-decoration: none;" th:title="${f.name}" th:href="'/menu/'+${f.foodId}">
+              <a style="text-decoration: none;" th:title="${f.foodName}" th:href="'/menu/'+${f.foodId}">
                 <div class="menu_image_box">
-                  <img class="menu_image mb-2" th:src="${f.image}">
+                  <img class="menu_image mb-2" th:src="${f.foodImage}">
                 </div>
                 <div class="ms-2">
-                  <div class="text-muted small" th:text="${f.company.name}">회사이름</div>
-                  <div class="h6 text-dark fw-bold" th:text="${f.name}">메뉴이름</div>
+                  <div class="text-muted small" th:text="${f.companyName}">회사이름</div>
+                  <div class="h6 text-dark fw-bold" th:text="${f.foodName}">메뉴이름</div>
                 </div>
               </a>
             </li>
@@ -92,13 +92,13 @@
         <div class="carousel-item" th:if="${foodList[ctg.toString()].size() > 15}">
           <ul class="menu_list row">
             <li th:each="f, i : ${foodList[ctg.toString()]}" th:if="16 <= ${i.count} and ${i.count} <= 20">
-              <a style="text-decoration: none;" th:title="${f.name}" th:href="'/menu/'+${f.foodId}">
+              <a style="text-decoration: none;" th:title="${f.foodName}" th:href="'/menu/'+${f.foodId}">
                 <div class="menu_image_box">
-                  <img class="menu_image mb-2" th:src="${f.image}">
+                  <img class="menu_image mb-2" th:src="${f.foodImage}">
                 </div>
                 <div class="ms-2">
-                  <div class="text-muted small" th:text="${f.company.name}">회사이름</div>
-                  <div class="h6 text-dark fw-bold" th:text="${f.name}">메뉴이름</div>
+                  <div class="text-muted small" th:text="${f.companyName}">회사이름</div>
+                  <div class="h6 text-dark fw-bold" th:text="${f.foodName}">메뉴이름</div>
                 </div>
               </a>
             </li>
@@ -108,13 +108,13 @@
         <div class="carousel-item" th:if="${foodList[ctg.toString()].size() > 20}">
           <ul class="menu_list row">
             <li th:each="f, i : ${foodList[ctg.toString()]}" th:if="21 <= ${i.count} and ${i.count} <= 25">
-              <a style="text-decoration: none;" th:title="${f.name}" th:href="'/menu/'+${f.foodId}">
+              <a style="text-decoration: none;" th:title="${f.foodName}" th:href="'/menu/'+${f.foodId}">
                 <div class="menu_image_box">
-                  <img class="menu_image mb-2" th:src="${f.image}">
+                  <img class="menu_image mb-2" th:src="${f.foodImage}">
                 </div>
                 <div class="ms-2">
-                  <div class="text-muted small" th:text="${f.company.name}">회사이름</div>
-                  <div class="h6 text-dark fw-bold" th:text="${f.name}">메뉴이름</div>
+                  <div class="text-muted small" th:text="${f.companyName}">회사이름</div>
+                  <div class="h6 text-dark fw-bold" th:text="${f.foodName}">메뉴이름</div>
                 </div>
               </a>
             </li>
@@ -124,13 +124,13 @@
         <div class="carousel-item" th:if="${foodList[ctg.toString()].size() > 25}">
           <ul class="menu_list row">
             <li th:each="f, i : ${foodList[ctg.toString()]}" th:if="26 <= ${i.count} and ${i.count} <= 30">
-              <a style="text-decoration: none;" th:title="${f.name}" th:href="'/menu/'+${f.foodId}">
+              <a style="text-decoration: none;" th:title="${f.foodName}" th:href="'/menu/'+${f.foodId}">
                 <div class="menu_image_box">
-                  <img class="menu_image mb-2" th:src="${f.image}">
+                  <img class="menu_image mb-2" th:src="${f.foodImage}">
                 </div>
                 <div class="ms-2">
-                  <div class="text-muted small" th:text="${f.company.name}">회사이름</div>
-                  <div class="h6 text-dark fw-bold" th:text="${f.name}">메뉴이름</div>
+                  <div class="text-muted small" th:text="${f.companyName}">회사이름</div>
+                  <div class="h6 text-dark fw-bold" th:text="${f.foodName}">메뉴이름</div>
                 </div>
               </a>
             </li>

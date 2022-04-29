@@ -3,13 +3,16 @@ package com.mukcha.service;
 
 import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
 import com.mukcha.controller.dto.CompanyRequestDto;
 import com.mukcha.controller.dto.CompanyResponseDto;
 import com.mukcha.controller.dto.FoodResponseDto;
+import com.mukcha.domain.Category;
 import com.mukcha.domain.Company;
 import com.mukcha.domain.ErrorMessage;
 import com.mukcha.domain.Food;
@@ -93,6 +96,14 @@ public class CompanyService {
         return companyRepository.findById(companyId).orElseThrow(() -> 
             new IllegalArgumentException(ErrorMessage.COMPANY_NOT_FOUND.getMessage() + companyId)
         );
+    }
+
+    @Transactional(readOnly = true)
+    public CompanyResponseDto findCompanyIntoDto(Long companyId) {
+        Company company = companyRepository.findById(companyId).orElseThrow(() -> 
+            new IllegalArgumentException(ErrorMessage.COMPANY_NOT_FOUND.getMessage() + companyId)
+        );
+        return new CompanyResponseDto(company);
     }
 
     @Transactional(readOnly = true)
@@ -181,6 +192,20 @@ public class CompanyService {
             originFoods.remove(targetFood);
             companyRepository.save(company);
         }
+    }
+
+    // 해당 회사의 모든 메뉴 리스트를 카테고리 별로 가져온다
+    public Map<String, List<FoodResponseDto>> findAllFoodsByCategory(Long companyId) {
+        List<FoodResponseDto> foods = findAllFoodsIntoDto(companyId);
+        Map<String, List<FoodResponseDto>> map = new HashMap<>();
+        for (Category ctg : Category.values()) {
+            map.put(ctg.name(), foods
+                .stream()
+                .filter(f -> f.getCategory() == ctg.name())
+                .collect(Collectors.toList())
+            );
+        }
+        return map;
     }
 
 

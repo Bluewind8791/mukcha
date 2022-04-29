@@ -1,13 +1,8 @@
 package com.mukcha.controller;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
 
 import com.mukcha.domain.Category;
-import com.mukcha.domain.Company;
-import com.mukcha.domain.Food;
 import com.mukcha.service.CompanyService;
 
 import org.springframework.stereotype.Controller;
@@ -30,24 +25,12 @@ public class CompanyController {
         @PathVariable Long companyId,
         Model model
     ) {
-        // company Info
-        Company targetCompany = companyService.findCompany(companyId);
-        model.addAttribute("company", targetCompany);
-        // Category List
-        List<Category> categoryList = List.of(Category.values());
-        model.addAttribute("categoryList", categoryList);
-        // Company's food List        
-        List<Food> foods = companyService.findAllFoods(companyId);
-        Map<String, List<Food>> map = new HashMap<>();
-        for (Category ctg : Category.values()) {
-            map.put(ctg.name(),
-                foods
-                    .stream()
-                    .filter(f -> f.getCategory() == ctg)
-                    .collect(Collectors.toList())
-            );
-        }
-        model.addAttribute("foodList", map);
+        // 해당 회사 정보
+        model.addAttribute("company", companyService.findCompanyIntoDto(companyId));
+        // 모든 카테고리
+        model.addAttribute("categoryList", List.of(Category.values()));
+        // 해당 회사의 모든 메뉴 리스트
+        model.addAttribute("foodList", companyService.findAllFoodsByCategory(companyId));
         return "company/detail";
     }
 
