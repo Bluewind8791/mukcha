@@ -4,7 +4,7 @@ import java.util.List;
 
 import com.mukcha.config.dto.LoginUser;
 import com.mukcha.config.dto.SessionUser;
-import com.mukcha.controller.dto.UserResponseDto;
+import com.mukcha.controller.dto.SessionUserResponseDto;
 import com.mukcha.domain.Category;
 import com.mukcha.service.CompanyService;
 import com.mukcha.service.FoodService;
@@ -36,10 +36,9 @@ public class AdminController {
     @GetMapping(value = {"/", ""})
     public String adminHome(Model model, @LoginUser SessionUser sessionUser) {
         if (sessionUser != null) {
-            UserResponseDto user = userService.getSessionUserInfo(sessionUser);
-            model.addAttribute("login_user_id", user.getUserId());
-            model.addAttribute("login_user_nickname", user.getNickname());
-            log.info(">>> 관리자 페이지에 진입하였습니다. " + user.getNickname());
+            SessionUserResponseDto user = userService.getSessionUserInfo(sessionUser);
+            model.addAttribute("loginUser", user);
+            log.info(">>> 관리자 페이지에 진입하였습니다. " + user.getUserEmail());
         }
         // 모든 회사 리스트
         model.addAttribute("companyList", companyService.findAllIntoDto());
@@ -59,9 +58,7 @@ public class AdminController {
         @PathVariable Long companyId
     ) {
         if (sessionUser != null) {
-            UserResponseDto user = userService.getSessionUserInfo(sessionUser);
-            model.addAttribute("login_user_id", user.getUserId());
-            model.addAttribute("login_user_nickname", user.getNickname());
+            model.addAttribute("loginUser", userService.getSessionUserInfo(sessionUser));
         }
         // 해당 회사의 이름
         model.addAttribute("thisCompanyName", companyService.findCompany(companyId).getName());
@@ -77,9 +74,7 @@ public class AdminController {
     @GetMapping(value = "/menus")
     public String viewAllMenus(Model model, @LoginUser SessionUser sessionUser) {
         if (sessionUser != null) {
-            UserResponseDto user = userService.getSessionUserInfo(sessionUser);
-            model.addAttribute("login_user_id", user.getUserId());
-            model.addAttribute("login_user_nickname", user.getNickname());
+            model.addAttribute("loginUser", userService.getSessionUserInfo(sessionUser));
         }
         // 모든 카테고리 리스트
         List<Category> categoryList = List.of(Category.values());

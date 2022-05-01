@@ -10,7 +10,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import com.mukcha.controller.dto.FoodDto;
+import com.mukcha.controller.dto.FoodResponseDto;
 import com.mukcha.domain.Category;
 import com.mukcha.domain.Company;
 import com.mukcha.domain.Food;
@@ -93,7 +93,7 @@ public class FoodServiceTest extends WithTest {
         reviewTestHelper.createReviewWithScore(food4, user, Score.GOOD);
         reviewTestHelper.createReviewWithScore(food5, user, Score.GOOD);
         // get
-        List<FoodDto> foodDtos = foodService.findTopTenOrderByScore();
+        List<FoodResponseDto> foodDtos = foodService.findTopTenOrderByScore();
         // assert
         assertEquals(5, foodDtos.size());
     }
@@ -108,7 +108,7 @@ public class FoodServiceTest extends WithTest {
         foodTestHelper.createFood("ttest4", company, Category.HAMBURGER, null);
         foodTestHelper.createFood("ttest5", company, Category.HAMBURGER, null);
         // get
-        List<FoodDto> allFoods = foodService.findTopTenNewest();
+        List<FoodResponseDto> allFoods = foodService.findTopTenNewest();
         // assert
         assertEquals(5, allFoods.size());
     }

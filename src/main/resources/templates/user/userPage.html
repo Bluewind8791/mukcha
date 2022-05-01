@@ -40,7 +40,7 @@
 
   <div class="container rounded mt-5 p-0" style="width: 600px;">
     <!-- 유저 개인정보 수정 -->
-    <div sec:authorize="isAuthenticated()" th:if="${login_email} == ${user.email}" >
+    <div sec:authorize="isAuthenticated()" th:if="${loginUser.userEmail} == ${user.email}" >
       <div class="d-flex flex-row-reverse me-3" id="btn-edit" >
         <a href="/user/edit">
           <i class="edit-icon fas fa-cog fa-2x"></i>

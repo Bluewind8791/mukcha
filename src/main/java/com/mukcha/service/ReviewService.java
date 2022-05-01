@@ -6,7 +6,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import com.mukcha.repository.ReviewRepository;
-import com.mukcha.controller.dto.CategoryDto;
+import com.mukcha.controller.dto.CategoryCountResponseDto;
 import com.mukcha.controller.dto.ReviewResponseDto;
 import com.mukcha.controller.dto.ReviewSaveRequestDto;
 import com.mukcha.domain.Category;
@@ -105,22 +105,18 @@ public class ReviewService {
 
     // 해당 음식의 모든 리뷰 찾기
     @Transactional(readOnly = true)
-    public List<Review> findAllReviewByFoodId(Long foodId) {
+    public List<Review> findAllByFoodId(Long foodId) {
         return reviewRepository.findAllByFoodId(foodId);
     }
 
-    public List<ReviewResponseDto> findAllReviewByFoodIdIntoDto(Long foodId) {
-        List<ReviewResponseDto> dtos = new ArrayList<>();
-        reviewRepository.findAllByFoodId(foodId).stream().forEach(r -> {
-            ReviewResponseDto dto = new ReviewResponseDto(r);
-            dtos.add(dto);
-        });
-        return dtos;
+    @Transactional(readOnly = true)
+    public List<ReviewResponseDto> findAllByFoodIdIntoDto(Long foodId) {
+        return transDtoList(reviewRepository.findAllByFoodId(foodId));
     }
 
     // 유저 아이디와 음식 아이디를 통하여 리뷰 찾기
     public Review findByFoodIdAndUserId(Long foodId, Long userId) {
-        List<Review> foodReviews = findAllReviewByFoodId(foodId);
+        List<Review> foodReviews = findAllByFoodId(foodId);
         return foodReviews.stream().filter(
             r -> r.getUser().getUserId().equals(userId)).findFirst().orElseThrow(
                 () -> new IllegalArgumentException(ErrorMessage.REVIEW_NOT_FOUND.getMessage())
@@ -130,7 +126,7 @@ public class ReviewService {
     // 유저 아이디와 음식 아이디를 통하여 리뷰 찾기
     public ReviewResponseDto findByFoodIdAndUserIdIntoDto(Long foodId, Long userId) {
         // 해당 메뉴의 리뷰 리스트
-        List<Review> foodReviews = findAllReviewByFoodId(foodId);
+        List<Review> foodReviews = findAllByFoodId(foodId);
         Review reviewFilterByUserId = foodReviews.stream().filter(
             r -> r.getUser().getUserId().equals(userId)).findFirst().get();
         return new ReviewResponseDto(reviewFilterByUserId);
@@ -140,6 +136,15 @@ public class ReviewService {
     @Transactional(readOnly = true)
     public List<Review> findAllByUserId(Long userId) {
         return reviewRepository.findAllByUserId(userId);
+    }
+
+    @Transactional(readOnly = true)
+    public List<ReviewResponseDto> findAllByUserIdIntoDto(Long userId) {
+        List<ReviewResponseDto> dtoList = new ArrayList<>();
+        reviewRepository.findAllByUserId(userId).forEach(r -> {
+            dtoList.add(new ReviewResponseDto(r));
+        });
+        return dtoList;
     }
 
     // 해당 메뉴의 모든 리뷰를 페이징 처리하여 가져온다
@@ -156,60 +161,38 @@ public class ReviewService {
         );
     }
 
-    // 해당 유저가 쓴 리뷰 중 해당 카테고리의 모든 리뷰를 가져온다
+    // 해당 유저가 쓴 리뷰 중, 해당 카테고리의 모든 리뷰를 가져온다
     @Transactional(readOnly = true)
-    public List<Review> getReviewByCategoryAndUserId(Long userId, Category category) {
+    public List<ReviewResponseDto> findAllByCategoryAndUserId(Long userId, Category category) {
         List<Review> reviews = findAllByUserId(userId);
-        return reviews.stream().filter(r -> r.getFood().getCategory() == category).collect(Collectors.toList());
+        List<Review> targeList = reviews.stream().filter(r -> r.getFood().getCategory() == category).collect(Collectors.toList());
+        return transDtoList(targeList);
     }
 
-    // 해당 유저의 리뷰를 카테고리 별로 가져오기
+    // 해당 유저의 리뷰 갯수를 카테고리 별로 가져오기
     @Transactional(readOnly = true)
-    public CategoryDto getReviewCountByCategoryAndUserId(Long userId) {
-        List<Review> reviews = findAllByUserId(userId);
-        CategoryDto categoryDto = new CategoryDto();
-        for (Category c : Category.values()) {
-            switch (c) {
-                case CHICKEN:
-                    categoryDto.setChickenReviewCount(
-                        reviews.stream().filter(r -> r.getFood().getCategory().equals(c)).collect(Collectors.toList()).size()
-                    );
-                case PIZZA:
-                    categoryDto.setPizzaReviewCount(
-                        reviews.stream().filter(r -> r.getFood().getCategory().equals(c)).collect(Collectors.toList()).size()
-                    );
-                case HAMBURGER:
-                    categoryDto.setBurgerReviewCount(
-                        reviews.stream().filter(r -> r.getFood().getCategory().equals(c)).collect(Collectors.toList()).size()
-                    );
-                case TTEOKBOKKI:
-                    categoryDto.setTteokReviewCount(
-                        reviews.stream().filter(r -> r.getFood().getCategory().equals(c)).collect(Collectors.toList()).size()
-                    );
-                case PASTA:
-                    categoryDto.setTteokReviewCount(
-                        reviews.stream().filter(r -> r.getFood().getCategory().equals(c)).collect(Collectors.toList()).size()
-                    );
-                case SIDEMENU:
-                    categoryDto.setTteokReviewCount(
-                        reviews.stream().filter(r -> r.getFood().getCategory().equals(c)).collect(Collectors.toList()).size()
-                    );
-                default:
-                    break;
-            }
-        }
-        return categoryDto;
+    public CategoryCountResponseDto getCountByCategoryAndUserId(Long userId) {
+        return new CategoryCountResponseDto(findAllByUserId(userId));
     }
 
     // 해당 유저가 해당 메뉴의 리뷰를 적었는지 확인
     public boolean isUserWriteReviewOnFood(Long foodId, Long userId) {
         // 해당 메뉴의 리뷰 리스트
-        List<Review> foodReviews = findAllReviewByFoodId(foodId);
+        List<Review> foodReviews = findAllByFoodId(foodId);
         if (foodReviews.stream().anyMatch(r -> r.getUser().getUserId().equals(userId))) {
             return true;
         } else {
             return false;
         }
+    }
+
+    private List<ReviewResponseDto> transDtoList(List<Review> targeList) {
+        List<ReviewResponseDto> dtos = new ArrayList<>();
+        targeList.stream().forEach(r -> {
+            ReviewResponseDto dto = new ReviewResponseDto(r);
+            dtos.add(dto);
+        });
+        return dtos;
     }
 
 

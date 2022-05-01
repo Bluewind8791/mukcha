@@ -4,10 +4,7 @@ import java.util.List;
 
 import com.mukcha.config.dto.LoginUser;
 import com.mukcha.config.dto.SessionUser;
-import com.mukcha.controller.dto.UserDto;
-import com.mukcha.controller.dto.UserResponseDto;
 import com.mukcha.domain.Category;
-import com.mukcha.domain.User;
 import com.mukcha.service.FoodService;
 import com.mukcha.service.ReviewService;
 import com.mukcha.service.UserService;
@@ -29,64 +26,47 @@ public class HomeController {
     private final ReviewService reviewService;
 
 
-    // >>> VIEW <<<
     // Root page
     @GetMapping(value = {"/", ""})
     public String home(Model model, @LoginUser SessionUser sessionUser) {
         // login user 정보
         if (sessionUser != null) {
-            UserResponseDto user = userService.getSessionUserInfo(sessionUser);
-            model.addAttribute("login_user_id", user.getUserId());
-            model.addAttribute("login_user_nickname", user.getNickname());
+            model.addAttribute("loginUser", userService.getSessionUserInfo(sessionUser));
         }
         // 별점순 TOP 10 메뉴
         model.addAttribute("scoreTopTen", foodService.findTopTenOrderByScore());
         // 최신 메뉴 TOP 10
         model.addAttribute("newestTen", foodService.findTopTenNewest());
-        
         return "home";
     }
 
     // 로그인 페이지
     @GetMapping("/login")
-    public String login(Model model) {
+    public String login() {
         return "user/loginForm";
     }
 
-
-    // 유저 정보
+    // 해당 유저 정보 페이지
     @GetMapping(value = "/users/{userId}")
     public String viewUserInfo(
-        @PathVariable Long userId,
         Model model,
+        @PathVariable Long userId,
         @LoginUser SessionUser sessionUser
     ) {
         // Login User
         if (sessionUser != null) {
-            UserResponseDto user = userService.getSessionUserInfo(sessionUser);
-            model.addAttribute("login_user_id", user.getUserId());
-            model.addAttribute("login_user_nickname", user.getNickname());
-            model.addAttribute("login_email", user.getEmail());
+            model.addAttribute("loginUser", userService.getSessionUserInfo(sessionUser));
         }
         // Category List
-        List<Category> categoryList = List.of(Category.values());
-        model.addAttribute("categoryList", categoryList);
-        // DTO로 변환한 유저 정보 -> 서비스단으로 옮길 것
-        User user = userService.findUser(userId);
-        UserDto userDto = UserDto.builder()
-                            .email(user.getEmail())
-                            .nickname(user.getNickname())
-                            .profileImage(user.getProfileImage())
-                            .build()
-        ;
-        model.addAttribute("user", userDto);
-        // 각 카테고리별 적은 리뷰 개수
-        model.addAttribute("reviewCount", reviewService.getReviewCountByCategoryAndUserId(userId));
+        model.addAttribute("categoryList", List.of(Category.values()));
+        // 해당 유저의 정보
+        model.addAttribute("user", userService.findByUserIdIntoDto(userId));
+        // 해당 유저가 각 카테고리별로 적은 리뷰의 개수
+        model.addAttribute("reviewCount", reviewService.getCountByCategoryAndUserId(userId));
         return "user/userPage";
     }
 
-
-    // 해당 유저의 각 카테고리별 리뷰
+    // 해당 유저의 각 카테고리별 리뷰 페이지
     @GetMapping(value = "/users/{userId}/category/{category}")
     public String viewReviewInCategory(
         @PathVariable Long userId,
@@ -96,18 +76,13 @@ public class HomeController {
     ) {
         // Login User
         if (sessionUser != null) {
-            UserResponseDto user = userService.getSessionUserInfo(sessionUser);
-            model.addAttribute("login_user_id", user.getUserId());
-            model.addAttribute("login_user_nickname", user.getNickname());
+            model.addAttribute("loginUser", userService.getSessionUserInfo(sessionUser));
         }
         model.addAttribute("reviewList", 
-            reviewService.getReviewByCategoryAndUserId(userId, category)
+            reviewService.findAllByCategoryAndUserId(userId, category)
         );
         return "food/reviews";
     }
 
 
 }
-/*
-
-*/

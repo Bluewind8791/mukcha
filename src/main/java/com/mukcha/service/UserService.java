@@ -5,6 +5,8 @@ import java.util.Map;
 import java.util.Optional;
 
 import com.mukcha.config.dto.SessionUser;
+import com.mukcha.controller.dto.SessionUserResponseDto;
+import com.mukcha.controller.dto.UserDto;
 import com.mukcha.controller.dto.UserResponseDto;
 import com.mukcha.domain.ErrorMessage;
 import com.mukcha.domain.Gender;
@@ -76,8 +78,17 @@ public class UserService {
         );
     }
 
+    public UserResponseDto findByUserIdIntoDto(Long userId) {
+        return new UserResponseDto(findUser(userId));
+    }
+
+
 
     /* UPDATE SERVICES */
+    public void update(Long userId, UserDto dto) {
+        // log.info(">>> 회원 <"+user.getEmail()+">님의 개인정보 수정이 처리되었습니다."+user.toString());
+    }
+
     public void updateEmail(Long userId, String email) {
         User user = findUser(userId);
         user.editEmail(email);
@@ -111,8 +122,8 @@ public class UserService {
 
 
     // 로그인된 회원의 정보를 불러온다.
-    public UserResponseDto getSessionUserInfo(SessionUser sessionUser) {
-        return new UserResponseDto(findByEmail(sessionUser.getEmail()));
+    public SessionUserResponseDto getSessionUserInfo(SessionUser sessionUser) {
+        return new SessionUserResponseDto(findByEmail(sessionUser.getEmail()));
     }
 
     // 성별 클래스 전환 for DTO

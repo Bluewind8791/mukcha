@@ -1,6 +1,5 @@
 package com.mukcha.service;
 
-import com.mukcha.controller.dto.FoodDto;
 import com.mukcha.controller.dto.FoodResponseDto;
 import com.mukcha.controller.dto.FoodSaveRequestDto;
 import com.mukcha.controller.dto.FoodUpdateRequestDto;
@@ -61,10 +60,11 @@ public class FoodService {
             requestDto.getFoodImage(),
             Category.valueOf(requestDto.getCategory())
         );
+        log.info(">>> 메뉴 정보가 업데이트 되었습니다." + foodId);
         return foodId;
     }
 
-    // 음식 회사를 수정한다
+    // 해당 메뉴의 회사를 수정한다
     public void editFoodCompany(Long foodId, String companyName) {
         // 해당 회사와 메뉴가 존재할 때만 메소드 실행
         companyRepository.findByName(companyName).ifPresent(com -> {
@@ -76,7 +76,7 @@ public class FoodService {
         });
     }
 
-    // 음식을 삭제한다
+    // 해당 메뉴를 삭제한다
     @Transactional
     public void deleteFood(Long foodId) {
         Food targetFood = findFood(foodId);
@@ -85,6 +85,7 @@ public class FoodService {
         // 연결된 회사의 null 처리
         companyService.deleteFood(targetFood.getCompany().getCompanyId(), foodId);
         foodRepository.delete(targetFood);
+        log.info("해당 메뉴를 삭제하였습니다." + foodId);
     }
 
     // 해당 회사의 메뉴 이름과 같은 메뉴가 있는지 확인
@@ -156,51 +157,55 @@ public class FoodService {
         return dtos;
     }
 
-
     // 해당 메뉴의 정보
     @Transactional(readOnly = true)
     public FoodResponseDto findFoodIntoDto(Long foodId) {
         return new FoodResponseDto(findFood(foodId));
     }
 
-    // 모든 메뉴의 정보를 평균점수와 함께 리턴
-    @Transactional(readOnly = true)
-    public List<FoodDto> findAllWithAverageScore() {
-        // food list를 가져와서
-        List<Food> foods = foodRepository.findAll();
-        List<FoodDto> foodDtos = convertFoodToDto(foods);
-        return foodDtos;
+    // 모든 메뉴를 DTO로 가져오기
+    public List<FoodResponseDto> findAllIntoDto() {
+        List<Food> foodList = findAll();
+        Collections.reverse(foodList); // 최신순 정렬
+        return transDtoList(foodList);
     }
 
-    // 평균 점수를 기준으로 모든 10개의 메뉴를 가져오기
+    // 평균 점수를 기준으로 가장 높은 10개의 메뉴를 가져오기
     @Transactional(readOnly = true)
-    public List<FoodDto> findTopTenOrderByScore() {
-        // get
-        List<FoodDto> foodDtos = findAllWithAverageScore();
+    public List<FoodResponseDto> findTopTenOrderByScore() {
+        List<FoodResponseDto> dtos = findAllIntoDto();
         // sort
-        if (foodDtos.size() > 2) {
+        if (dtos.size() > 2) {
             Collections.sort(
-                foodDtos, Comparator.comparing(FoodDto::getAverageScore).reversed()
+                dtos, Comparator.comparing(FoodResponseDto::getAverageScore).reversed()
             );
         }
         // get top 10
-        return foodDtos.stream().limit(10).collect(Collectors.toList());
+        return dtos.stream().limit(10).collect(Collectors.toList());
     }
 
-    // 최신순 기준 10개 메뉴 Dto로 평균점수 포함하여 가져오기
+    // 가장 최신의 10개 메뉴를 가져온다
     @Transactional(readOnly = true)
-    public List<FoodDto> findTopTenNewest() {
-        // get
-        List<FoodDto> targetFoodList = findAllWithAverageScore();
+    public List<FoodResponseDto> findTopTenNewest() {
+        List<Food> allFoodList = findAll();
         // sort
-        if (targetFoodList.size() > 2) {
-            Collections.sort(
-                targetFoodList, Comparator.comparing(FoodDto::getCreatedAt).reversed()
-            );
+        if (allFoodList.size() > 2) {
+            Collections.sort(allFoodList, Comparator.comparing(Food::getCreatedAt).reversed());
         }
-        // get top 10
-        return targetFoodList.stream().limit(10).collect(Collectors.toList());
+        // 가장 최신 10개의 메뉴를 가져오고 dto로 변환
+        return transDtoList(allFoodList.stream().limit(10).collect(Collectors.toList()));
     }
+
+    // method - Food 리스트를 dto 리스트로 변환한다
+    private List<FoodResponseDto> transDtoList(List<Food> foodList) {
+        List<FoodResponseDto> dtos = new ArrayList<>();
+        foodList.forEach(food -> {
+            FoodResponseDto dto = new FoodResponseDto(food);
+            dtos.add(dto);
+        });
+        return dtos;
+    }
+
 
     // 해당 메뉴의 평균 점수를 계산한다
     public double getAverageScoreByFoodId(Long foodId) {        
@@ -231,34 +236,6 @@ public class FoodService {
         return foodMap;
     }
 
-
-    private List<FoodDto> convertFoodToDto(List<Food> foods) {
-        List<FoodDto> foodDtos = new ArrayList<>();
-        foods.stream().forEach(food -> {
-            FoodDto foodDto = new FoodDto();
-            foodDto.setFoodId(food.getFoodId());
-            foodDto.setFoodName(food.getName());
-            foodDto.setCompanyName(food.getCompany().getName());
-            foodDto.setCategory(food.getCategory().toString());
-            foodDto.setFoodImage(food.getImage());
-            foodDto.setAverageScore(getAverageScoreByFoodId(food.getFoodId()));
-            foodDto.setCreatedAt(food.getCreatedAt());
-            foodDto.setCompanyId(food.getCompany().getCompanyId());
-            foodDtos.add(foodDto);
-        });
-        return foodDtos;
-    }
-
-    public List<FoodResponseDto> findAllIntoDto() {
-        List<FoodResponseDto> dtos = new ArrayList<>();
-        List<Food> foodList = findAll();
-        Collections.reverse(foodList); // 최신순 정렬
-        foodList.forEach(food -> {
-            FoodResponseDto dto = new FoodResponseDto(food);
-            dtos.add(dto);
-        });
-        return dtos;
-    }
 
 
 }

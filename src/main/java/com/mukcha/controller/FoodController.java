@@ -3,7 +3,7 @@ package com.mukcha.controller;
 
 import com.mukcha.config.dto.LoginUser;
 import com.mukcha.config.dto.SessionUser;
-import com.mukcha.controller.dto.UserResponseDto;
+import com.mukcha.controller.dto.SessionUserResponseDto;
 import com.mukcha.service.FoodService;
 import com.mukcha.service.ReviewService;
 import com.mukcha.service.UserService;
@@ -37,9 +37,8 @@ public class FoodController {
         @RequestParam(value = "size", defaultValue = "3") Integer size
     ) {
         if (sessionUser != null) {
-            UserResponseDto user = userService.getSessionUserInfo(sessionUser);
-            model.addAttribute("login_user_id", user.getUserId());
-            model.addAttribute("login_user_nickname", user.getNickname());
+            SessionUserResponseDto user = userService.getSessionUserInfo(sessionUser);
+            model.addAttribute("loginUser", user);
             // 로그인 한 유저가 리뷰를 적었다면
             if (reviewService.isUserWriteReviewOnFood(foodId, user.getUserId())) {
                 model.addAttribute("isReviewed", "true");
@@ -63,12 +62,10 @@ public class FoodController {
     @GetMapping(value = "/reviews/{foodId}")
     public String viewAllReviews(@PathVariable Long foodId, Model model, @LoginUser SessionUser sessionUser) {
         if (sessionUser != null) {
-            UserResponseDto user = userService.getSessionUserInfo(sessionUser);
-            model.addAttribute("login_user_id", user.getUserId());
-            model.addAttribute("login_user_nickname", user.getNickname());
+            model.addAttribute("loginUser", userService.getSessionUserInfo(sessionUser));
         }
         model.addAttribute("foodName", foodService.findFood(foodId).getName()); // 해당 메뉴 이름
-        model.addAttribute("reviewList", reviewService.findAllReviewByFoodIdIntoDto(foodId)); // 메뉴의 모든 리뷰 리스트
+        model.addAttribute("reviewList", reviewService.findAllByFoodIdIntoDto(foodId)); // 메뉴의 모든 리뷰 리스트
         return "food/reviews";
     }
 

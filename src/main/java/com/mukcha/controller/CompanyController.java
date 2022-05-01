@@ -2,8 +2,11 @@ package com.mukcha.controller;
 
 import java.util.List;
 
+import com.mukcha.config.dto.LoginUser;
+import com.mukcha.config.dto.SessionUser;
 import com.mukcha.domain.Category;
 import com.mukcha.service.CompanyService;
+import com.mukcha.service.UserService;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -18,13 +21,18 @@ import lombok.RequiredArgsConstructor;
 public class CompanyController {
 
     private final CompanyService companyService;
+    private final UserService userService;
 
     // VIEW - 각 회사 페이지
     @GetMapping(value = "/company/{companyId}")
     public String viewCompanyInfo(
+        Model model,
         @PathVariable Long companyId,
-        Model model
+        @LoginUser SessionUser sessionUser
     ) {
+        if (sessionUser != null) {
+            model.addAttribute("loginUser", userService.getSessionUserInfo(sessionUser));
+        }
         // 해당 회사 정보
         model.addAttribute("company", companyService.findCompanyIntoDto(companyId));
         // 모든 카테고리

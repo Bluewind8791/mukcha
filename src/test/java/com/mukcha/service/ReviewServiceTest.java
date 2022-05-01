@@ -6,7 +6,7 @@ import static org.junit.jupiter.api.Assertions.*;
 import java.time.LocalDate;
 import java.util.List;
 
-import com.mukcha.controller.dto.CategoryDto;
+import com.mukcha.controller.dto.CategoryCountResponseDto;
 import com.mukcha.controller.dto.ReviewResponseDto;
 import com.mukcha.controller.dto.ReviewSaveRequestDto;
 import com.mukcha.domain.Category;
@@ -111,7 +111,7 @@ public class ReviewServiceTest extends WithTest {
         Food food2 = foodService.findByNameOr("ReviewTestFood2").get();
         reviewTestHelper.createReview(food1, user);
         reviewTestHelper.createReview(food2, user);
-        List<Review> reviews = reviewService.findAllReviewByFoodId(food1.getFoodId());
+        List<Review> reviews = reviewService.findAllByFoodId(food1.getFoodId());
         assertEquals("ReviewTestFood", reviews.get(0).getFood().getName());
     }
 
@@ -157,7 +157,7 @@ public class ReviewServiceTest extends WithTest {
         reviewTestHelper.createReview(food, user);
         reviewTestHelper.createReview(food, user);
         
-        CategoryDto categoryDto = reviewService.getReviewCountByCategoryAndUserId(user.getUserId());
+        CategoryCountResponseDto categoryDto = reviewService.getCountByCategoryAndUserId(user.getUserId());
 
         System.out.println(">>> chicken: "+categoryDto.getChickenReviewCount());
         System.out.println(">>> burger: "+categoryDto.getBurgerReviewCount());

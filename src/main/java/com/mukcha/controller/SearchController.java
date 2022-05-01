@@ -3,7 +3,6 @@ package com.mukcha.controller;
 
 import com.mukcha.config.dto.LoginUser;
 import com.mukcha.config.dto.SessionUser;
-import com.mukcha.controller.dto.UserResponseDto;
 import com.mukcha.domain.Search;
 import com.mukcha.repository.CompanyRepository;
 import com.mukcha.repository.FoodRepository;
@@ -34,9 +33,7 @@ public class SearchController {
         @LoginUser SessionUser sessionUser
     ) {
         if (sessionUser != null) {
-            UserResponseDto user = userService.getSessionUserInfo(sessionUser);
-            model.addAttribute("login_user_id", user.getUserId());
-            model.addAttribute("login_user_nickname", user.getNickname());
+            model.addAttribute("loginUser", userService.getSessionUserInfo(sessionUser));
         }
         model.addAttribute("foodList", 
             foodRepository.findAll(Search.foodSearching(keyword))
@@ -58,9 +55,7 @@ public class SearchController {
         @LoginUser SessionUser sessionUser
     ) {
         if (sessionUser != null) {
-            UserResponseDto user = userService.getSessionUserInfo(sessionUser);
-            model.addAttribute("login_user_id", user.getUserId());
-            model.addAttribute("login_user_nickname", user.getNickname());
+            model.addAttribute("loginUser", userService.getSessionUserInfo(sessionUser));
         }
         model.addAttribute("foodList", 
             foodRepository.findAll(Search.foodSearching(keyword))
@@ -76,9 +71,7 @@ public class SearchController {
         @LoginUser SessionUser sessionUser
     ) {
         if (sessionUser != null) {
-            UserResponseDto user = userService.getSessionUserInfo(sessionUser);
-            model.addAttribute("login_user_id", user.getUserId());
-            model.addAttribute("login_user_nickname", user.getNickname());
+            model.addAttribute("loginUser", userService.getSessionUserInfo(sessionUser));
         }
         model.addAttribute("companyList", 
             companyRepository.findAll(Search.companySearching(keyword))

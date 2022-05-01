@@ -2,7 +2,6 @@ package com.mukcha.controller;
 
 import com.mukcha.config.dto.LoginUser;
 import com.mukcha.config.dto.SessionUser;
-import com.mukcha.controller.dto.UserResponseDto;
 import com.mukcha.domain.Category;
 import com.mukcha.service.CompanyService;
 import com.mukcha.service.FoodService;
@@ -31,9 +30,7 @@ public class CategoryController {
         @LoginUser SessionUser sessionUser
     ) {
         if (sessionUser != null) {
-            UserResponseDto user = userService.getSessionUserInfo(sessionUser);
-            model.addAttribute("login_user_id", user.getUserId());
-            model.addAttribute("login_user_nickname", user.getNickname());
+            model.addAttribute("loginUser", userService.getSessionUserInfo(sessionUser));
         }
         // 해당 카테고리
         Category thisCategory = Category.valueOf(categoryName);
