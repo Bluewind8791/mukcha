@@ -30,7 +30,7 @@ public class ReviewTestHelper {
 
     public Review createReviewWithScore(Food food, User user, Score score) {
         Review review = makeReview(food, user);
-        review.editScore(score);
+        review.update(score, review.getComment());
         return reviewService.save(review);
     }
 

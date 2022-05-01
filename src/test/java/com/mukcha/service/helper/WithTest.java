@@ -37,7 +37,7 @@ public class WithTest {
         this.foodService = new FoodService(foodRepository, companyRepository, reviewRepository, companyService);
         this.companyService = new CompanyService(companyRepository, foodRepository);
         this.userService = new UserService(userRepository);
-        this.reviewService = new ReviewService(reviewRepository, userRepository, foodRepository);
+        this.reviewService = new ReviewService(reviewRepository, userService, foodService);
 
         //test helper
         this.userTestHelper = new UserTestHelper(userService);

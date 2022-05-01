@@ -18,10 +18,10 @@
     <div class="card w-50">
       <div class="card-header">
         <div class="d-flex justify-content-between">
-          <div class="fw-bold" th:text="${r.user.nickname}">username</div>
+          <div class="fw-bold" th:text="${r.userName}">username</div>
           <div>
             <!-- 메뉴 이름 -->
-            <span th:text="${r.food.name}"></span>
+            <span th:text="${foodName}"></span>
             <span>⭐</span>
             <!-- 별점 개수 -->
             <span th:text="${r.score.getValue()}">score</span>

@@ -157,24 +157,13 @@ public class FoodService {
     }
 
 
-    // FoodDto로 변환하여 메뉴 정보 return
+    // 해당 메뉴의 정보
     @Transactional(readOnly = true)
-    public FoodDto viewFoodDetail(Long foodId) {
-        Food food = foodRepository.findById(foodId).orElseThrow(() -> {
-            return new IllegalArgumentException("해당 메뉴를 찾을 수 없습니다.");
-        });
-        FoodDto foodDto = new FoodDto();
-        foodDto.setFoodId(food.getFoodId());
-        foodDto.setFoodName(food.getName());
-        foodDto.setCompanyName(food.getCompany().getName());
-        foodDto.setCompanyId(food.getCompany().getCompanyId());
-        foodDto.setCategory(food.getCategory().toString());
-        foodDto.setFoodImage(food.getImage());
-        foodDto.setAverageScore(getAverageScoreByFoodId(food.getFoodId()));
-        return foodDto;
+    public FoodResponseDto findFoodIntoDto(Long foodId) {
+        return new FoodResponseDto(findFood(foodId));
     }
 
-    // foodDto 변환하여 모든 메뉴의 평균점수와 함께 리턴
+    // 모든 메뉴의 정보를 평균점수와 함께 리턴
     @Transactional(readOnly = true)
     public List<FoodDto> findAllWithAverageScore() {
         // food list를 가져와서

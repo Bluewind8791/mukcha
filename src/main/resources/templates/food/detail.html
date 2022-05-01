@@ -24,13 +24,13 @@
       });
     });
   </script>
+
   <style>
     @media (min-width: 710px) {
       .container_menu {
         max-width: 500px;
       }
     }
-
     .food_image {
       width: 100%;
     }
@@ -80,14 +80,14 @@
         </div>
         <!-- 리뷰 삭제 -->
         <div class="col-3">
-          <form th:action="@{/menu/api/review/}+${food.foodId}" th:method="DELETE">
+          <form th:action="@{/api/reviews/}+${food.foodId}" th:method="delete">
             <input class="btn btn-danger" type="submit" value="리뷰 삭제" >
           </form>
         </div>
       </div>
 
       <!-- 먹은 날짜 추가 및 수정 -->
-      <form th:action="@{/menu/api/eaten/}+${food.foodId}" method="POST">
+      <form th:action="@{/api/reviews/eaten/}+${food.foodId}" method="POST">
         <div id="openEatenDate" class="collapse mt-3 mb-5">
           <div class="d-flex justify-content-center">
             <!-- DATE PICKER -->
@@ -103,7 +103,7 @@
         data-bs-target="#reviewModal" th:if="${isReviewed == 'false'}">평가하기
       </button>
 
-      <form th:action="@{/menu/api/review/}+${food.foodId}" method="POST">
+      <form th:action="@{/api/reviews/}+${food.foodId}" method="POST">
         <!-- Review Modal -->
         <div class="modal" id="reviewModal">
           <div class="modal-dialog">
@@ -190,7 +190,7 @@
       <div class="card w-100">
         <div class="card-header">
           <div class="d-flex justify-content-between">
-            <div class="fw-bold" th:text="${r.user.nickname}">username</div>
+            <div class="fw-bold" th:text="${r.userName}">username</div>
             <!-- 별점 개수 -->
             <div class="rounded bg-white border-dark">
               <span>⭐</span>

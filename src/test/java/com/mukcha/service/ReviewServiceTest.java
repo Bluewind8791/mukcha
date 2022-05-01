@@ -5,9 +5,10 @@ import static org.junit.jupiter.api.Assertions.*;
 
 import java.time.LocalDate;
 import java.util.List;
-import java.util.Optional;
 
 import com.mukcha.controller.dto.CategoryDto;
+import com.mukcha.controller.dto.ReviewResponseDto;
+import com.mukcha.controller.dto.ReviewSaveRequestDto;
 import com.mukcha.domain.Category;
 import com.mukcha.domain.Company;
 import com.mukcha.domain.Food;
@@ -27,7 +28,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Transactional
 @SpringBootTest
-@ActiveProfiles("local")
+@ActiveProfiles("test")
 public class ReviewServiceTest extends WithTest {
 
     Company company;
@@ -37,7 +38,7 @@ public class ReviewServiceTest extends WithTest {
     @BeforeEach
     void before() {
         prepareTest();
-        this.company = companyTestHelper.createCompany("test company", "companyLogo");
+        this.company = companyTestHelper.createCompany("testCompany", "companyLogo");
         this.food = foodTestHelper.createFood("ReviewTestFood", company, Category.CHICKEN, null);
         this.user = userTestHelper.createUser("user@review.test", "reviewTestUser");
     }
@@ -46,57 +47,60 @@ public class ReviewServiceTest extends WithTest {
     @Test
     @DisplayName("1. 유저가 해당 음식에 점수와 코멘트를 매긴다.")
     void test_1() {
-        Review review = reviewService.saveReview(Score.BEST, "comment", food.getFoodId(), user.getUserId());
-
-        Review savedReview = reviewService.findReview(review.getReviewId()).orElseThrow(() -> 
-            new IllegalArgumentException("해당 리뷰를 찾을 수 없습니다.")
-        );
-
+        // given
+        ReviewSaveRequestDto dto = new ReviewSaveRequestDto("testComment", "인생 메뉴에요!");
+        Long reviewId = reviewService.saveReview(food.getFoodId(), user.getEmail(), dto);
+        // when
+        Review savedReview = reviewService.findReview(reviewId);
+        System.out.println(savedReview);
+        // then
         assertEquals("ReviewTestFood", savedReview.getFood().getName());
         assertEquals("reviewTestUser", savedReview.getUser().getNickname());
-        assertEquals("comment", savedReview.getComment());
+        assertEquals("testComment", savedReview.getComment());
         assertEquals(Score.BEST, savedReview.getScore());
     }
 
     @Test
     @DisplayName("2. 점수와 코멘트를 단 리뷰에 추가적으로 먹은날짜를 기록한다.")
-    void test_2() {
+    void testSaveEatenDate() {
+        // given
         Review review = reviewTestHelper.createReview(food, user);
-        reviewService.saveEatenDate("1991-12-14", food.getFoodId(), user.getUserId());
-
-        Review savedReview = reviewService.findReview(review.getReviewId()).orElseThrow(() -> 
-            new IllegalArgumentException("해당 리뷰를 찾을 수 없습니다.")
-        );
-
+        // when
+        reviewService.saveEatenDate(food.getFoodId(), user.getEmail(), "1991-12-14");
+        // then
+        Review savedReview = reviewService.findReview(review.getReviewId());
         assertEquals(LocalDate.of(1991, 12, 14), savedReview.getEatenDate());
     }
 
     @Test
     @DisplayName("3. 리뷰의 점수, 코멘트, 먹은날짜를 수정한다.")
     void test_3() {
-        Review review = reviewTestHelper.createReview(food, user);
-
-        reviewService.editReviewScore(review, Score.GOOD);
-        reviewService.editReviewComment(review, "괜찮았어요");
-        reviewService.editReviewEatenDate(review, LocalDate.now().minusDays(1));
-
-        Review savedReview = reviewService.findReview(review.getReviewId()).orElseThrow(() -> 
-            new IllegalArgumentException("해당 리뷰를 찾을 수 없습니다.")
-        );
-        assertEquals(Score.GOOD, savedReview.getScore());
-        assertEquals("괜찮았어요", savedReview.getComment());
-        assertEquals(LocalDate.now().minusDays(1), savedReview.getEatenDate());
+        // given
+        reviewTestHelper.createReview(food, user);
+        reviewService.saveEatenDate(food.getFoodId(), user.getEmail(), "2000-01-01");
+        // when
+        ReviewSaveRequestDto dto = new ReviewSaveRequestDto("testComment", "인생 메뉴에요!");
+        Long reviewId = reviewService.saveReview(food.getFoodId(), user.getEmail(), dto);
+        reviewService.saveEatenDate(food.getFoodId(), user.getEmail(), "2022-05-01");
+        // then
+        Review savedReview = reviewService.findReview(reviewId);
+        System.out.println(savedReview);
+        assertEquals("ReviewTestFood", savedReview.getFood().getName());
+        assertEquals("reviewTestUser", savedReview.getUser().getNickname());
+        assertEquals("testComment", savedReview.getComment());
+        assertEquals(Score.BEST, savedReview.getScore());
+        assertEquals(LocalDate.of(2022, 05, 01), savedReview.getEatenDate());
     }
 
     @Test
     @DisplayName("4. 사용자가 해당 메뉴에 달았던 리뷰를 삭제한다.")
     void test_4() {
-        // set
+        // given
         Review review = reviewTestHelper.createReview(food, user);
-        // delete
-        reviewService.deleteReview(food.getFoodId(), user.getUserId());
-        // assert
-        assertFalse(reviewService.findReview(review.getReviewId()).isPresent());
+        // when
+        reviewService.deleteReview(food.getFoodId(), user.getEmail());
+        // then
+        assertThrows(IllegalArgumentException.class, () -> reviewService.findReview(review.getReviewId()));
     }
 
     @Test
@@ -107,15 +111,14 @@ public class ReviewServiceTest extends WithTest {
         Food food2 = foodService.findByNameOr("ReviewTestFood2").get();
         reviewTestHelper.createReview(food1, user);
         reviewTestHelper.createReview(food2, user);
-
         List<Review> reviews = reviewService.findAllReviewByFoodId(food1.getFoodId());
-
         assertEquals("ReviewTestFood", reviews.get(0).getFood().getName());
     }
 
     @Test
     @DisplayName("6. 해당 음식의 모든 음식을 가장 최신순으로 페이징하여 가져온다")
-    void test_6() {
+    void testfindAllByFoodIdOrderByCreatedAtDesc() {
+        // given
         User user1 = userTestHelper.createUser("test2@review.test", "rt2");
         User user2 = userTestHelper.createUser("test3@review.test", "rt3");
         User user3 = userTestHelper.createUser("test4@review.test", "rt4");
@@ -125,9 +128,9 @@ public class ReviewServiceTest extends WithTest {
         reviewTestHelper.createReview(food, user2);
         reviewTestHelper.createReview(food, user3);
         reviewTestHelper.createReview(food, user4);
-
-        Page<Review> reviewPage = reviewService.findAllByFoodIdOrderByCreatedAtDesc(food.getFoodId(), 1, 5);
-
+        // when
+        Page<ReviewResponseDto> reviewPage = reviewService.findAllByFoodIdOrderByCreatedAtDesc(food.getFoodId(), 1, 5);
+        // then
         System.out.println(">>> reviewPage: "+reviewPage);
     }
 
@@ -168,17 +171,33 @@ public class ReviewServiceTest extends WithTest {
     @Test
     @DisplayName("9. 유저가 해당 메뉴에 리뷰를 썼는지 알아본다.")
     void test_9() {
-        // set - user 는 리뷰를 쓰고 user2는 리뷰를 쓰지 않음.
+        // given - user 는 리뷰를 쓰고 user2는 리뷰를 쓰지 않음.
         User user2 = userTestHelper.createUser("test2@user.test", "test2");
         reviewTestHelper.createReview(food, user);
 
-        // assert
+        // when
         // 'user'의 리뷰를 찾으면 not null 이고 어떠한 exception도 없어야 한다.
-        assertDoesNotThrow(() -> reviewService.findReviewByFoodIdAndUserId(food.getFoodId(), user.getUserId()));
-        assertNotNull(reviewService.findReviewByFoodIdAndUserId(food.getFoodId(), user.getUserId()));
-        // 'user2'의 리뷰는 empty이다.
-        assertEquals(Optional.empty(), reviewService.findReviewByFoodIdAndUserId(food.getFoodId(), user2.getUserId()) );
+        assertDoesNotThrow(() -> reviewService.findByFoodIdAndUserId(food.getFoodId(), user.getUserId()));
+        assertNotNull(reviewService.findByFoodIdAndUserId(food.getFoodId(), user.getUserId()));
+        // then
+        assertThrows(IllegalArgumentException.class, () -> 
+            reviewService.findByFoodIdAndUserId(food.getFoodId(), user2.getUserId())    
+        );
     }
+
+
+    @Test
+    @DisplayName("해당 유저가 해당 메뉴의 리뷰를 적었는지 확인")
+    void testIsUserWriteReviewOnFood() {
+        // given
+        reviewTestHelper.createReview(food, user);
+        // when
+        boolean result = reviewService.isUserWriteReviewOnFood(food.getFoodId(), user.getUserId());
+        // then
+        assertEquals(true, result);
+    }
+
+
 
 
 }

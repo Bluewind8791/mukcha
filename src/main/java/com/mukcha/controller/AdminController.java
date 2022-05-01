@@ -4,7 +4,7 @@ import java.util.List;
 
 import com.mukcha.config.dto.LoginUser;
 import com.mukcha.config.dto.SessionUser;
-import com.mukcha.controller.dto.UserDto;
+import com.mukcha.controller.dto.UserResponseDto;
 import com.mukcha.domain.Category;
 import com.mukcha.service.CompanyService;
 import com.mukcha.service.FoodService;
@@ -36,7 +36,7 @@ public class AdminController {
     @GetMapping(value = {"/", ""})
     public String adminHome(Model model, @LoginUser SessionUser sessionUser) {
         if (sessionUser != null) {
-            UserDto user = userService.getSessionUserInfo(sessionUser);
+            UserResponseDto user = userService.getSessionUserInfo(sessionUser);
             model.addAttribute("login_user_id", user.getUserId());
             model.addAttribute("login_user_nickname", user.getNickname());
             log.info(">>> 관리자 페이지에 진입하였습니다. " + user.getNickname());
@@ -59,7 +59,7 @@ public class AdminController {
         @PathVariable Long companyId
     ) {
         if (sessionUser != null) {
-            UserDto user = userService.getSessionUserInfo(sessionUser);
+            UserResponseDto user = userService.getSessionUserInfo(sessionUser);
             model.addAttribute("login_user_id", user.getUserId());
             model.addAttribute("login_user_nickname", user.getNickname());
         }
@@ -77,7 +77,7 @@ public class AdminController {
     @GetMapping(value = "/menus")
     public String viewAllMenus(Model model, @LoginUser SessionUser sessionUser) {
         if (sessionUser != null) {
-            UserDto user = userService.getSessionUserInfo(sessionUser);
+            UserResponseDto user = userService.getSessionUserInfo(sessionUser);
             model.addAttribute("login_user_id", user.getUserId());
             model.addAttribute("login_user_nickname", user.getNickname());
         }

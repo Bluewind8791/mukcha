@@ -20,10 +20,9 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
+
 
 // ROLE_ADMIN 만 접근가능
-@Slf4j
 @Controller
 @RequiredArgsConstructor
 @RequestMapping(value = "/admin")
@@ -40,15 +39,6 @@ public class CrawlingController {
         // 처갓집양념치킨();
         // dongdaemunYupdduk();
         return "redirect:/admin";
-    }
-
-    public void dbInitCrawling() {
-        빅스타피자();
-        // dominoPizza();
-        페리카나();
-        // BBQ();
-        sinjeon();
-        // baedduck();
     }
 
 
@@ -210,7 +200,7 @@ public class CrawlingController {
         }
     }
 
-    void sinjeon() {
+    public void sinjeon() {
         Company company = isCompanyPresent("신전떡볶이", "http://sinjeon.co.kr/img/common/logo_2022.png");
         Document doc;
         List<String> urlList = new ArrayList<>();
@@ -239,7 +229,7 @@ public class CrawlingController {
         }
     }
 
-    void BBQ() {
+    public void BBQ() {
         Document doc;
         Company company = isCompanyPresent("BBQ", "");
         String getFoodName;
@@ -274,7 +264,7 @@ public class CrawlingController {
     }
 
 
-    void 빅스타피자() {
+    public void bigstarPizza() {
         Company company = isCompanyPresent("빅스타피자", "/logo/logo-bigstar_pizza.png");
         Document doc;
         String url = "http://www.bigstarpizza.co.kr/page/menu";
@@ -312,7 +302,7 @@ public class CrawlingController {
     }
 
 
-    void dominoPizza() {
+    public void dominoPizza() {
         Company company = isCompanyPresent("도미노피자", "/logo/domino.png");
         List<String> urlList = new ArrayList<>();
         urlList.add("https://web.dominos.co.kr/goods/list?dsp_ctgr=C0101"); // 메뉴
@@ -349,7 +339,7 @@ public class CrawlingController {
         }
     }
 
-    void 페리카나() {
+    public void 페리카나() {
         Company company = isCompanyPresent("페리카나", "");
         List<String> urlList = new ArrayList<>();
         urlList.add("https://pelicana.co.kr/menu/menu_original.html"); // 오리지널
@@ -438,7 +428,6 @@ public class CrawlingController {
             food.setCategory(Category.SIDEMENU);
         }
         foodService.save(food);
-        log.info(">>> 메뉴<+"+food.getName()+"> 이 DB에 생성되었습니다." + food.toString());
     }
 
 

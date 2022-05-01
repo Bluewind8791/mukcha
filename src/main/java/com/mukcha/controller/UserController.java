@@ -7,6 +7,7 @@ import javax.validation.Valid;
 import com.mukcha.config.dto.LoginUser;
 import com.mukcha.config.dto.SessionUser;
 import com.mukcha.controller.dto.UserDto;
+import com.mukcha.controller.dto.UserResponseDto;
 import com.mukcha.service.UserService;
 
 import org.springframework.stereotype.Controller;
@@ -39,7 +40,7 @@ public class UserController {
     public String viewUserEditPage(Model model, @LoginUser SessionUser sessionUser) {
         // Login User
         if (sessionUser != null) {
-            UserDto user = userService.getSessionUserInfo(sessionUser);
+            UserResponseDto user = userService.getSessionUserInfo(sessionUser);
             model.addAttribute("login_user_id", user.getUserId());
             model.addAttribute("login_user_nickname", user.getNickname());
             model.addAttribute("user", user);
@@ -53,7 +54,7 @@ public class UserController {
     public String viewDisableUserPage(@LoginUser SessionUser sessionUser, Model model) {
         // Login User
         if (sessionUser != null) {
-            UserDto user = userService.getSessionUserInfo(sessionUser);
+            UserResponseDto user = userService.getSessionUserInfo(sessionUser);
             model.addAttribute("login_user_id", user.getUserId());
             model.addAttribute("login_user_nickname", user.getNickname());
         }
@@ -71,7 +72,7 @@ public class UserController {
         HttpSession httpSession
     ) {
         if (sessionUser != null) {
-            UserDto user = userService.getSessionUserInfo(sessionUser);
+            UserResponseDto user = userService.getSessionUserInfo(sessionUser);
             httpSession.invalidate(); // delete login session
             String disabledUser = user.getEmail();
             userService.disableUser(user.getUserId()); // disable user
@@ -92,7 +93,7 @@ public class UserController {
             RedirectAttributes redirectAttributes
     ) {
         if (sessionUser != null) {
-            UserDto user = userService.getSessionUserInfo(sessionUser);
+            UserResponseDto user = userService.getSessionUserInfo(sessionUser);
             userService.updateGender(user.getUserId(), form.getGender());
             userService.updateBirthYear(user.getUserId(), form.getBirthYear());
             redirectAttributes.addFlashAttribute("resultMessage", "success");

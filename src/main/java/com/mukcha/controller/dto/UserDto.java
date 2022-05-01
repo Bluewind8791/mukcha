@@ -1,5 +1,6 @@
 package com.mukcha.controller.dto;
 
+
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
@@ -9,15 +10,10 @@ import lombok.Setter;
 public class UserDto {
 
     private Long userId;
-
     private String email;
-
     private String nickname;
-
     private String profileImage;
-
     private String gender;
-
     private String birthYear;
 
     @Builder

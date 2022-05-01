@@ -5,7 +5,7 @@ import java.util.Map;
 import java.util.Optional;
 
 import com.mukcha.config.dto.SessionUser;
-import com.mukcha.controller.dto.UserDto;
+import com.mukcha.controller.dto.UserResponseDto;
 import com.mukcha.domain.ErrorMessage;
 import com.mukcha.domain.Gender;
 import com.mukcha.domain.User;
@@ -40,7 +40,6 @@ public class UserService {
         log.info("회원가입이 진행되었습니다." + user.toString());
         return userRepository.save(user);
     }
-
 
     // 회원가입 시 유효성 체크
     public Map<String, String> validateHandling(Errors errors) {
@@ -111,21 +110,9 @@ public class UserService {
     }
 
 
-    // 로그인된 회원의 정보를 불러옵니다
-    public UserDto getSessionUserInfo(SessionUser sessionUser) {
-        UserDto userDto = new UserDto();
-        User u = findByEmail(sessionUser.getEmail());
-        userDto.setUserId(u.getUserId());
-        userDto.setEmail(u.getEmail());
-        userDto.setNickname(u.getNickname());
-        userDto.setProfileImage(u.getProfileImage());
-        if (u.getGender() != null) {
-            userDto.setGender(u.getGender().toString());
-        }
-        if (u.getBirthYear() != null) {
-            userDto.setBirthYear(u.getBirthYear());
-        }
-        return userDto;
+    // 로그인된 회원의 정보를 불러온다.
+    public UserResponseDto getSessionUserInfo(SessionUser sessionUser) {
+        return new UserResponseDto(findByEmail(sessionUser.getEmail()));
     }
 
     // 성별 클래스 전환 for DTO
@@ -137,8 +124,6 @@ public class UserService {
         }
         return null;
     }
-
-
 
     // 회원 삭제 (enabled = false)
     @Transactional(rollbackFor = {RuntimeException.class})
@@ -186,66 +171,5 @@ public class UserService {
                 userRepository.save(user);
             }
         });
-    }
-    // NAVER 회원가입
-    public User saveNaverUser(
-        String email,
-        String naverId,
-        String nickname,
-        String profileImage,
-        String gender,
-        String birthyear,
-        String birthday
-    ) {
-        User user = User.builder()
-                    .email(email)
-                    .nickname(nickname)
-                    .profileImage(profileImage)
-                    .gender(transClassGender4Naver(gender))
-                    .birthday(transClassLocalDate4Naver(birthyear, birthday))
-                    .build()
-        ;
-        return signUp(user);
-    }
-    // 네이버 회원가입 생년월일 클래스 전환
-    private LocalDate transClassLocalDate4Naver(String birthyear, String birthday) {
-        // 사용자 생일 (MM-DD 형식)
-        if (birthyear != null || birthday != null) {
-            String[] b = birthday.split("-");
-            return LocalDate.of(Integer.parseInt(birthyear), Integer.parseInt(b[0]), Integer.parseInt(b[1]));
-        }
-        return null;
-    }
-    // 인코딩된 패스워드 비교 메소드
-    public Boolean isPasswordSame(String oldPwd, String newPwd) {
-        if (passwordEncoder.matches(oldPwd, newPwd)) {
-            return true;
-        }
-        return false;
-    }
-    // 로그인 진행
-    public void doLogin(String email, String password) {
-        log.info(">>> 회원<"+email+">님의 로그인을 진행합니다.");
-        Authentication authentication = authenticationManager.authenticate(
-            new UsernamePasswordAuthenticationToken(email, password)
-        );
-        SecurityContextHolder.getContext().setAuthentication(authentication);
-    }
-    // 권한을 넣어서 함께 로그인 진행
-    public void doLoginWithAuth(Object principal, String password, Collection<? extends GrantedAuthority> authorities) {
-        Authentication authentication = new UsernamePasswordAuthenticationToken(principal, password, authorities);
-        SecurityContextHolder.getContext().setAuthentication(authentication);
-    }
-    // 생년월일 클래스 전환 for DTO
-    public LocalDate transClassLocalDate(String year, String month, String day) {
-        if (year == null || month == null || day == null) {
-            return null;
-        } else if (year.isEmpty() || month.isEmpty() || day.isEmpty()) {
-            return null;
-        }
-        Integer intYear = Integer.parseInt(year);
-        Integer intMonth = Integer.parseInt(month);
-        Integer intDay = Integer.parseInt(day);
-        return LocalDate.of(intYear, intMonth, intDay);
     }
 */

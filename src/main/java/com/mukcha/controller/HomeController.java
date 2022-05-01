@@ -5,6 +5,7 @@ import java.util.List;
 import com.mukcha.config.dto.LoginUser;
 import com.mukcha.config.dto.SessionUser;
 import com.mukcha.controller.dto.UserDto;
+import com.mukcha.controller.dto.UserResponseDto;
 import com.mukcha.domain.Category;
 import com.mukcha.domain.User;
 import com.mukcha.service.FoodService;
@@ -34,7 +35,7 @@ public class HomeController {
     public String home(Model model, @LoginUser SessionUser sessionUser) {
         // login user 정보
         if (sessionUser != null) {
-            UserDto user = userService.getSessionUserInfo(sessionUser);
+            UserResponseDto user = userService.getSessionUserInfo(sessionUser);
             model.addAttribute("login_user_id", user.getUserId());
             model.addAttribute("login_user_nickname", user.getNickname());
         }
@@ -62,7 +63,7 @@ public class HomeController {
     ) {
         // Login User
         if (sessionUser != null) {
-            UserDto user = userService.getSessionUserInfo(sessionUser);
+            UserResponseDto user = userService.getSessionUserInfo(sessionUser);
             model.addAttribute("login_user_id", user.getUserId());
             model.addAttribute("login_user_nickname", user.getNickname());
             model.addAttribute("login_email", user.getEmail());
@@ -95,7 +96,7 @@ public class HomeController {
     ) {
         // Login User
         if (sessionUser != null) {
-            UserDto user = userService.getSessionUserInfo(sessionUser);
+            UserResponseDto user = userService.getSessionUserInfo(sessionUser);
             model.addAttribute("login_user_id", user.getUserId());
             model.addAttribute("login_user_nickname", user.getNickname());
         }

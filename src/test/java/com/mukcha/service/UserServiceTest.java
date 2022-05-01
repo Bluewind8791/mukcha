@@ -2,7 +2,6 @@ package com.mukcha.service;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-
 import com.mukcha.domain.User;
 import com.mukcha.service.helper.WithTest;
 
@@ -17,7 +16,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Transactional
 @SpringBootTest
-@ActiveProfiles("local")
+@ActiveProfiles("test")
 public class UserServiceTest extends WithTest {
 
     @BeforeEach
@@ -29,11 +28,11 @@ public class UserServiceTest extends WithTest {
     @Test
     @DisplayName("1. 사용자 생성 테스트")
     void test_1() {
-        // create
+        // given
         User user = userTestHelper.createUser("ben@user.test", "TestUser");
-        // find
+        // when
         User savedUser = userService.findUser(user.getUserId());
-        // test
+        // then
         assertEquals("ben@user.test", savedUser.getEmail());
         assertEquals("TestUser", savedUser.getNickname());
     }
@@ -41,9 +40,12 @@ public class UserServiceTest extends WithTest {
     @Test
     @DisplayName("2. 이메일은 중복될 수 없다")
     void test_2() {
+        // given
         userTestHelper.createUser("test1@test.com", "TestUser1");
+        // then
         assertThrows(DataIntegrityViolationException.class, () -> userTestHelper.createUser("test1@test.com", "TestUser2"));
     }
+
 
 }
 /*

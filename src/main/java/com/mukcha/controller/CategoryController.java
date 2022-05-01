@@ -2,7 +2,7 @@ package com.mukcha.controller;
 
 import com.mukcha.config.dto.LoginUser;
 import com.mukcha.config.dto.SessionUser;
-import com.mukcha.controller.dto.UserDto;
+import com.mukcha.controller.dto.UserResponseDto;
 import com.mukcha.domain.Category;
 import com.mukcha.service.CompanyService;
 import com.mukcha.service.FoodService;
@@ -31,7 +31,7 @@ public class CategoryController {
         @LoginUser SessionUser sessionUser
     ) {
         if (sessionUser != null) {
-            UserDto user = userService.getSessionUserInfo(sessionUser);
+            UserResponseDto user = userService.getSessionUserInfo(sessionUser);
             model.addAttribute("login_user_id", user.getUserId());
             model.addAttribute("login_user_nickname", user.getNickname());
         }

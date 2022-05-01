@@ -65,16 +65,18 @@ public class Review extends BaseTimeEntity {
         this.user = null;
     }
 
-    public void editScore(Score score) {
+    public void update(Score score, String comment) {
         this.score = score;
-    }
-
-    public void editComment(String comment) {
         this.comment = comment;
     }
 
     public void setEatenDate(LocalDate eatenDate) {
         this.eatenDate = eatenDate;
+    }
+
+    public void setFoodAndUser(User user, Food food) {
+        this.food = food;
+        this.user = user;
     }
 
 }
