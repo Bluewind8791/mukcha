@@ -37,20 +37,24 @@ public class CustomOAuth2UserService implements OAuth2UserService<OAuth2UserRequ
         OAuth2UserService<OAuth2UserRequest, OAuth2User> delegate = new DefaultOAuth2UserService();
         OAuth2User oAuth2User = delegate.loadUser(userRequest);
 
-        // OAuth2 Service ID (Google, Naver)
+        // 어떤 SNS 로그인인지 구별하기 위한 ID (Google, Naver)
         String registrationId = userRequest.getClientRegistration().getRegistrationId();
         // OAuth2 Login 진행 시, Key가 되는 필드 값(PK)
         String userNameAttributeName = userRequest
-                                        .getClientRegistration()
-                                        .getProviderDetails()
-                                        .getUserInfoEndpoint()
-                                        .getUserNameAttributeName()
+            .getClientRegistration()
+            .getProviderDetails()
+            .getUserInfoEndpoint()
+            .getUserNameAttributeName() // OAuth2 로그인 진행시 키가되는 필드 값 (PK)
         ;
 
-        // OAuth2UserService
-        OAuthAttributes attributes = OAuthAttributes.of(registrationId, userNameAttributeName, oAuth2User.getAttributes());
+        // OAuth2UserService를 통해 가져온 OAuth2User의 attribute
+        OAuthAttributes attributes = OAuthAttributes.of(
+            registrationId,
+            userNameAttributeName,
+            oAuth2User.getAttributes()
+        );
         User user = saveOrUpdate(attributes);
-        httpSession.setAttribute("user", new SessionUser(user)); // SessionUser (직렬화된 dto 클래스 사용)
+        httpSession.setAttribute("user", new SessionUser(user)); // 세션에 사용자 정보를 저자하기위한 dto 클래스
 
         return new DefaultOAuth2User(
                 Collections.singleton(new SimpleGrantedAuthority(user.getAuthorityKey())),
@@ -63,7 +67,7 @@ public class CustomOAuth2UserService implements OAuth2UserService<OAuth2UserRequ
     // 유저 생성 및 수정 서비스 로직
     private User saveOrUpdate(OAuthAttributes attributes){        
         User user = userRepository.findByEmail(attributes.getEmail())
-                .map(u -> u.update(attributes.getName(), attributes.getPicture()))
+                .map(u -> u.update(attributes.getName(), attributes.getPicture(), attributes.getGender(), attributes.getBirthyear()))
                 .orElse(attributes.toEntity())
         ;
         if (user.getEmail().equals("castus1214@naver.com")) {

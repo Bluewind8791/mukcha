@@ -3,54 +3,41 @@
   xmlns:sec="http://www.thymeleaf.org/extras/spring-security" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
   layout:decorate="~{layout/layout}">
 
-<head>
-  <script th:inline="javascript">
-    // 회원 정보 수정 성공 alert
-    var message = [[${ resultMessage }]];
-    if (message == "success") {
-      alert("회원 정보 수정이 완료되었습니다.");
-    }
-  </script>
-</head>
-
 
 <div layout:fragment="content">
 
   <div class="container text-center bg-light p-5 mt-5 mb-5">
-
     <h3 class="mb-5">회원 정보 수정</h3>
     <h5 class="mb-2">필수항목</h5>
 
-    <form class="form-signin" th:action="@{/user/edit}" method="POST" th:object="${form}" modelAttribute="form">
-
-      <!-- E-mail -->
+    <form class="form-signin" th:action="@{/user/api/update}" th:method="put">
+      <!-- 이메일 -->
       <div class="mb-3 was-validated">
         <label for="email">이메일<span class="text-muted">(로그인 아이디)</span></label>
         <input type="email" class="form-control" id="email" name="email" th:value="${user.email}" readonly>
       </div>
+      <span style="color:royalblue">(이메일은 수정이 불가합니다.)</span>
 
-      <!-- Nickname -->
+      <!-- 아이디(별명) -->
       <div class="mb-3 mt-3 was-validated">
         <label for="name" class="form-label">아이디<span class="text-muted">(별명)</span></label>
-        <input type="text" class="form-control" id="nickname" name="nickname" th:value="${nickname}" readonly>
+        <input type="text" class="form-control" id="nickname" name="nickname" th:value="${user.nickname}">
       </div>
-      <span style="color:royalblue">(이메일 및 아이디는 수정이 불가합니다.)</span>
 
       <hr class="mb-4">
       <h5 class="mb-2">선택항목</h5>
-
+      <!-- 성별 -->
       <div class="mb-3 mt-3">
         <label for="email" class="form-label">성별</label>
-        <select class="form-select" id="gender" name="gender" th:value="${user.getGender()}">
+        <select class="form-select" id="gender" name="gender" th:value="${user.gender}">
           <option value="">선택안함</option>
-          <option th:value="MALE" th:text="남자" th:selected="${user.getGender()} == 'MALE'"></option>
-          <option th:value="FEMALE" th:text="여자" th:selected="${user.getGender()} == 'FEMALE'"></option>
+          <option th:value="MALE" th:text="남자" th:selected="${user.gender} == 'MALE'"></option>
+          <option th:value="FEMALE" th:text="여자" th:selected="${user.gender} == 'FEMALE'"></option>
         </select>
       </div>
-
+      <!-- 출생년도 -->
       <div class="row">
         <label class="form-label">출생년도</label>
-
         <div class="col">
           <span class="ps_box input-group">
             <input type="text" class="form-control" placeholder="년(4자)" maxlength="4" id="birthYear" name="birthYear"
@@ -58,56 +45,60 @@
             <span class="input-group-text">년</span>
           </span>
         </div>
-
       </div> <!-- end of row -->
-
       <hr class="mt-5 mb-5">
-
       <!-- 수정 버튼 -->
       <button class="btn btn-lg btn-primary w-50 mb-4" type="submit">수정</button>
-      <!-- 취소 버튼 -->
-      <a type="button" class="btn btn-lg btn-secondary w-50 mb-4" onclick="window.history.back();">취소</a>
-      <!-- 회원 탈퇴 -->
-      <a type="button" class="btn btn-lg btn-danger w-50" th:href="@{/user/delete}">회원 탈퇴</a>
-
     </form>
-
+    <!-- 취소 버튼 -->
+    <a type="button" class="btn btn-lg btn-secondary w-50 mb-4" onclick="window.history.back();">취소</a>
+    <!-- 회원 탈퇴 -->
+    <a type="button" class="btn btn-lg btn-danger w-50" data-bs-toggle="modal" data-bs-target="#signOutModal">회원 탈퇴</a>
+    <!-- th:href="@{/user/delete}" -->
   </div> <!-- /container -->
 
+
+  <!-- 회원 탈퇴 Modal -->
+  <div class="modal" id="signOutModal">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <!-- Modal Header -->
+        <div class="modal-header">
+          <h4 class="modal-title">회원 탈퇴</h4>
+          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        </div>
+        <form th:action="@{/user/api/disable}" th:method="PUT">
+          <!-- Modal body -->
+          <div class="modal-body">
+
+            <p>탈퇴 후 동일한 아이디(이메일)로 가입하실 수 없으며,<br>
+              회원님께서 작성하신 평가와 코멘트는 복구할 수 없습니다.
+            </p>
+            <p>
+              연동 해제는 로그인 한 계정의 SNS에서 연동해제 해주세요.
+            </p>
+            <div>
+              <h5><strong>정말로 탈퇴 하시겠습니까?</strong></h5>
+            </div>
+          </div>
+          <!-- Modal footer -->
+          <div class="modal-footer">
+            <button type="submit" class="btn btn-danger">회원 탈퇴</button>
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">취소</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div> <!-- end of 회원 탈퇴 Modal -->
+
+
+  <script th:inline="javascript">
+    // 회원 정보 수정 성공 alert
+    var message = [[${ resultMessage }]];
+    if (message == "updateUserSuccess") {
+      alert("회원 정보 수정이 완료되었습니다.");
+    }
+  </script>
 </div>
 
 </html>
-<!--
-      <div class="row">
-        <div class="col-md-6 mb-3 was-validated">
-          <label for="password">비밀번호</label>
-          <input type="password" class="form-control" id="password" name="password" placeholder="******" required>
-          <span style="color:tomato" th:text="${valid_password}"></span>
-        </div>
-        <div class="col-md-6 mb-3 was-validated">
-          <label for="rePassword">비밀번호 (확인)</label>
-          <input type="password" class="form-control" id="rePassword" name="rePassword" placeholder="******" required>
-          <span style="color:tomato" th:text="${valid_rePassword}"></span>
-        </div>
-      </div>
-      <span style="color:royalblue">(본인 확인을 위하여 패스워드를 한번 더 적어주세요.)</span>
-                <div class="col">
-                    <span class="ps_box input-group">
-                        <select class="form-select" id="birthMonth" name="birthMonth">
-                            <option value="">선택해 주세요</option>
-                            <option th:each="i : ${#numbers.sequence(1, 12)}" th:text="${i}" th:value="${i}"
-                                th:selected="${i == user.getBirthMonth()}">
-                            </option>
-                        </select>
-                        <span class="input-group-text">월</span>
-                    </span>
-                </div>
-
-                <div class="col">
-                    <span class="ps_box input-group">
-                        <input type="text" class="form-control" placeholder="일" maxlength="2" id="birthDayOfMonth"
-                            name="birthDayOfMonth" th:value="${user.getBirthDayOfMonth()}">
-                        <span class="input-group-text">일</span>
-                    </span>
-                </div>
--->

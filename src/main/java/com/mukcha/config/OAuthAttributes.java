@@ -13,10 +13,10 @@ import lombok.Getter;
 @Getter
 public class OAuthAttributes {
 
-    private Map<String, Object> attributes; // OAuth2 반환할 유저 정도 Map
+    private Map<String, Object> attributes;
     private String nameAttributeKey;
-    private String name;
     private String email;
+    private String name;
     private String picture;
     private String gender;
     private String birthyear;
@@ -40,14 +40,30 @@ public class OAuthAttributes {
         this.birthyear = birthyear;
     }
 
-
-    public static OAuthAttributes of(String registrationId, String userNameAttributeName, Map<String, Object> attributes) {
+    // OAuth2User에서 반환하는 사용자 정보는 Map이기 때문에 값 하나하나를 변환해야 합니다.
+    public static OAuthAttributes of(
+        String registrationId, 
+        String userNameAttributeName,
+        Map<String, Object> attributes
+    ) {
         // naver
         if ("naver".equals(registrationId)) {
             return ofNaver("id", attributes);
         }
         // google
         return ofGoogle(userNameAttributeName, attributes);
+    }
+
+    public User toEntity() {
+        return User.builder()
+                .email(email)
+                .nickname(name)
+                .profileImage(picture)
+                .birthYear(birthyear)
+                .gender(transClassGender(gender))
+                .authority(Authority.USER)
+                .enabled(true)
+                .build();
     }
 
 
@@ -93,20 +109,6 @@ public class OAuthAttributes {
                 .build()
         ;
     }
-
-
-    public User toEntity() {
-        return User.builder()
-                .email(email)
-                .nickname(name)
-                .profileImage(picture)
-                .birthYear(birthyear)
-                .gender(transClassGender(gender))
-                .authority(Authority.USER)
-                .enabled(true)
-                .build();
-    }
-
 
     // 네이버 회원가입 성별 클래스 전환
     private static Gender transClassGender(String gender) {

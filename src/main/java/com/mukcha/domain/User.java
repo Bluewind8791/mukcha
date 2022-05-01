@@ -69,14 +69,33 @@ public class User extends BaseTimeEntity { //  implements UserDetails
 
 
     // >>> METHODS <<<
-    public User update(String nickname, String profileImage){
+    public User update(String nickname, String profileImage, String gender, String birthYear) {
         this.nickname = nickname;
-        this.profileImage = profileImage;
+        if (profileImage != null) {
+            this.profileImage = profileImage;
+        }
+        this.birthYear = birthYear;
+        this.gender = transClassGender(gender);
         return this;
     }
 
-    public String getAuthorityKey() {
-        return this.authority.getKey();
+    // 회원가입 성별 클래스 전환
+    private static Gender transClassGender(String gender) {
+        if (gender != null) {
+            // naver - F: 여성 - M: 남성 - U: 확인불가
+            // google - "male", "female"
+            switch (gender) {
+                case "F" :
+                case "female":
+                case "FEMALE":
+                return Gender.FEMALE;
+                case "M":
+                case "male":
+                case "MALE":
+                return Gender.MALE;
+            }
+        }
+        return null;
     }
 
     public String getStringGender() {
@@ -87,28 +106,16 @@ public class User extends BaseTimeEntity { //  implements UserDetails
         }
     }
 
+    public String getAuthorityKey() {
+        return this.authority.getKey();
+    }
+
     public void setAuthority(Authority authority) {
         this.authority = authority;
     }
 
     public void editProfileImage(String profileImageUrl) {
         this.profileImage = profileImageUrl;
-    }
-
-    public void editEmail(String email) {
-        this.email = email;
-    }
-
-    public void editNickname(String nickname) {
-        this.nickname = nickname;
-    }
-
-    public void editGender(Gender gender) {
-        this.gender = gender;
-    }
-
-    public void editBirthyear(String birthyear) {
-        this.birthYear = birthyear;
     }
 
     public void disableUser() {
@@ -121,26 +128,3 @@ public class User extends BaseTimeEntity { //  implements UserDetails
 
 
 }
-/*
-    public Integer getBirthYear() {
-        try {
-            return birthday.getYear();
-        } catch (NullPointerException e) {
-            return null;
-        }
-    }
-    public Integer getBirthMonth() {
-        try {
-            return birthday.getMonthValue();
-        } catch (NullPointerException e) {
-            return null;
-        }
-    }
-    public Integer getBirthDayOfMonth() {
-        try {
-            return birthday.getDayOfMonth();
-        } catch (NullPointerException e) {
-            return null;
-        } 
-    }
-*/
