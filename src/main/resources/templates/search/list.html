@@ -41,16 +41,16 @@
   <div class="container mt-5 mb-5">
 
     <ul class="d-flex flex-wrap">
-      <a style="text-decoration: none;" th:each="f : ${foodList}" th:href="'/menu/'+${f.foodId}" th:title="${f.name}">
+      <a style="text-decoration: none;" th:each="f : ${foodList}" th:href="'/menu/'+${f.foodId}" th:title="${f.foodName}">
         <li class="row border p-3 me-4 mb-3">
           <div class="col-3 p-1">
             <div class="profile_box">
-              <img class="profile" th:src="${f.image}">
+              <img class="profile" th:src="${f.foodImage}">
             </div>
           </div>
           <div class="col-9 p-3 align-middle" style="width: 200px;">
-            <div class="text-muted small" th:text="${f.company.name}">회사이름</div>
-            <p class="text-dark fw-bold" th:text="${f.name}"></p>
+            <div class="text-muted small" th:text="${f.companyName}">회사이름</div>
+            <p class="text-dark fw-bold" th:text="${f.foodName}"></p>
           </div>
         </li>
       </a>

@@ -4,9 +4,8 @@ package com.mukcha.controller;
 import com.mukcha.config.dto.LoginUser;
 import com.mukcha.config.dto.SessionUser;
 import com.mukcha.domain.Search;
-import com.mukcha.repository.CompanyRepository;
-import com.mukcha.repository.FoodRepository;
-import com.mukcha.repository.UserRepository;
+import com.mukcha.service.CompanyService;
+import com.mukcha.service.FoodService;
 import com.mukcha.service.UserService;
 
 import org.springframework.stereotype.Controller;
@@ -20,10 +19,9 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class SearchController {
 
-    private final FoodRepository foodRepository;
-    private final CompanyRepository companyRepository;
-    private final UserRepository userRepository;
     private final UserService userService;
+    private final FoodService foodService;
+    private final CompanyService companyService;
 
 
     @GetMapping(value = "/search")
@@ -35,15 +33,9 @@ public class SearchController {
         if (sessionUser != null) {
             model.addAttribute("loginUser", userService.getSessionUserInfo(sessionUser));
         }
-        model.addAttribute("foodList", 
-            foodRepository.findAll(Search.foodSearching(keyword))
-        );
-        model.addAttribute("companyList", 
-            companyRepository.findAll(Search.companySearching(keyword))
-        );
-        model.addAttribute("userList", 
-            userRepository.findAll(Search.userSearching(keyword))
-        );
+        model.addAttribute("foodList", foodService.findAll(Search.foodSearching(keyword)));
+        model.addAttribute("companyList", companyService.findAll(Search.companySearching(keyword)));
+        model.addAttribute("userList", userService.findAll(Search.userSearching(keyword)));
         model.addAttribute("searchWord", keyword);
         return "search/search";
     }
@@ -57,9 +49,7 @@ public class SearchController {
         if (sessionUser != null) {
             model.addAttribute("loginUser", userService.getSessionUserInfo(sessionUser));
         }
-        model.addAttribute("foodList", 
-            foodRepository.findAll(Search.foodSearching(keyword))
-        );
+        model.addAttribute("foodList", foodService.findAll(Search.foodSearching(keyword)));
         model.addAttribute("searchWord", keyword);
         return "search/list";
     }
@@ -73,9 +63,7 @@ public class SearchController {
         if (sessionUser != null) {
             model.addAttribute("loginUser", userService.getSessionUserInfo(sessionUser));
         }
-        model.addAttribute("companyList", 
-            companyRepository.findAll(Search.companySearching(keyword))
-        );
+        model.addAttribute("companyList", companyService.findAll(Search.companySearching(keyword)));
         model.addAttribute("searchWord", keyword);
         return "search/list";
     }
