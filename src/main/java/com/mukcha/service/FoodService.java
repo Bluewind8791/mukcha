@@ -7,7 +7,6 @@ import com.mukcha.domain.Category;
 import com.mukcha.domain.Company;
 import com.mukcha.domain.ErrorMessage;
 import com.mukcha.domain.Food;
-import com.mukcha.domain.Review;
 import com.mukcha.repository.CompanyRepository;
 import com.mukcha.repository.FoodRepository;
 import com.mukcha.repository.ReviewRepository;
@@ -21,6 +20,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -37,13 +37,7 @@ public class FoodService {
     private final FoodRepository foodRepository;
     private final CompanyRepository companyRepository;
     private final ReviewRepository reviewRepository;
-    private final CompanyService companyService;
 
-
-    public Food save(Food food) {
-        log.info(">>> 메뉴가 생성되었습니다." + food.toString());
-        return foodRepository.save(food);
-    }
 
     public Long save(FoodSaveRequestDto requestDto) {
         Company com = companyRepository.findByName(requestDto.getCompanyName()).orElseThrow(() -> 
@@ -55,7 +49,7 @@ public class FoodService {
     }
 
     public Long update(Long foodId, FoodUpdateRequestDto requestDto) {
-        findFood(foodId).update(
+        findByFoodId(foodId).update(
             requestDto.getFoodName(), 
             requestDto.getFoodImage(),
             Category.valueOf(requestDto.getCategory())
@@ -64,43 +58,32 @@ public class FoodService {
         return foodId;
     }
 
-    // 해당 메뉴의 회사를 수정한다
-    public void editFoodCompany(Long foodId, String companyName) {
-        // 해당 회사와 메뉴가 존재할 때만 메소드 실행
-        companyRepository.findByName(companyName).ifPresent(com -> {
-            findFoodOr(foodId).ifPresent(f -> {
-                f.setCompany(com);
-                save(f);
-                log.info("해당 메뉴의 회사를 변경하였습니다."+f.toString());
-            });
-        });
-    }
-
     // 해당 메뉴를 삭제한다
     @Transactional
     public void deleteFood(Long foodId) {
-        Food targetFood = findFood(foodId);
+        Food targetFood = findByFoodId(foodId);
         // 연결된 리뷰 모두 삭제
         reviewRepository.deleteAllByFoodId(foodId);
         // 연결된 회사의 null 처리
-        companyService.deleteFood(targetFood.getCompany().getCompanyId(), foodId);
+        Long companyId = targetFood.getCompany().getCompanyId();
+        Company company = companyRepository.findById(companyId).orElseThrow(
+            () -> new IllegalArgumentException(ErrorMessage.COMPANY_NOT_FOUND.getMessage()+companyId)
+        );
+        List<Food> originFoods = foodRepository.findAllByCompany(company);
+        // 기존 food 리스트에 삭제하려는 food가 들어있다면
+        if (originFoods.contains(targetFood)) {
+            originFoods.remove(targetFood);
+            companyRepository.save(company);
+        }
+        // repository 에서 삭제
         foodRepository.delete(targetFood);
         log.info("해당 메뉴를 삭제하였습니다." + foodId);
     }
 
-    // 해당 회사의 메뉴 이름과 같은 메뉴가 있는지 확인
-    public boolean isPresentFindByFoodNameAndCompanyName(String foodName, String companyName) {
-        boolean isPresent;
-        if (findByNameOr(foodName).isPresent()) {
-            if (findByNameOr(foodName).get().getCompany().getName().equals(companyName))
-                isPresent = true;
-        }
-        isPresent = false;
-        return isPresent;
-    }
+
 
     @Transactional(readOnly = true)
-    public Food findFood(Long foodId) {
+    public Food findByFoodId(Long foodId) {
         return foodRepository.findById(foodId).orElseThrow(() -> 
             new IllegalArgumentException(ErrorMessage.MENU_NOT_FOUND.getMessage() + foodId)
         );
@@ -133,39 +116,16 @@ public class FoodService {
         return foodRepository.findAllByCategory(category);
     }
 
-    @Transactional(readOnly = true)
-    public List<Food> findAll() {
-        return foodRepository.findAll();
-    }
-
-    // 최신순 기준 10개 메뉴 Dto로 가져오기
-    @Transactional(readOnly = true)
-    public List<FoodResponseDto> findFoodTopTenNewestIntoDto() {
-        List<Food> targetFoodList = findAll();
-        if (targetFoodList.size() > 2) { // sort
-            Collections.sort(
-                targetFoodList, Comparator.comparing(Food::getCreatedAt).reversed()
-            );
-        }
-        // get top 10
-        List<Food> topTenFoods = targetFoodList.stream().limit(10).collect(Collectors.toList());
-        List<FoodResponseDto> dtos = new ArrayList<>();
-        topTenFoods.forEach(food -> {
-            FoodResponseDto dto = new FoodResponseDto(food);
-            dtos.add(dto);
-        });
-        return dtos;
-    }
-
     // 해당 메뉴의 정보
     @Transactional(readOnly = true)
-    public FoodResponseDto findFoodIntoDto(Long foodId) {
-        return new FoodResponseDto(findFood(foodId));
+    public FoodResponseDto findFood(Long foodId) {
+        return new FoodResponseDto(findByFoodId(foodId));
     }
-
+    
     // 모든 메뉴를 DTO로 가져오기
-    public List<FoodResponseDto> findAllIntoDto() {
-        List<Food> foodList = findAll();
+    @Transactional(readOnly = true)
+    public List<FoodResponseDto> findAll() {
+        List<Food> foodList = foodRepository.findAll();
         Collections.reverse(foodList); // 최신순 정렬
         return transDtoList(foodList);
     }
@@ -173,7 +133,7 @@ public class FoodService {
     // 평균 점수를 기준으로 가장 높은 10개의 메뉴를 가져오기
     @Transactional(readOnly = true)
     public List<FoodResponseDto> findTopTenOrderByScore() {
-        List<FoodResponseDto> dtos = findAllIntoDto();
+        List<FoodResponseDto> dtos = findAll();
         // sort
         if (dtos.size() > 2) {
             Collections.sort(
@@ -187,38 +147,13 @@ public class FoodService {
     // 가장 최신의 10개 메뉴를 가져온다
     @Transactional(readOnly = true)
     public List<FoodResponseDto> findTopTenNewest() {
-        List<Food> allFoodList = findAll();
+        List<Food> allFoodList = foodRepository.findAll();
         // sort
         if (allFoodList.size() > 2) {
             Collections.sort(allFoodList, Comparator.comparing(Food::getCreatedAt).reversed());
         }
         // 가장 최신 10개의 메뉴를 가져오고 dto로 변환
         return transDtoList(allFoodList.stream().limit(10).collect(Collectors.toList()));
-    }
-
-    // method - Food 리스트를 dto 리스트로 변환한다
-    private List<FoodResponseDto> transDtoList(List<Food> foodList) {
-        List<FoodResponseDto> dtos = new ArrayList<>();
-        foodList.forEach(food -> {
-            FoodResponseDto dto = new FoodResponseDto(food);
-            dtos.add(dto);
-        });
-        return dtos;
-    }
-
-
-    // 해당 메뉴의 평균 점수를 계산한다
-    public double getAverageScoreByFoodId(Long foodId) {        
-        List<Review> reviewList = reviewRepository.findAllByFoodId(foodId);
-        List<Integer> scoreList = reviewList.stream().map(
-            r -> r.getScore().value).collect(Collectors.toList()
-        );
-        if (scoreList.isEmpty()) {
-            return 0;
-        }
-        int total = scoreList.stream().mapToInt(Integer::intValue).sum();
-        float avgScore = (total / (float)scoreList.size());
-        return Math.round(avgScore*100)/100.0;
     }
 
     // 각 회사별 메뉴들을 카테고리 별로 가져온다
@@ -236,6 +171,54 @@ public class FoodService {
         return foodMap;
     }
 
+    // 메뉴 키워드 검색
+    public List<FoodResponseDto> findAll(Specification<Food> spec) {
+        return transDtoList(foodRepository.findAll(spec));
+    }
+
+    // 해당 회사의 모든 메뉴 가져오기
+    public List<FoodResponseDto> findAllByCompanyId(Long companyId) {
+        return transDtoList(foodRepository.findAllByCompany( companyRepository.findById(companyId).orElseThrow(() -> 
+            new IllegalArgumentException(ErrorMessage.COMPANY_NOT_FOUND.getMessage())
+        )));
+    }
+
+    // 해당 회사의 모든 메뉴 리스트를 카테고리 별로 매핑하여 가져온다
+    public Map<String, List<FoodResponseDto>> findAllFoodsByCategory(Long companyId) {
+        List<FoodResponseDto> foods = findAllByCompanyId(companyId);
+        Map<String, List<FoodResponseDto>> map = new HashMap<>();
+        for (Category ctg : Category.values()) {
+            map.put(ctg.name(), foods
+                .stream()
+                .filter(f -> f.getCategory() == ctg.name())
+                .collect(Collectors.toList())
+            );
+        }
+        return map;
+    }
+
+
+
+    // method - Food 리스트를 dto 리스트로 변환한다
+    private List<FoodResponseDto> transDtoList(List<Food> foodList) {
+        List<FoodResponseDto> dtos = new ArrayList<>();
+        foodList.forEach(food -> {
+            FoodResponseDto dto = new FoodResponseDto(food);
+            dtos.add(dto);
+        });
+        return dtos;
+    }
+
+    // 해당 회사의 메뉴 이름과 같은 메뉴가 있는지 확인
+    public boolean isPresentFindByFoodNameAndCompanyName(String foodName, String companyName) {
+        boolean isPresent;
+        if (findByNameOr(foodName).isPresent()) {
+            if (findByNameOr(foodName).get().getCompany().getName().equals(companyName))
+                isPresent = true;
+        }
+        isPresent = false;
+        return isPresent;
+    }
 
 
 }

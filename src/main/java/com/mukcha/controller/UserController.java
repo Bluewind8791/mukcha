@@ -31,7 +31,7 @@ public class UserController {
         if (sessionUser != null) {
             SessionUserResponseDto sUser = userService.getSessionUserInfo(sessionUser);
             model.addAttribute("loginUser", sUser);
-            UserResponseDto user = userService.findByUserIdIntoDto(sUser.getUserId());
+            UserResponseDto user = userService.findByUserId(sUser.getUserId());
             model.addAttribute("user", user);
         }
         return "user/editForm";

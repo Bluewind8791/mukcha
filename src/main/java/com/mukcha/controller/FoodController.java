@@ -43,14 +43,14 @@ public class FoodController {
             if (reviewService.isUserWriteReviewOnFood(foodId, user.getUserId())) {
                 model.addAttribute("isReviewed", "true");
                 model.addAttribute("writtenReview", 
-                    reviewService.findByFoodIdAndUserIdIntoDto(foodId, user.getUserId())
+                    reviewService.findByFoodIdAndUserId(foodId, user.getUserId())
                 );
             } else { // 로그인 한 유저가 리뷰를 적지 않았다면
                 model.addAttribute("isReviewed", "false");
             }
         }
         // 해당 메뉴의 정보
-        model.addAttribute("food", foodService.findFoodIntoDto(foodId));
+        model.addAttribute("food", foodService.findFood(foodId));
         // paging 처리한 해당 메뉴의 모든 리뷰 보기
         model.addAttribute("reviewList", 
             reviewService.findAllByFoodIdOrderByCreatedAtDesc(foodId, pageNum, size)
@@ -64,8 +64,8 @@ public class FoodController {
         if (sessionUser != null) {
             model.addAttribute("loginUser", userService.getSessionUserInfo(sessionUser));
         }
-        model.addAttribute("foodName", foodService.findFood(foodId).getName()); // 해당 메뉴 이름
-        model.addAttribute("reviewList", reviewService.findAllByFoodIdIntoDto(foodId)); // 메뉴의 모든 리뷰 리스트
+        model.addAttribute("foodName", foodService.findByFoodId(foodId).getName()); // 해당 메뉴 이름
+        model.addAttribute("reviewList", reviewService.findAllByFoodId(foodId)); // 메뉴의 모든 리뷰 리스트
         return "food/reviews";
     }
 

@@ -34,10 +34,6 @@ public class ReviewService {
     private final FoodService foodService;
 
 
-    public Review save(Review review) {
-        return reviewRepository.save(review);
-    }
-
     // 코멘트와 점수 저장 및 수정
     public Long saveReview(Long foodId, String userEmail, ReviewSaveRequestDto dto) {
         try {
@@ -48,8 +44,8 @@ public class ReviewService {
             return review.getReviewId();
         } catch (IllegalArgumentException e) {
             Review savedReview = dto.toEntity();
-            savedReview.setFoodAndUser(userService.findByEmail(userEmail), foodService.findFood(foodId));
-            save(savedReview);
+            savedReview.setFoodAndUser(userService.findByEmail(userEmail), foodService.findByFoodId(foodId));
+            reviewRepository.save(savedReview);
             log.info(">>> 리뷰가 생성되었습니다. "+savedReview);
             return savedReview.getReviewId();
         }
@@ -69,7 +65,8 @@ public class ReviewService {
         LocalDate eatenDateLD = LocalDate.of(Integer.parseInt(date[0]), Integer.parseInt(date[1]), Integer.parseInt(date[2]));
         Review review = findByFoodIdAndEmail(foodId, email);
         review.setEatenDate(eatenDateLD);
-        return save(review);
+        log.info(">>> 먹은 날짜를 기록하였습니다. "+eatenDate);
+        return reviewRepository.save(review);
     }
 
     // Review 삭제
@@ -80,12 +77,10 @@ public class ReviewService {
         // Food 와 User 와의 관계를 null 시킨다.
         review.setUserToNull();
         review.setFoodToNull();
-        save(review);
+        reviewRepository.save(review);
         reviewRepository.deleteById(review.getReviewId());
         log.info(">>> 해당 리뷰가 삭제 처리되었습니다."+review.toString());
     }
-
-
 
 
 
@@ -105,46 +100,17 @@ public class ReviewService {
 
     // 해당 음식의 모든 리뷰 찾기
     @Transactional(readOnly = true)
-    public List<Review> findAllByFoodId(Long foodId) {
-        return reviewRepository.findAllByFoodId(foodId);
-    }
-
-    @Transactional(readOnly = true)
-    public List<ReviewResponseDto> findAllByFoodIdIntoDto(Long foodId) {
+    public List<ReviewResponseDto> findAllByFoodId(Long foodId) {
         return transDtoList(reviewRepository.findAllByFoodId(foodId));
     }
 
     // 유저 아이디와 음식 아이디를 통하여 리뷰 찾기
-    public Review findByFoodIdAndUserId(Long foodId, Long userId) {
-        List<Review> foodReviews = findAllByFoodId(foodId);
-        return foodReviews.stream().filter(
-            r -> r.getUser().getUserId().equals(userId)).findFirst().orElseThrow(
-                () -> new IllegalArgumentException(ErrorMessage.REVIEW_NOT_FOUND.getMessage())
-            );
-    }
-
-    // 유저 아이디와 음식 아이디를 통하여 리뷰 찾기
-    public ReviewResponseDto findByFoodIdAndUserIdIntoDto(Long foodId, Long userId) {
+    public ReviewResponseDto findByFoodIdAndUserId(Long foodId, Long userId) {
         // 해당 메뉴의 리뷰 리스트
-        List<Review> foodReviews = findAllByFoodId(foodId);
+        List<Review> foodReviews = reviewRepository.findAllByFoodId(foodId);
         Review reviewFilterByUserId = foodReviews.stream().filter(
             r -> r.getUser().getUserId().equals(userId)).findFirst().get();
         return new ReviewResponseDto(reviewFilterByUserId);
-    }
-
-    // 해당 유저의 모든 리뷰 찾기
-    @Transactional(readOnly = true)
-    public List<Review> findAllByUserId(Long userId) {
-        return reviewRepository.findAllByUserId(userId);
-    }
-
-    @Transactional(readOnly = true)
-    public List<ReviewResponseDto> findAllByUserIdIntoDto(Long userId) {
-        List<ReviewResponseDto> dtoList = new ArrayList<>();
-        reviewRepository.findAllByUserId(userId).forEach(r -> {
-            dtoList.add(new ReviewResponseDto(r));
-        });
-        return dtoList;
     }
 
     // 해당 메뉴의 모든 리뷰를 페이징 처리하여 가져온다
@@ -164,7 +130,7 @@ public class ReviewService {
     // 해당 유저가 쓴 리뷰 중, 해당 카테고리의 모든 리뷰를 가져온다
     @Transactional(readOnly = true)
     public List<ReviewResponseDto> findAllByCategoryAndUserId(Long userId, Category category) {
-        List<Review> reviews = findAllByUserId(userId);
+        List<Review> reviews = reviewRepository.findAllByUserId(userId);
         List<Review> targeList = reviews.stream().filter(r -> r.getFood().getCategory() == category).collect(Collectors.toList());
         return transDtoList(targeList);
     }
@@ -172,13 +138,13 @@ public class ReviewService {
     // 해당 유저의 리뷰 갯수를 카테고리 별로 가져오기
     @Transactional(readOnly = true)
     public CategoryCountResponseDto getCountByCategoryAndUserId(Long userId) {
-        return new CategoryCountResponseDto(findAllByUserId(userId));
+        return new CategoryCountResponseDto(reviewRepository.findAllByUserId(userId));
     }
 
     // 해당 유저가 해당 메뉴의 리뷰를 적었는지 확인
     public boolean isUserWriteReviewOnFood(Long foodId, Long userId) {
         // 해당 메뉴의 리뷰 리스트
-        List<Review> foodReviews = findAllByFoodId(foodId);
+        List<Review> foodReviews = reviewRepository.findAllByFoodId(foodId);
         if (foodReviews.stream().anyMatch(r -> r.getUser().getUserId().equals(userId))) {
             return true;
         } else {

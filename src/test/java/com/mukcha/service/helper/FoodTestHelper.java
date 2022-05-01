@@ -6,7 +6,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import com.mukcha.domain.Category;
 import com.mukcha.domain.Company;
 import com.mukcha.domain.Food;
-import com.mukcha.service.FoodService;
+import com.mukcha.repository.FoodRepository;
 
 import lombok.RequiredArgsConstructor;
 
@@ -14,7 +14,7 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class FoodTestHelper {
 
-    private final FoodService foodService;
+    private final FoodRepository foodRepository;
 
     public Food makeFood(String name, Company company, Category category, String image) {
         return Food.builder()
@@ -26,7 +26,7 @@ public class FoodTestHelper {
     }
 
     public Food createFood(String name, Company company, Category category, String image) {
-        return foodService.save(makeFood(name, company, category, image));
+        return foodRepository.save(makeFood(name, company, category, image));
     }
 
     public void assertFood(Food food, String name, Company company, Category category, String image) {

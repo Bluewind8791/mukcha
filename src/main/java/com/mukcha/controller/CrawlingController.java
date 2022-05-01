@@ -8,6 +8,7 @@ import com.mukcha.domain.Category;
 import com.mukcha.domain.Company;
 import com.mukcha.domain.ErrorMessage;
 import com.mukcha.domain.Food;
+import com.mukcha.repository.FoodRepository;
 import com.mukcha.service.CompanyService;
 import com.mukcha.service.FoodService;
 
@@ -30,6 +31,7 @@ public class CrawlingController {
 
     private final FoodService foodService;
     private final CompanyService companyService;
+    private final FoodRepository foodRepository;
 
     @GetMapping(value = "/crawling")
     public String crawling() {
@@ -427,7 +429,7 @@ public class CrawlingController {
         } else {
             food.setCategory(Category.SIDEMENU);
         }
-        foodService.save(food);
+        foodRepository.save(food);
     }
 
 

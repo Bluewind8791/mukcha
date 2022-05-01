@@ -6,6 +6,7 @@ import com.mukcha.config.dto.LoginUser;
 import com.mukcha.config.dto.SessionUser;
 import com.mukcha.domain.Category;
 import com.mukcha.service.CompanyService;
+import com.mukcha.service.FoodService;
 import com.mukcha.service.UserService;
 
 import org.springframework.stereotype.Controller;
@@ -22,6 +23,7 @@ public class CompanyController {
 
     private final CompanyService companyService;
     private final UserService userService;
+    private final FoodService foodService;
 
     // VIEW - 각 회사 페이지
     @GetMapping(value = "/company/{companyId}")
@@ -34,11 +36,11 @@ public class CompanyController {
             model.addAttribute("loginUser", userService.getSessionUserInfo(sessionUser));
         }
         // 해당 회사 정보
-        model.addAttribute("company", companyService.findCompanyIntoDto(companyId));
+        model.addAttribute("company", companyService.findCompany(companyId));
         // 모든 카테고리
         model.addAttribute("categoryList", List.of(Category.values()));
         // 해당 회사의 모든 메뉴 리스트
-        model.addAttribute("foodList", companyService.findAllFoodsByCategory(companyId));
+        model.addAttribute("foodList", foodService.findAllFoodsByCategory(companyId));
         return "company/detail";
     }
 

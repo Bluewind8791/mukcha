@@ -34,15 +34,15 @@ public class WithTest {
 
     protected void prepareTest() {
         // service
-        this.foodService = new FoodService(foodRepository, companyRepository, reviewRepository, companyService);
+        this.foodService = new FoodService(foodRepository, companyRepository, reviewRepository);
         this.companyService = new CompanyService(companyRepository, foodRepository);
         this.userService = new UserService(userRepository);
         this.reviewService = new ReviewService(reviewRepository, userService, foodService);
 
         //test helper
-        this.userTestHelper = new UserTestHelper(userService);
-        this.reviewTestHelper = new ReviewTestHelper(reviewService);
-        this.foodTestHelper = new FoodTestHelper(this.foodService);
+        this.userTestHelper = new UserTestHelper(this.userService);
+        this.reviewTestHelper = new ReviewTestHelper(this.reviewRepository);
+        this.foodTestHelper = new FoodTestHelper(this.foodRepository);
         this.companyTestHelper = new CompanyTestHelper(this.companyService);
     }
 }

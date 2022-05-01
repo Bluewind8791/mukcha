@@ -41,9 +41,9 @@ public class AdminController {
             log.info(">>> 관리자 페이지에 진입하였습니다. " + user.getUserEmail());
         }
         // 모든 회사 리스트
-        model.addAttribute("companyList", companyService.findAllIntoDto());
+        model.addAttribute("companyList", companyService.findAll());
         // 최근 메뉴 리스트 10개
-        model.addAttribute("foodList", foodService.findFoodTopTenNewestIntoDto());
+        model.addAttribute("foodList", foodService.findTopTenNewest());
         // 모든 카테고리 리스트
         List<Category> categoryList = List.of(Category.values());
         model.addAttribute("categoryList", categoryList);
@@ -61,9 +61,9 @@ public class AdminController {
             model.addAttribute("loginUser", userService.getSessionUserInfo(sessionUser));
         }
         // 해당 회사의 이름
-        model.addAttribute("thisCompanyName", companyService.findCompany(companyId).getName());
+        model.addAttribute("thisCompanyName", companyService.findByCompanyId(companyId).getName());
         // 해당 회사의 모든 메뉴들
-        model.addAttribute("foodList", companyService.findAllFoodsIntoDto(companyId));
+        model.addAttribute("foodList", foodService.findAllByCompanyId(companyId));
         // 모든 카테고리 리스트
         List<Category> categoryList = List.of(Category.values());
         model.addAttribute("categoryList", categoryList);
@@ -80,9 +80,9 @@ public class AdminController {
         List<Category> categoryList = List.of(Category.values());
         model.addAttribute("categoryList", categoryList);
         // 모든 메뉴 리스트
-        model.addAttribute("foodList", foodService.findAllIntoDto());
+        model.addAttribute("foodList", foodService.findAll());
         // 모든 회사 리스트
-        model.addAttribute("companyList", companyService.findAllIntoDto());
+        model.addAttribute("companyList", companyService.findAll());
         return "admin/adminMenuList";
     }
 

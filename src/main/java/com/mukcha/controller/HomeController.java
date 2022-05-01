@@ -60,7 +60,7 @@ public class HomeController {
         // Category List
         model.addAttribute("categoryList", List.of(Category.values()));
         // 해당 유저의 정보
-        model.addAttribute("user", userService.findByUserIdIntoDto(userId));
+        model.addAttribute("user", userService.findByUserId(userId));
         // 해당 유저가 각 카테고리별로 적은 리뷰의 개수
         model.addAttribute("reviewCount", reviewService.getCountByCategoryAndUserId(userId));
         return "user/userPage";

@@ -106,13 +106,16 @@ public class ReviewServiceTest extends WithTest {
     @Test
     @DisplayName("5. 해당 음식의 모든 리뷰를 찾는다")
     void test_5() {
-        foodTestHelper.createFood("ReviewTestFood2", company, Category.HAMBURGER, "");
-        Food food1 = foodService.findByNameOr("ReviewTestFood").get();
-        Food food2 = foodService.findByNameOr("ReviewTestFood2").get();
-        reviewTestHelper.createReview(food1, user);
-        reviewTestHelper.createReview(food2, user);
-        List<Review> reviews = reviewService.findAllByFoodId(food1.getFoodId());
-        assertEquals("ReviewTestFood", reviews.get(0).getFood().getName());
+        // given
+        reviewTestHelper.createReview(food, user);
+        User user2 = userTestHelper.createUser("email2", "nickname2");
+        reviewTestHelper.createReview(food, user2);
+        User user3 = userTestHelper.createUser("email3", "nickname3");
+        reviewTestHelper.createReview(food, user3);
+        // when
+        List<ReviewResponseDto> reviews = reviewService.findAllByFoodId(food.getFoodId());
+        // then
+        assertEquals(3, reviews.size());
     }
 
     @Test
@@ -135,20 +138,6 @@ public class ReviewServiceTest extends WithTest {
     }
 
     @Test
-    @DisplayName("7. 해당 유저의 모든 리뷰 찾기")
-    void test_7() {
-        // set
-        reviewTestHelper.createReview(food, user);
-        reviewTestHelper.createReview(food, user);
-        reviewTestHelper.createReview(food, user);
-        reviewTestHelper.createReview(food, user);
-        reviewTestHelper.createReview(food, user);
-        
-        List<Review> reviews = reviewService.findAllByUserId(user.getUserId());
-        System.out.println(reviews);
-    }
-
-    @Test
     @DisplayName("8. 각 카테고리별 해당 유저의 모든 리뷰 수 가져오기")
     void test_8() {
         reviewTestHelper.createReview(food, user);
@@ -166,25 +155,6 @@ public class ReviewServiceTest extends WithTest {
         assertEquals(0, categoryDto.getBurgerReviewCount());
         assertEquals(0, categoryDto.getPizzaReviewCount());
     }
-
-
-    @Test
-    @DisplayName("9. 유저가 해당 메뉴에 리뷰를 썼는지 알아본다.")
-    void test_9() {
-        // given - user 는 리뷰를 쓰고 user2는 리뷰를 쓰지 않음.
-        User user2 = userTestHelper.createUser("test2@user.test", "test2");
-        reviewTestHelper.createReview(food, user);
-
-        // when
-        // 'user'의 리뷰를 찾으면 not null 이고 어떠한 exception도 없어야 한다.
-        assertDoesNotThrow(() -> reviewService.findByFoodIdAndUserId(food.getFoodId(), user.getUserId()));
-        assertNotNull(reviewService.findByFoodIdAndUserId(food.getFoodId(), user.getUserId()));
-        // then
-        assertThrows(IllegalArgumentException.class, () -> 
-            reviewService.findByFoodIdAndUserId(food.getFoodId(), user2.getUserId())    
-        );
-    }
-
 
     @Test
     @DisplayName("해당 유저가 해당 메뉴의 리뷰를 적었는지 확인")

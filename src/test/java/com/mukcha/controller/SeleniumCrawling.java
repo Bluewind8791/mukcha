@@ -14,6 +14,7 @@ import javax.imageio.ImageIO;
 import com.mukcha.domain.Category;
 import com.mukcha.domain.Company;
 import com.mukcha.domain.Food;
+import com.mukcha.repository.FoodRepository;
 import com.mukcha.service.CompanyService;
 import com.mukcha.service.FoodService;
 import com.mukcha.service.S3Uploader;
@@ -39,6 +40,7 @@ public class SeleniumCrawling {
     @Autowired private S3Uploader s3Uploader;
     @Autowired private CompanyService companyService;
     @Autowired private FoodService foodService;
+    @Autowired private FoodRepository foodRepository;
 
     public static final String WEB_DRIVER_ID = "webdriver.chrome.driver"; // 드라이버 ID
     public static final String WEB_DRIVER_PATH = "D:\\ChromeDriver\\chromedriver.exe"; // 드라이버 경로 D:\ChromeDriver
@@ -237,7 +239,7 @@ public class SeleniumCrawling {
                 .category(category)
                 .build()
         ;
-        foodService.save(food);
+        foodRepository.save(food);
         log.info(">>> 메뉴<"+food.getName()+"> 이 DB에 생성되었습니다." + food.toString());
     }
 

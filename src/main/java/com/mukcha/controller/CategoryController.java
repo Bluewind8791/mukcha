@@ -36,7 +36,7 @@ public class CategoryController {
         Category thisCategory = Category.valueOf(categoryName);
         model.addAttribute("category", thisCategory);
         // 모든 회사 리스트
-        model.addAttribute("companyList", companyService.findAllIntoDto());
+        model.addAttribute("companyList", companyService.findAll());
         // 해당 카테고리의 메뉴를 런칭한 모든 회사의 메뉴들
         model.addAttribute("foodList", 
             foodService.findAllByCategorySortByCompany(thisCategory)
