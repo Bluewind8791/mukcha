@@ -1,6 +1,7 @@
-# MUKCHA [![Build Status](https://app.travis-ci.com/Bluewind8791/mukcha.svg?branch=main)](https://app.travis-ci.com/Bluewind8791/mukcha)
+# MUKCHA 
+<!-- [![Build Status](https://app.travis-ci.com/Bluewind8791/mukcha.svg?branch=main)](https://app.travis-ci.com/Bluewind8791/mukcha) -->
 
-### [라이브 웹사이트 바로가기](http://ec2-3-39-16-219.ap-northeast-2.compute.amazonaws.com/)
+라이브 웹사이트 [바로가기](http://ec2-3-39-16-219.ap-northeast-2.compute.amazonaws.com/)
 
 
 "이 집은 이건 맛있는데 저건 맛이 별로야... 그런데 왜 메뉴별로 평가할 수 없는거지?"  
@@ -33,9 +34,10 @@
 
 ### SERVER
 
-- AWS EC2를 사용하여 서버를 구축하고 배포하고 있습니다.
+- AWS EC2를 사용하여 서버를 구축하고 24시간 라이브 서비스를 제공하고 있습니다.
 - DBMS는 MYSQL을 사용하였으며, 현재는 AWS RDS를 사용하여 AWS EC2 서버와 연결하여 서비스하고 있습니다.
-- S3, Travis CI와 AWS CodeDeploy를 사용하여 Git에 수정된 코드가 push되면 자동 배포되도록 구축하였습니다.
+- S3, ~~Travis CI~~와 AWS CodeDeploy를 사용하여 Github에 수정된 코드가 push되면 자동 배포되도록 구축하였습니다.
+  - **Travis를 Jenkins로 변경하는 작업을 진행하고 있습니다.**
 - Nginx를 사용하여 배포중에 서비스가 끊기지 않도록 무중단 배포를 구현하였습니다.
 
 
@@ -43,13 +45,32 @@
 
 ## 사용 기술
 
-- Spring Framework
-- Spring Boot
-- Spring Security
-- JPA
-- Bootstrap 5
-- Thymeleaf
-- MySQL
-- Travis CI
-- AWS CodeDeploy
-- Nginx
+<div align="center">
+  <p>
+      <img alt="spring"
+        src="https://img.shields.io/badge/-Spring-6DB33F?style=for-the-badge&logo=spring&logoColor=white" />
+      <img alt="spring-boot"
+        src="https://img.shields.io/badge/-SpringBoot-6DB33F?style=for-the-badge&logo=springboot&logoColor=white" />
+      <img alt="spring-security" src="https://img.shields.io/badge/-SpringSecurity-6DB33F?style=for-the-badge&logo=springsecurity&logoColor=white" />
+      <img alt="jpa" src="https://img.shields.io/badge/-JPA-6DB33F?style=for-the-badge" />
+      <br>
+      <img alt="aws" src="https://img.shields.io/badge/-AWS-232F3E?style=for-the-badge&logo=amazonaws&logoColor=white" />
+      <img alt="NGINX" src="https://img.shields.io/badge/-NGINX-009639?style=for-the-badge&logo=NGINX&logoColor=white" />
+      <img alt="MySQL" src="https://img.shields.io/badge/-MySQL-4479A1?style=for-the-badge&logo=MySQL&logoColor=white" />
+      <img alt="Linux" src="https://img.shields.io/badge/-Linux-FCC624?style=for-the-badge&logo=Linux&logoColor=white" />
+      <img alt="travis" src="https://img.shields.io/badge/-TravisCI-3EAAAF?style=for-the-badge&logo=travisci&logoColor=white" />
+      <!-- <img alt="Jenkins" src="https://img.shields.io/badge/-Jenkins-D24939?style=for-the-badge&logo=Jenkins&logoColor=white" /> -->
+      <!-- <img alt="docker" src="https://img.shields.io/badge/-Docker-2496ED?style=for-the-badge&logo=docker&logoColor=white" /> -->
+      <br>
+      <img alt="html" src="https://img.shields.io/badge/-HTML5-E34F26?style=for-the-badge&logo=html5&logoColor=white" />
+      <img alt="Thymeleaf" src="https://img.shields.io/badge/-Thymeleaf-005F0F?style=for-the-badge&logo=Thymeleaf&logoColor=white" />
+      <img alt="Bootstrap" src="https://img.shields.io/badge/-Bootstrap-7952B3?style=for-the-badge&logo=Bootstrap&logoColor=white" />
+  </p>
+</div>
+
+---
+
+## 느낀 점
+
+- 인터넷 강의를 따라 만드는 것이 아닌, 제가 사용하고 싶은 서비스를 직접 부딪히며 만들어 보면서 실제로 해당 기술들을 어떻게 사용하는지 왜 필요한지를 알 수 있었습니다.
+- 또한 백엔드 개발자는 백엔드만 할 줄 알면 된다고 생각했었는데, 이 프로젝트를 통하여 전반적인 넓은 이해가 필요하다는 것을 알게 되었습니다.
