@@ -56,4 +56,10 @@ jobs:
         run: aws s3 cp --region ${{ env.AWS_REGION }} ./$GITHUB_SHA.zip s3://$S3_BUCKET_NAME/mukcha.zip
 
       - name: Code Deploy
-        run: aws deploy create-deployment --application-name $CODEDEPLOY_NAME --deployment-config-name CodeDeployDefault.AllAtOnce --deployment-group-name $CODEDEPLOY_GROUP --s3-location bucket=$S3_BUCKET_NAME,bundleType=zip,key=mukcha.zip
+        run: |
+          aws deploy create-deployment \
+          --application-name $CODEDEPLOY_NAME \
+          --deployment-config-name \
+          CodeDeployDefault.AllAtOnce \
+          --deployment-group-name $CODEDEPLOY_GROUP \
+          --s3-location bucket=$S3_BUCKET_NAME,bundleType=zip,key=mukcha.zip
