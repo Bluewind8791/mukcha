@@ -16,6 +16,6 @@ then
 else
   # # Nginx에 연결되어 있지는 않지만 현재 실행 중인 jar 를 Kill 합니다.
   echo ">>> kill -15 $IDLE_PID"
-  kill -15 ${IDLE_PID}
+  sudo kill -15 ${IDLE_PID}
   sleep 5
 fi
