@@ -36,11 +36,8 @@ jobs:
         env:
           LARGE_SECRET_PASSPHRASE: ${{ secrets.LARGE_SECRET_PASSPHRASE }}
 
-      # This command is just an example to show your secret being printed
-      # Ensure you remove any print statements of your secrets. GitHub does
-      # not hide secrets that use this workaround.
-      - name: Test printing your secret (Remove this step in production)
-        run: cat ./src/main/resources/my_secret.json
+      # - name: Test printing your secret (Remove this step in production)
+      #   run: cat ./src/main/resources/my_secret.json
 
       - name: Setup JDK 11
         uses: actions/setup-java@v3
