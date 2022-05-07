@@ -42,7 +42,7 @@ jobs:
         shell: bash
         
       - name: Make zip file
-        run: zip -r ./mukcha.zip .
+        run: zip -r ./$GITHUB_SHA.zip .
         shell: bash
       
       - name: Configure AWS credentials
@@ -53,7 +53,7 @@ jobs:
           aws-region: ${{ env.AWS_REGION }}
       
       - name: Upload to S3
-        run: aws s3 cp --region ${{ env.AWS_REGION }} ./$GITHUB_SHA.zip s3://$S3_BUCKET_NAME/$GITHUB_SHA.zip
+        run: aws s3 cp --region ${{ env.AWS_REGION }} ./$GITHUB_SHA.zip s3://$S3_BUCKET_NAME/mukcha.zip
 
       - name: Code Deploy
         run: aws deploy create-deployment --application-name $CODEDEPLOY_NAME --deployment-config-name CodeDeployDefault.AllAtOnce --deployment-group-name $CODEDEPLOY_GROUP --s3-location bucket=$S3_BUCKET_NAME,bundleType=zip,key=$GITHUB_SHA.zip
