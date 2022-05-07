@@ -1,36 +1,59 @@
-# This is a basic workflow to help you get started with Actions
+# workflow의 이름
+name: github-actions
 
-name: CI
-
-# Controls when the workflow will run
+# 해당 workflow가 언제 실행될 것인지에 대한 트리거를 지정
 on:
-  # Triggers the workflow on push or pull request events but only for the main branch
+  # main branch에 대한 push 나 pull request 이벤트를 트리거로 지정
   push:
     branches: [ main ]
   pull_request:
     branches: [ main ]
 
-  # Allows you to run this workflow manually from the Actions tab
+  # 수동으로 해당 workflow 실행 지정
   workflow_dispatch:
 
-# A workflow run is made up of one or more jobs that can run sequentially or in parallel
+# 현재 스크립트에서 사용할 환경변수를 정의하여 사용
+env:
+  S3_BUCKET_NAME: bluewind-bucket
+  AWS_REGION: ap-northeast-2
+  CODEDEPLOY_NAME: springboot-webservice
+  CODEDEPLOY_GROUP: springboot-webservice-group
+
 jobs:
-  # This workflow contains a single job called "build"
   build:
-    # The type of runner that the job will run on
     runs-on: ubuntu-latest
 
-    # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
-      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
-      - uses: actions/checkout@v3
+      - name: Checkout
+        uses: actions/checkout@v3
 
-      # Runs a single command using the runners shell
-      - name: Run a one-line script
-        run: echo Hello, world!
+      - name: Setup JDK 11
+        uses: actions/setup-java@v3
+        with:
+          java-version: '11'
+          distribution: 'temurin'
 
-      # Runs a set of commands using the runners shell
-      - name: Run a multi-line script
-        run: |
-          echo Add other actions to build,
-          echo test, and deploy your project.
+      - name: Grant execute permission for gradlew
+        run: chmod +x ./gradlew
+        shell: bash
+      
+      - name: Build with Gradle
+        run: ./gradlew build -x test
+        shell: bash
+        
+      - name: Make zip file
+        run: zip -r ./mukcha.zip .
+        shell: bash
+      
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ env.AWS_REGION }}
+      
+      - name: Upload to S3
+        run: aws s3 cp --region ${{ env.AWS_REGION }} ./$GITHUB_SHA.zip s3://$S3_BUCKET_NAME/$GITHUB_SHA.zip
+
+      - name: Code Deploy
+        run: aws deploy create-deployment --application-name $CODEDEPLOY_NAME --deployment-config-name CodeDeployDefault.AllAtOnce --deployment-group-name $CODEDEPLOY_GROUP --s3-location bucket=$S3_BUCKET_NAME,bundleType=zip,key=$GITHUB_SHA.zip

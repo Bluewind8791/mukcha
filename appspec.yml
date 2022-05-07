@@ -1,19 +1,9 @@
-version: 0.0 # CodeDeploy 버전
+version: 0.0
 os: linux
 files:
-  - source:  / # CodeDeploy에서 전달해 준 파일 중 destination으로 이동시킬 대상을 지정. (/)는 전체를 말합니다.
-    destination: /home/ec2-user/jenkins
-    # destination: /home/ec2-user/app/nonstop/mukcha/  # EC2 내부 배포 할 위치
-    overwrite: yes # 덮어쓰기
-
-hooks:
-  AfterInstall: # 배포가 끝나면 아래 명령어를 실행
-    - location: execute-deploy.sh
-      timeout: 60
-  # ApplicationStart: # ApplicationStart 단계에서 해당 파일을 실행
-    # - location: scripts/deploy.sh
-    #   timeout: 60
-    #   runas: ec2-user
+  - source:  /
+    destination: /home/ec2-user/app/step3/zip/
+    overwrite: yes
 
 permissions:
   - object: /
@@ -22,17 +12,21 @@ permissions:
     group: ec2-user
 
 # hooks:
-#   AfterInstall: # 배포가 끝나면
-#     - location: stop.sh # stop.sh 스크립트 파일을 실행시켜서 실행 중이던 스프링 부트 jar를 종료
+#   ApplicationStart:
+#     - location: scripts/deploy.sh
 #       timeout: 60
-#       runas: root
+#       runas: ec2-user
 
-#   ApplicationStart: # 중지된 서비스를 다시 시작
-#     - location: start.sh # 배포할 새로운 버전의 jar 파일을 실행
-#       timeout: 60
-#       runas: root
-
-#   ValidateService: # 배포가 성공적으로 완료되었는지 확인
-#     - location: health.sh
-#       timeout: 60
-#       runas: root
+hooks:
+  AfterInstall: # 배포가 끝나면 아래 명령어를 실행
+    - location: scripts/stop.sh
+      timeout: 60
+      runas: ec2-user
+  ApplicationStart: # ApplicationStart 단계에서 해당 파일을 실행
+    - location: scripts/start.sh
+      timeout: 60
+      runas: ec2-user
+  ValidateService:
+    - location: scripts/health.sh
+      timeout: 60
+      runas: ec2-user
