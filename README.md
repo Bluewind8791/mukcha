@@ -22,23 +22,23 @@
 
 ### 프론트엔드
 
-- Front-End 부분은 BootStrap 5 및 Thymeleaf 기술을 사용하여 간단하게 개발하였습니다.
+- **BootStrap 5** 및 **Thymeleaf** 기술을 사용하여 간단하게 개발하였습니다.
 
 ### 백엔드
 
-- Spring Framework 위에서 Spring Boot 및 JPA를 사용하여 REST API를 개발하였습니다.
-- 회원 로그인 및 회원 가입 기능은 OAuth2를 통하여 Google, Naver 아이디를 통한 간단 회원가입 및 로그인을 구현하였습니다.
-- 간편한 메뉴 데이터베이스 관리를 위하여 관리자 ROLE을 생성하고, Spring Security 기술을 통하여 보안 및 권한별 접근 페이지 차별화를 시도하였습니다.
-- JPA Specification 기술을 활용한 검색 기능을 구현하였습니다.
-- 프랜차이즈 메뉴 데이터베이스 구축을 최대한 자동화 시키기 위하여 JSoup 및 Selenium 을 통한 HTML Parsing(크롤링)을 사용하였습니다.
+- **Spring Framework** 위에서 Spring Boot 및 JPA를 사용하여 REST API를 개발하였습니다.
+- 회원 로그인 및 회원 가입 기능은 **OAuth2**를 통하여 Google, Naver 아이디를 통한 간단 회원가입 및 로그인을 구현하였습니다.
+- 간편한 메뉴 데이터베이스 관리를 위하여 관리자 ROLE을 생성하고, **Spring Security** 기술을 통하여 보안 및 권한별 접근 페이지 차별화를 시도하였습니다.
+- **JPA Specification** 기술을 활용한 검색 기능을 구현하였습니다.
+- 프랜차이즈 메뉴 데이터베이스 구축을 최대한 자동화 시키기 위하여 **JSoup 및 Selenium 을 통한 HTML Parsing**(크롤링)을 사용하였습니다.
 
 ### SERVER
 
-- AWS EC2를 사용하여 서버를 구축하고 24시간 라이브 서비스를 제공하고 있습니다.
-- DBMS는 MYSQL을 사용하였으며, 현재는 AWS RDS를 사용하여 AWS EC2 서버와 연결하여 서비스하고 있습니다.
-- S3, ~~Travis CI~~와 AWS CodeDeploy를 사용하여 Github에 수정된 코드가 push되면 자동 배포되도록 구축하였습니다.
-  - **Travis를 Jenkins로 변경하는 작업을 진행하고 있습니다.**
-- Nginx를 사용하여 배포중에 서비스가 끊기지 않도록 무중단 배포를 구현하였습니다.
+- **AWS EC2**를 사용하여 서버를 구축하고 24시간 라이브 서비스를 제공하고 있습니다.
+- DBMS는 **MYSQL**을 사용하였으며, 현재는 **AWS RDS**를 사용하여 AWS EC2 서버와 연결하여 서비스하고 있습니다.
+- **AWS S3**, ~~Travis~~와 **AWS CodeDeploy**를 사용하여 Github에 수정된 코드가 push되면 자동 배포되도록 구축하였습니다.
+  - Travis의 무료 기간이 끝난 관계로 **Github Actions**로 변경하였습니다.
+- **Nginx**를 사용하여 배포중에 서비스가 끊기지 않도록 무중단 배포를 구현하였습니다.
 
 
 ---
@@ -50,21 +50,22 @@
       <img alt="spring"
         src="https://img.shields.io/badge/-Spring-6DB33F?style=for-the-badge&logo=spring&logoColor=white" />
       <img alt="spring-boot"
-        src="https://img.shields.io/badge/-SpringBoot-6DB33F?style=for-the-badge&logo=springboot&logoColor=white" />
-      <img alt="spring-security" src="https://img.shields.io/badge/-SpringSecurity-6DB33F?style=for-the-badge&logo=springsecurity&logoColor=white" />
+        src="https://img.shields.io/badge/-Spring Boot-6DB33F?style=for-the-badge&logo=springboot&logoColor=white" />
+      <img alt="spring-security" src="https://img.shields.io/badge/-Spring Security-6DB33F?style=for-the-badge&logo=springsecurity&logoColor=white" />
       <img alt="jpa" src="https://img.shields.io/badge/-JPA-6DB33F?style=for-the-badge" />
       <br>
       <img alt="aws" src="https://img.shields.io/badge/-AWS-232F3E?style=for-the-badge&logo=amazonaws&logoColor=white" />
+      <img alt="GitHub Actions" src="https://img.shields.io/badge/-GitHub Actions-2088FF?style=for-the-badge&logo=GitHubActions&logoColor=white" />
       <img alt="NGINX" src="https://img.shields.io/badge/-NGINX-009639?style=for-the-badge&logo=NGINX&logoColor=white" />
       <img alt="MySQL" src="https://img.shields.io/badge/-MySQL-4479A1?style=for-the-badge&logo=MySQL&logoColor=white" />
       <img alt="Linux" src="https://img.shields.io/badge/-Linux-FCC624?style=for-the-badge&logo=Linux&logoColor=white" />
-      <img alt="travis" src="https://img.shields.io/badge/-TravisCI-3EAAAF?style=for-the-badge&logo=travisci&logoColor=white" />
+      <!-- <img alt="travis" src="https://img.shields.io/badge/-TravisCI-3EAAAF?style=for-the-badge&logo=travisci&logoColor=white" /> -->
       <!-- <img alt="Jenkins" src="https://img.shields.io/badge/-Jenkins-D24939?style=for-the-badge&logo=Jenkins&logoColor=white" /> -->
       <!-- <img alt="docker" src="https://img.shields.io/badge/-Docker-2496ED?style=for-the-badge&logo=docker&logoColor=white" /> -->
       <br>
       <img alt="html" src="https://img.shields.io/badge/-HTML5-E34F26?style=for-the-badge&logo=html5&logoColor=white" />
       <img alt="Thymeleaf" src="https://img.shields.io/badge/-Thymeleaf-005F0F?style=for-the-badge&logo=Thymeleaf&logoColor=white" />
-      <img alt="Bootstrap" src="https://img.shields.io/badge/-Bootstrap-7952B3?style=for-the-badge&logo=Bootstrap&logoColor=white" />
+      <img alt="Bootstrap5" src="https://img.shields.io/badge/-Bootstrap5-7952B3?style=for-the-badge&logo=Bootstrap&logoColor=white" />
   </p>
 </div>
 
