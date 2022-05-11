@@ -13,7 +13,7 @@ import lombok.RequiredArgsConstructor;
 
 @RestController
 @RequiredArgsConstructor
-public class WebRestController {
+public class ProfileController {
 
     private final Environment env;
 
