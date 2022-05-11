@@ -8,7 +8,8 @@
   <div class="container mt-5 mb-5 ">
     <!-- cancel button -->
     <a type="button" class="btn" onclick="window.history.back();">
-      < 뒤로가기</a>
+      < 뒤로가기
+    </a>
 
         <div class="h2 fw-bold text-center" th:text="${foodName}"></div>
   </div>
@@ -18,10 +19,14 @@
     <div class="card w-50">
       <div class="card-header">
         <div class="d-flex justify-content-between">
-          <div class="fw-bold" th:text="${r.userName}">username</div>
+          <a class="text-decoration-none text-black" th:href="'/users/'+${r.userId}">
+            <div class="fw-bold" th:text="${r.userName}">username</div>
+          </a>
           <div>
             <!-- 메뉴 이름 -->
-            <span th:text="${foodName}"></span>
+            <a class="text-decoration-none text-black" th:href="'/menu/'+${foodId}">
+              <span th:text="${r.foodName}"></span>
+            </a>
             <span>⭐</span>
             <!-- 별점 개수 -->
             <span th:text="${r.score.getValue()}">score</span>

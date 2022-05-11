@@ -64,7 +64,7 @@ public class FoodController {
         if (sessionUser != null) {
             model.addAttribute("loginUser", userService.getSessionUserInfo(sessionUser));
         }
-        model.addAttribute("foodName", foodService.findByFoodId(foodId).getName()); // 해당 메뉴 이름
+        // model.addAttribute("foodName", foodService.findByFoodId(foodId).getName()); // 해당 메뉴 이름
         model.addAttribute("reviewList", reviewService.findAllByFoodId(foodId)); // 메뉴의 모든 리뷰 리스트
         return "food/reviews";
     }
