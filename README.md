@@ -26,7 +26,7 @@
 
 ### 백엔드
 
-- **Spring Framework** 위에서 Spring Boot 및 JPA를 사용하여 REST API를 개발하였습니다.
+- **Spring Framework** 위에서 **Spring Boot** 및 **Spring Data JPA**를 사용하여 개발하였습니다.
 - 회원 로그인 및 회원 가입 기능은 **OAuth2**를 통하여 Google, Naver 아이디를 통한 간단 회원가입 및 로그인을 구현하였습니다.
 - 간편한 메뉴 데이터베이스 관리를 위하여 관리자 ROLE을 생성하고, **Spring Security** 기술을 통하여 보안 및 권한별 접근 페이지 차별화를 시도하였습니다.
 - **JPA Specification** 기술을 활용한 검색 기능을 구현하였습니다.
@@ -51,8 +51,8 @@
         src="https://img.shields.io/badge/-Spring-6DB33F?style=for-the-badge&logo=spring&logoColor=white" />
       <img alt="spring-boot"
         src="https://img.shields.io/badge/-Spring Boot-6DB33F?style=for-the-badge&logo=springboot&logoColor=white" />
-      <img alt="spring-security" src="https://img.shields.io/badge/-Spring Security-6DB33F?style=for-the-badge&logo=springsecurity&logoColor=white" />
-      <img alt="jpa" src="https://img.shields.io/badge/-JPA-6DB33F?style=for-the-badge" />
+      <img alt="spring security" src="https://img.shields.io/badge/-Spring Security-6DB33F?style=for-the-badge&logo=springsecurity&logoColor=white" />
+      <img alt="spring data jpa" src="https://img.shields.io/badge/-Spring Data JPA-6DB33F?style=for-the-badge"/>
       <br>
       <img alt="aws" src="https://img.shields.io/badge/-AWS-232F3E?style=for-the-badge&logo=amazonaws&logoColor=white" />
       <img alt="GitHub Actions" src="https://img.shields.io/badge/-GitHub Actions-2088FF?style=for-the-badge&logo=GitHubActions&logoColor=white" />
