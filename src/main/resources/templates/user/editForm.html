@@ -91,6 +91,7 @@
   </div> <!-- end of 회원 탈퇴 Modal -->
 
 
+  <script src="/js/user.js"></script>
   <script th:inline="javascript">
     // 메서드 결과 알림
     var message = [[${ resultMessage }]];
@@ -102,20 +103,6 @@
         alert("회원 정보 수정에 실패하였습니다.");
         break;
     }
-    // 회원 탈퇴 메소드
-    $("#btn-disable").on("click", function() {
-      $.ajax({
-        method: 'PATCH',
-        url: '/api/users',
-        contentType: 'application/json;charset=utf-8'
-      }).done(function() {
-        alert("회원이 탈퇴되었습니다. 확인을 누르면 메인으로 돌아갑니다.");
-        location.href = "/";
-      }).fail(function(error) {
-        alert("회원 탈퇴에 실패하였습니다.")
-        alert(JSON.stringify(error));
-      });
-    });
   </script>
 </div>
 
