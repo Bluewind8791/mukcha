@@ -1,6 +1,7 @@
 package com.mukcha.controller;
 
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 
@@ -10,54 +11,68 @@ import com.mukcha.controller.dto.SessionUserResponseDto;
 import com.mukcha.controller.dto.UserUpdateRequestDto;
 import com.mukcha.service.UserService;
 
-import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PatchMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.servlet.ModelAndView;
 
 import lombok.RequiredArgsConstructor;
 
 
 // ROLE_USER 권한 있어야 진입가능
-@Controller
+@RestController
 @RequiredArgsConstructor
-@RequestMapping(value = "/user")
+@RequestMapping(value = "/api/users")
 public class UserApiController {
 
     private final UserService userService;
 
 
-    // 개인정보 업데이트
-    @PutMapping(value = "/api/update")
-    public String updateUserInfo(
-            @Valid @ModelAttribute UserUpdateRequestDto dto, // requestbody = json data
-            Model model,
-            @LoginUser SessionUser sessionUser,
-            RedirectAttributes redirectAttributes
+    @PutMapping(value = "/{userId}")
+    public ModelAndView updateUserInfo(
+            @PathVariable Long userId,
+            @Valid @ModelAttribute UserUpdateRequestDto dto, // json data
+            @LoginUser SessionUser sessionUser
     ) {
+        ModelAndView mv = new ModelAndView("user/editForm");
         if (sessionUser != null) {
-            SessionUserResponseDto user = userService.getSessionUserInfo(sessionUser);
-            userService.update(user.getUserId(), dto);
-            redirectAttributes.addFlashAttribute("resultMessage", "updateUserSuccess");
+            SessionUserResponseDto sessionDto = userService.getSessionUserInfo(sessionUser);
+            if (sessionDto.getUserId() == userId) {
+                userService.update(userId, dto);
+                mv.setStatus(HttpStatus.OK);
+                mv.addObject("loginUser", sessionDto);
+                mv.addObject("user", userService.findByUserId(userId));
+                mv.addObject("resultMessage", "updateUserSuccess");
+                return mv;
+            }
         }
-        return "redirect:/user/edit";
+        mv.setStatus(HttpStatus.BAD_REQUEST);
+        mv.addObject("resultMessage", "updateUserFail");
+        return mv;
     }
 
+
     // 회원 탈퇴 구현
-    @PutMapping(value = "/api/disable")
-    public String disableUser(
-        Model model,
+    @PatchMapping
+    public ResponseEntity<?> disableUser(
         @LoginUser SessionUser sessionUser,
-        HttpSession httpSession
+        HttpServletRequest request
     ) {
         if (sessionUser != null) {
-            SessionUserResponseDto user = userService.getSessionUserInfo(sessionUser);
-            userService.disableUser(user.getUserId());
-            httpSession.invalidate(); // delete login session
+            SessionUserResponseDto userDto = userService.getSessionUserInfo(sessionUser);
+            if (userDto.getUserId() == userDto.getUserId()) {
+                userService.disableUser(userDto.getUserId());
+                HttpSession session = request.getSession();
+                session.invalidate(); // delete login session
+                return new ResponseEntity<>(HttpStatus.OK);
+            }
         }
-        return "redirect:/";
+        return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
     }
 
 

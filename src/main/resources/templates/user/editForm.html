@@ -10,7 +10,7 @@
     <h3 class="mb-5">회원 정보 수정</h3>
     <h5 class="mb-2">필수항목</h5>
 
-    <form class="form-signin" th:action="@{/user/api/update}" th:method="put">
+    <form class="form-signin" th:action="@{/api/users/}+${user.userId}" th:method="PUT">
       <!-- 이메일 -->
       <div class="mb-3 was-validated">
         <label for="email">이메일<span class="text-muted">(로그인 아이디)</span></label>
@@ -54,7 +54,6 @@
     <a type="button" class="btn btn-lg btn-secondary w-50 mb-4" onclick="window.history.back();">취소</a>
     <!-- 회원 탈퇴 -->
     <a type="button" class="btn btn-lg btn-danger w-50" data-bs-toggle="modal" data-bs-target="#signOutModal">회원 탈퇴</a>
-    <!-- th:href="@{/user/delete}" -->
   </div> <!-- /container -->
 
 
@@ -67,37 +66,56 @@
           <h4 class="modal-title">회원 탈퇴</h4>
           <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
         </div>
-        <form th:action="@{/user/api/disable}" th:method="PUT">
-          <!-- Modal body -->
-          <div class="modal-body">
-
-            <p>탈퇴 후 동일한 아이디(이메일)로 가입하실 수 없으며,<br>
-              회원님께서 작성하신 평가와 코멘트는 복구할 수 없습니다.
-            </p>
-            <p>
-              연동 해제는 로그인 한 계정의 SNS에서 연동해제 해주세요.
-            </p>
-            <div>
-              <h5><strong>정말로 탈퇴 하시겠습니까?</strong></h5>
-            </div>
+        <!-- Modal body -->
+        <div class="modal-body">
+          <p>탈퇴 후 동일한 아이디(이메일)로 가입하실 수 없으며,<br>
+            회원님께서 작성하신 평가와 코멘트는 복구할 수 없습니다.
+          </p>
+          <p>
+            연동 해제는 로그인 한 계정의 SNS에서 연동해제 해주세요.
+          </p>
+          <div>
+            <h5><strong>정말로 탈퇴 하시겠습니까?</strong></h5>
           </div>
-          <!-- Modal footer -->
-          <div class="modal-footer">
-            <button type="submit" class="btn btn-danger">회원 탈퇴</button>
-            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">취소</button>
-          </div>
-        </form>
+        </div>
+        <!-- Modal footer -->
+        <div class="modal-footer">
+          <!-- <button type="submit" class="btn btn-danger">회원 탈퇴</button> -->
+          <button id="btn-disable" class="btn btn-danger">회원 탈퇴</button>
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">취소</button>
+        </div>
+        <!-- <form th:action="@{/api/users/}+${user.userId}" th:method="PATCH"> -->
+        <!-- </form> -->
       </div>
     </div>
   </div> <!-- end of 회원 탈퇴 Modal -->
 
 
   <script th:inline="javascript">
-    // 회원 정보 수정 성공 alert
+    // 메서드 결과 알림
     var message = [[${ resultMessage }]];
-    if (message == "updateUserSuccess") {
-      alert("회원 정보 수정이 완료되었습니다.");
+    switch (message) {
+      case "updateUserSuccess":
+        alert("회원 정보 수정이 완료되었습니다.");
+        break;
+      case "updateUserFail":
+        alert("회원 정보 수정에 실패하였습니다.");
+        break;
     }
+    // 회원 탈퇴 메소드
+    $("#btn-disable").on("click", function() {
+      $.ajax({
+        method: 'PATCH',
+        url: '/api/users',
+        contentType: 'application/json;charset=utf-8'
+      }).done(function() {
+        alert("회원이 탈퇴되었습니다. 확인을 누르면 메인으로 돌아갑니다.");
+        location.href = "/";
+      }).fail(function(error) {
+        alert("회원 탈퇴에 실패하였습니다.")
+        alert(JSON.stringify(error));
+      });
+    });
   </script>
 </div>
 

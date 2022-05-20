@@ -71,11 +71,9 @@ public class User extends BaseTimeEntity { //  implements UserDetails
     // >>> METHODS <<<
     public User update(String nickname, String profileImage, String gender, String birthYear) {
         this.nickname = nickname;
-        if (profileImage != null) {
-            this.profileImage = profileImage;
-        }
-        this.birthYear = birthYear;
-        this.gender = transClassGender(gender);
+        if (profileImage != null) this.profileImage = profileImage;
+        if (birthYear != null) this.birthYear = birthYear;
+        if (gender != null) this.gender = transClassGender(gender);
         return this;
     }
 
