@@ -1,4 +1,4 @@
-package com.mukcha.controller;
+package com.mukcha.crawling;
 
 import java.io.IOException;
 import java.util.ArrayList;

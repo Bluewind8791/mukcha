@@ -1,4 +1,4 @@
-package com.mukcha.controller;
+package com.mukcha.crawling;
 
 import java.awt.image.BufferedImage;
 import java.io.File;
