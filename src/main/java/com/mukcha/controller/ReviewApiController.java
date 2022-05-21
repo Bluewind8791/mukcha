@@ -6,49 +6,54 @@ import com.mukcha.controller.dto.EatenDateSaveRequestDto;
 import com.mukcha.controller.dto.ReviewSaveRequestDto;
 import com.mukcha.service.ReviewService;
 
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
 
 import lombok.RequiredArgsConstructor;
 
 
 @Controller
 @RequiredArgsConstructor
+@RequestMapping("/api/reviews")
 public class ReviewApiController {
 
     private final ReviewService reviewService;
 
 
     // 점수와 코멘트를 저장 및 수정
-    @PostMapping(value = "/api/reviews/{foodId}")
-    public String saveReview(
+    @PostMapping("/{foodId}")
+    public ResponseEntity<?> saveReview(
         @PathVariable Long foodId,
-        @ModelAttribute ReviewSaveRequestDto requestDto,
+        @RequestBody ReviewSaveRequestDto requestDto,
         @LoginUser SessionUser user
     ) {
         reviewService.saveReview(foodId, user.getEmail(), requestDto);
-        return "redirect:/menu/"+foodId;
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 
     // 먹은 날짜를 저장 및 수정
-    @PostMapping(value = "/api/reviews/eaten/{foodId}")
-    public String saveEatenDate(
+    @PostMapping("/eaten/{foodId}")
+    public ResponseEntity<?> saveEatenDate(
         @PathVariable Long foodId,
-        EatenDateSaveRequestDto requestDto,
+        @RequestBody EatenDateSaveRequestDto requestDto,
         @LoginUser SessionUser user
     ) {
         reviewService.saveEatenDate(foodId, user.getEmail(), requestDto.getEatenDate());
-        return "redirect:/menu/"+foodId;
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 
     // 해당 유저가 작성한 해당 음식의 리뷰를 삭제한다.
-    @DeleteMapping(value = "/api/reviews/{foodId}")
-    public String deleteScore(@PathVariable Long foodId, @LoginUser SessionUser user) {
+    @DeleteMapping("/{foodId}")
+    public ResponseEntity<?> deleteScore(@PathVariable Long foodId, @LoginUser SessionUser user) {
         reviewService.deleteReview(foodId, user.getEmail());
-        return "redirect:/menu/"+foodId;
+        return new ResponseEntity<>(HttpStatus.OK);
     }
+
 
 }
