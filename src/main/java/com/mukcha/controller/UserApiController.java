@@ -3,7 +3,6 @@ package com.mukcha.controller;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
-import javax.validation.Valid;
 
 import com.mukcha.config.dto.LoginUser;
 import com.mukcha.config.dto.SessionUser;
@@ -13,13 +12,11 @@ import com.mukcha.service.UserService;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PatchMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.servlet.ModelAndView;
 
 import lombok.RequiredArgsConstructor;
 
@@ -33,27 +30,19 @@ public class UserApiController {
     private final UserService userService;
 
 
-    @PutMapping(value = "/{userId}")
-    public ModelAndView updateUserInfo(
-            @PathVariable Long userId,
-            @Valid @ModelAttribute UserUpdateRequestDto dto, // json data
+    // 회원 정보 수정
+    @PutMapping
+    public ResponseEntity<?> updateUserInfo(
+            @RequestBody UserUpdateRequestDto dto, // json data
             @LoginUser SessionUser sessionUser
     ) {
-        ModelAndView mv = new ModelAndView("user/editForm");
         if (sessionUser != null) {
             SessionUserResponseDto sessionDto = userService.getSessionUserInfo(sessionUser);
-            if (sessionDto.getUserId() == userId) {
-                userService.update(userId, dto);
-                mv.setStatus(HttpStatus.OK);
-                mv.addObject("loginUser", sessionDto);
-                mv.addObject("user", userService.findByUserId(userId));
-                mv.addObject("resultMessage", "updateUserSuccess");
-                return mv;
-            }
+            Long userId = sessionDto.getUserId();
+            userService.update(userId, dto);
+            return new ResponseEntity<>(HttpStatus.OK);
         }
-        mv.setStatus(HttpStatus.BAD_REQUEST);
-        mv.addObject("resultMessage", "updateUserFail");
-        return mv;
+        return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
     }
 
 
