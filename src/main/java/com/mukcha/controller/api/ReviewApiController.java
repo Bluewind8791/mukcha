@@ -1,4 +1,4 @@
-package com.mukcha.controller;
+package com.mukcha.controller.api;
 
 import com.mukcha.config.dto.LoginUser;
 import com.mukcha.config.dto.SessionUser;

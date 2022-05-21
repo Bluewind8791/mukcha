@@ -60,8 +60,8 @@ public class AdminController {
         if (sessionUser != null) {
             model.addAttribute("loginUser", userService.getSessionUserInfo(sessionUser));
         }
-        // 해당 회사의 이름
-        model.addAttribute("thisCompanyName", companyService.findByCompanyId(companyId).getName());
+        // 해당 회사의 정보
+        model.addAttribute("company", companyService.findCompany(companyId));
         // 해당 회사의 모든 메뉴들
         model.addAttribute("foodList", foodService.findAllByCompanyId(companyId));
         // 모든 카테고리 리스트

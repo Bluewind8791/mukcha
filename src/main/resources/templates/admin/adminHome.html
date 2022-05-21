@@ -42,24 +42,22 @@
           <h4 class="modal-title">회사 추가</h4>
           <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
         </div>
-        <form th:action="@{/admin/api/companies}" method="POST">
-          <!-- Modal body -->
-          <div class="modal-body">
-            <div class="mb-3 mt-3">
-              <label>회사명</label>
-              <input class="form-control" placeholder="회사명을 적어주세요" name="companyName">
-            </div>
-            <div class="mb-3">
-              <label>회사 로고 이미지</label>
-              <input class="form-control" placeholder="회사 로고 URL를 넣어주세요" name="companyLogo">
-            </div>
+        <!-- Modal body -->
+        <div class="modal-body">
+          <div class="mb-3 mt-3">
+            <label>회사명</label>
+            <input id="companyName" class="form-control" placeholder="회사명을 적어주세요" name="companyName">
           </div>
-          <!-- Modal footer -->
-          <div class="modal-footer">
-            <button type="submit" class="btn btn-primary">Submit</button>
-            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+          <div class="mb-3">
+            <label>회사 로고 이미지</label>
+            <input id="companyLogo" class="form-control" placeholder="회사 로고 URL를 넣어주세요" name="companyLogo">
           </div>
-        </form>
+        </div>
+        <!-- Modal footer -->
+        <div class="modal-footer">
+          <button type="button" id="btn-save-company" class="btn btn-primary">저장하기</button>
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">취소</button>
+        </div>
       </div>
     </div>
   </div> <!-- end of 회사 추가 modal -->
@@ -171,7 +169,7 @@
     <a type="button" class="btn btn-light text-dark w-100" th:href="@{/admin/menus/}">전체 메뉴 리스트 보기</a>
   </div>
 
-
+  <script src="/js/admin.js"></script>
 </div> <!-- end of container -->
 
 </html>

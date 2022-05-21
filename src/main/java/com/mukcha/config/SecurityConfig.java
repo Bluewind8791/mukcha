@@ -45,9 +45,10 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                     .antMatchers("/").permitAll()
                     .antMatchers("/login").permitAll()
                     .antMatchers("/h2-console/**").permitAll()
+                    .antMatchers("/admin/**").hasRole(Authority.ADMIN.name())
+                    .antMatchers("/api/admin/**").hasRole(Authority.ADMIN.name())
                     .antMatchers("/user/**").hasAnyRole(Authority.USER.name(), Authority.ADMIN.name())
                     .antMatchers("/api/**").hasAnyRole(Authority.USER.name(), Authority.ADMIN.name())
-                    .antMatchers("/admin/**").hasRole(Authority.ADMIN.name())
                     .anyRequest().permitAll();
             })
             .oauth2Login(login -> {

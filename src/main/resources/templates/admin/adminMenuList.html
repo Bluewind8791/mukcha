@@ -16,6 +16,7 @@
 
   <div class="container-fluid p-5 bg-danger text-white text-center">
     <h2>관리자 페이지</h2>
+    <h4>모든 메뉴 리스트</h4>
   </div>
 
   <div class="container mt-4 mb-5">
@@ -25,8 +26,8 @@
   </div>
 
   <div class="container text-center mb-5">
-    <p class="h4 mt-3">메뉴 수정은 해당 메뉴의 이름을 클릭해주세요.</p>
-    <p class="mt-2">메뉴 삭제는 해당 메뉴의 회사를 삭제해주세요.</p>
+    <p class="h3 mt-3">메뉴 수정은 해당 메뉴의 회사명을 클릭해주세요.</p>
+    <p class="h5">메뉴 이미지는 클릭시 확대됩니다.</p>
   </div>
 
 
@@ -38,27 +39,30 @@
         <tr>
           <th>ID</th>
           <th>카테고리</th>
-          <th>회사</th>
-          <th>이름</th>
+          <th>회사명</th>
+          <th>메뉴명</th>
           <th>이미지</th>
-          <!-- <th>Update Time</th>
-          <th>Create Time</th> -->
+          <!-- <th>Update Time</th> -->
+          <!-- <th>Create Time</th> -->
           <th>Image URL</th>
         </tr>
       </thead>
       <tbody>
         <tr th:each="f : ${foodList}">
           <td><span th:text="${f.foodId}">ID</span></td>
-          <td><span th:text="${f.category}">category</span></td>
-          <td><span th:if="${f.companyName != null}" th:text="${f.companyName}">companyName</span></td>
-          <td><span th:text="${f.foodName}" data-bs-toggle="modal"
-              th:data-bs-target="'#editMenuModal'+${f.foodId}">Name</span></td>
+          <td><span th:text="${f.category}">카테고리</span></td>
+          <td>
+            <a th:href="'/admin/companies/'+${f.companyId}" >
+              <span th:if="${f.companyName != null}" th:text="${f.companyName}">회사명</span>
+            </a>
+          </td>
+          <td><span th:text="${f.foodName}" >메뉴 이름</span></td>
           <td><img th:src="${f.foodImage}" height="50" data-bs-toggle="modal"
               th:data-bs-target="'#fImageModal'+${f.foodId}"></td>
           <!-- <td><span th:text="${f.updatedAt}">updatedAt</span></td> -->
           <!-- <td><span th:text="${f.createdAt}">createdAt</span></td> -->
           <td>
-            <div th:text="${f.foodImage}" style="width: 250px;" id="menu_image_url">
+            <div th:text="${f.foodImage}" style="width: 450px;" id="menu_image_url">
               메뉴이미지 URL
             </div>
           </td>
@@ -77,86 +81,10 @@
               </div>
             </div>
           </div>
-          <!-- 메뉴 수정 모달1 -->
-          <div class="modal fade" th:id="'editMenuModal'+${f.foodId}" aria-hidden="true"
-            aria-labelledby="editModalToggleLabel" tabindex="-1">
-            <div class="modal-dialog modal-dialog-centered">
-              <div class="modal-content">
-                <div class="modal-header">
-                  <h5 class="modal-title fw-bold me-2" id="editModalToggleLabel">메뉴 수정</h5>
-                  <span class="me-2"> - </span><span th:text="${f.foodName}">메뉴이름</span>
-                  <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <form th:action="@{/admin/api/menus/}+${f.foodId}" th:method="PUT">
-                  <div class="modal-body">
-                    <div class="mb-3 mt-3">
-                      <label>메뉴 이름</label>
-                      <input class="form-control" placeholder="메뉴 이름을 적어주세요" name="foodName" th:value="${f.foodName}">
-                    </div>
-                    <div class="mb-3">
-                      <label>메뉴 이미지</label>
-                      <input class="form-control" placeholder="메뉴 이미지 URL를 넣어주세요" name="foodImage"
-                        th:value="${f.foodImage}">
-                    </div>
-                    <div class="mb-3">
-                      <label>카테고리</label>
-                      <select class="form-select" name="category">
-                        <option th:value="${f.category}" th:text="${f.category}" >선택해주세요</option>
-                        <option th:each="cate : ${categoryList}" th:value="${cate}" th:text="${cate}">카테고리
-                        </option>
-                      </select>
-                    </div>
-                    <div class="mb-3">
-                      <label>회사명</label>
-                      <select class="form-select" name="companyName">
-                        <option th:value="${f.companyName}" th:text="${f.companyName}" >선택해주세요</option>
-                        <option th:each="com : ${companyList}" th:value="${com.companyName}" th:text="${com.companyName}">회사명
-                        </option>
-                      </select>
-                    </div>
-                  </div>
-                  <div class="modal-footer">
-                    <button type="submit" class="btn btn-success">수정하기</button>
-                    <a class="btn btn-secondary" data-bs-dismiss="modal">취소</a>
-                    <!-- <a class="btn btn-danger" th:data-bs-target="'#deleteMenuModal'+${f.foodId}" data-bs-toggle="modal"
-                                        data-bs-dismiss="modal">메뉴 삭제하기</a> -->
-                  </div>
-                </form>
-              </div>
-            </div>
-          </div>
-          <!-- 메뉴 삭제 모달2 -->
-          <!-- <form th:action="@{/admin/menus/delete/}+${f.foodId}" th:method="DELETE">
-            <input type="hidden" name="_method" value="delete">
-            <div class="modal fade" th:id="'deleteMenuModal'+${f.foodId}" aria-hidden="true"
-              aria-labelledby="deleteModalToggleLabel" tabindex="-1">
-              <div class="modal-dialog modal-dialog-centered">
-                <div class="modal-content">
-                  <div class="modal-header">
-                    <h5 class="modal-title fw-bold me-2" id="deleteModalToggleLabel">메뉴 삭제</h5>
-                    <span class="me-2"> - </span><span th:text="${f.name}">메뉴이름</span>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                  </div>
-                  <div class="modal-body">
-                    <p class="h3 fw-bold" style="color: tomato;">경고</p>
-                    <p class="fw-bold" style="color: tomato;">정말 해당 메뉴를 삭제하시겠습니까?</p>
-                    <p>메뉴를 삭제하시면 해당 메뉴의 모든 리뷰는 삭제됩니다.</p>
-                  </div>
-                  <div class="modal-footer">
-                    <a class="btn btn-secondary" th:data-bs-target="'#editMenuModal'+${f.foodId}" data-bs-toggle="modal"
-                      data-bs-dismiss="modal">돌아가기</a>
-                    <button class="btn btn-danger" type="submit">삭제하기</button>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </form> -->
         </tr>
       </tbody>
-
     </table>
   </div>
-
 </div> <!-- end of container -->
 
 </html>

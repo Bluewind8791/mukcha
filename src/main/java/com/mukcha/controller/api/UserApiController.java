@@ -1,4 +1,4 @@
-package com.mukcha.controller;
+package com.mukcha.controller.api;
 
 
 import javax.servlet.http.HttpServletRequest;
