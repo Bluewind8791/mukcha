@@ -64,22 +64,16 @@
         <!-- 리뷰 삭제 -->
         <div class="col-3">
           <input class="btn btn-danger" id="btn-delete-review" type="button" value="리뷰 삭제" >
-          <!-- <form th:action="@{/api/reviews/}+${food.foodId}" th:method="delete">
-            <input class="btn btn-danger" type="submit" value="리뷰 삭제" >
-          </form> -->
         </div>
       </div>
 
       <!-- 먹은 날짜 추가 및 수정 -->
-      <!-- <form th:action="@{/api/reviews/eaten/}+${food.foodId}" method="POST"> -->
-      <!-- </form> -->
       <div id="openEatenDate" class="collapse mt-3 mb-5">
         <div class="d-flex justify-content-center">
           <!-- DATE PICKER -->
           <input class="form-control w-50 text-center" id="datepicker" name="eatenDate" type="text"
             placeholder="먹은 날짜를 추가해주세요">
           <input class="btn btn-primary ms-1" id="btn-eaten" type="button" value="확인">
-          <!-- <input class="btn btn-primary ms-1" type="submit" value="확인"> -->
         </div>
       </div>
 
@@ -90,8 +84,6 @@
       </button>
 
       <!-- REVIEW -->
-      <!-- <form th:action="@{/api/reviews/}+${food.foodId}" method="POST"> -->
-      <!-- </form> -->
       <!-- Review Modal -->
       <div class="modal" id="reviewModal">
         <div class="modal-dialog">
@@ -165,7 +157,6 @@
             <div class="modal-footer">
               <div class="mt-2">
                 <input id="btn-save" type="button" value="평가하기" class="btn btn-primary">
-                <!-- <input type="submit" value="평가하기" class="btn btn-primary"> -->
               </div>
             </div>
           </div>
