@@ -35,7 +35,7 @@ public class AdminApiController {
     @PostMapping("/companies")
     public ResponseEntity<?> saveCompany(@RequestBody CompanyRequestDto requestDto) {
         companyService.save(requestDto);
-        return new ResponseEntity<>(HttpStatus.OK);
+        return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
     // 메뉴 추가 메소드
@@ -80,7 +80,7 @@ public class AdminApiController {
     // 메뉴 삭제 메소드
     @DeleteMapping("/menus/{foodId}")
     public ResponseEntity<?> deleteFood(@PathVariable Long foodId) {
-        if (foodService.deleteFood(foodId)) {
+        if (foodService.deleteById(foodId)) {
             return new ResponseEntity<>(HttpStatus.OK);
         } else {
             return new ResponseEntity<>("정상적으로 삭제되지 않았습니다.", HttpStatus.BAD_REQUEST);

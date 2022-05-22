@@ -1,9 +1,17 @@
 package com.mukcha.controller;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Optional;
+
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.mukcha.controller.dto.CompanyRequestDto;
 import com.mukcha.controller.dto.FoodSaveRequestDto;
 import com.mukcha.controller.dto.FoodUpdateRequestDto;
-import com.mukcha.controller.helper.WithControllerTest;
+import com.mukcha.controller.helper.MockMvcTestHelper;
 import com.mukcha.domain.Category;
 import com.mukcha.domain.Company;
 import com.mukcha.domain.Food;
@@ -11,27 +19,30 @@ import com.mukcha.domain.Food;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
+import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
+import org.springframework.http.MediaType;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.ActiveProfiles;
-
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Optional;
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
+import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
 
 @ActiveProfiles("test")
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-public class AdminApiControllerTest extends WithControllerTest {
+@WithMockUser(roles = "ADMIN")
+@SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
+public class AdminApiControllerTest extends MockMvcTestHelper {
 
     @Test
-    @DisplayName("1. 메뉴를 새로 생성한다")
-    void test_1() {
+    @DisplayName("MockMvc 테스트를 이용하여 admin 권한을 가지고 페이지 접근")
+    void urlTest() throws Exception {
+        String url = "http://localhost:" + port + "/admin";
+        mvc.perform(MockMvcRequestBuilders.get(url).requestAttr("loginUser", userResDto))
+            .andExpect(MockMvcResultMatchers.status().isOk());
+    }
+
+    @Test
+    @DisplayName("메뉴를 새로 생성한다")
+    void test_1() throws Exception {
         // given
         createCompany("testCompany", "testLogo");
         String foodName = "testName";
@@ -45,12 +56,14 @@ public class AdminApiControllerTest extends WithControllerTest {
             .companyName(companyName)
             .build()
         ;
-        String url = "http://localhost:" + port + "/admin/api/menus";
+        String url = "http://localhost:" + port + "/api/admin/menus";
         // when
-        ResponseEntity<Long> responseEntity = restTemplate.postForEntity(url, requestDto, Long.class);
+        mvc.perform(MockMvcRequestBuilders.post(url)
+            .requestAttr("loginUser", userResDto)
+            .contentType(MediaType.APPLICATION_JSON)
+            .content(new ObjectMapper().writeValueAsString(requestDto))
+        ).andExpect(MockMvcResultMatchers.status().isCreated());
         // then
-        assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
-        assertThat(responseEntity.getBody()).isGreaterThan(0L);
         Food food = foodRepository.findByName("testName").get();
         assertEquals(foodName, food.getName());
         assertEquals(foodImage, food.getImage());
@@ -60,8 +73,8 @@ public class AdminApiControllerTest extends WithControllerTest {
     }
 
     @Test
-    @DisplayName("2. 메뉴를 수정한다")
-    void test_2() {
+    @DisplayName("메뉴를 수정한다")
+    void test_2() throws Exception {
         // given
         Company savedCompany = createCompany("testCompany", "testLogo");
         Food savedFood = createFood(savedCompany, "testName", "testImage", Category.CHICKEN);
@@ -74,13 +87,15 @@ public class AdminApiControllerTest extends WithControllerTest {
             .foodImage(expectImage)
             .category(expectCategory.name())
             .build();
-        String url = "http://localhost:" + port + "/admin/api/menus/" + updateId;
-        HttpEntity<FoodUpdateRequestDto> httpEntity = new HttpEntity<FoodUpdateRequestDto>(requestDto);
+        String url = "http://localhost:" + port + "/api/admin/menus/" + updateId;
         // when
-        ResponseEntity<Long> responseEntity = restTemplate.exchange(url, HttpMethod.PUT, httpEntity, Long.class);
+        mvc.perform(MockMvcRequestBuilders
+            .put(url)
+            .requestAttr("loginUser", userResDto)
+            .contentType(MediaType.APPLICATION_JSON)
+            .content(new ObjectMapper().writeValueAsString(requestDto))
+        ).andExpect(MockMvcResultMatchers.status().isOk());
         // then
-        assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
-        assertThat(responseEntity.getBody()).isGreaterThan(0L);
         Food editedFood = foodRepository.findById(updateId).get();
         assertEquals("testName2", editedFood.getName());
         assertEquals("testImage2", editedFood.getImage());
@@ -88,24 +103,8 @@ public class AdminApiControllerTest extends WithControllerTest {
     }
 
     @Test
-    @DisplayName("3. 메뉴를 삭제한다")
-    void test_3() {
-        // given
-        Company savedCompany = createCompany("testCompany", "testLogo");
-        Food savedFood = createFood(savedCompany, "testName", "testImage", Category.CHICKEN);
-        Long targetId = savedFood.getFoodId();
-        String url = "http://localhost:" + port + "/admin/api/menus/{foodId}";
-        Map<String, Long> params = new HashMap<>();
-        params.put("foodId", targetId);
-        // when
-        restTemplate.delete(url, params);
-        // then
-        assertEquals(Optional.empty(), foodRepository.findById(targetId));
-    }
-
-    @Test
-    @DisplayName("4. 회사를 생성한다")
-    void testSaveCompany() {
+    @DisplayName("회사를 생성한다")
+    void testSaveCompany() throws JsonProcessingException, Exception {
         // given
         String companyName = "testName";
         String companyLogo = "testLogo";
@@ -113,20 +112,23 @@ public class AdminApiControllerTest extends WithControllerTest {
             .companyName(companyName)
             .companyLogo(companyLogo)
             .build();
-        String url = "http://localhost:" + port + "/admin/api/companies";
+        String url = "http://localhost:" + port + "/api/admin/companies";
         // when
-        ResponseEntity<Long> responseEntity = restTemplate.postForEntity(url, companyRequestDto, Long.class);
+        mvc.perform(MockMvcRequestBuilders
+            .post(url)
+            .requestAttr("loginUser", userResDto)
+            .contentType(MediaType.APPLICATION_JSON)
+            .content(new ObjectMapper().writeValueAsString(companyRequestDto))
+        ).andExpect(MockMvcResultMatchers.status().isCreated());
         // then
-        assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.OK);
-        assertThat(responseEntity.getBody()).isGreaterThan(0L);
-        Company company = companyRepository.findByName("testName").get();
+        Company company = companyRepository.findByName(companyName).get();
         assertEquals(companyName, company.getName());
         assertEquals(companyLogo, company.getImage());
     }
 
     @Test
-    @DisplayName("4. 회사의 정보를 수정한다")
-    void testEditCompany() {
+    @DisplayName("회사의 정보를 수정한다")
+    void testEditCompany() throws JsonProcessingException, Exception {
         // given
         Company savedCompany = createCompany("testName", "testLogo");
         Long updateId = savedCompany.getCompanyId();
@@ -136,33 +138,58 @@ public class AdminApiControllerTest extends WithControllerTest {
             .companyName(expectName)
             .companyLogo(expectLogo)
             .build();
-        String url = "http://localhost:" + port + "/admin/api/companies/" + updateId;
-        HttpEntity<CompanyRequestDto> requestEntity = new HttpEntity<CompanyRequestDto>(requestDto);
+        String url = "http://localhost:" + port + "/api/admin/companies/" + updateId;
         // when
-        ResponseEntity<Long> responseEntity = restTemplate.exchange(url, HttpMethod.PUT, requestEntity, Long.class);
+        mvc.perform(MockMvcRequestBuilders
+            .put(url)
+            .requestAttr("loginUser", userResDto)
+            .contentType(MediaType.APPLICATION_JSON)
+            .content(new ObjectMapper().writeValueAsString(requestDto))
+        ).andExpect(MockMvcResultMatchers.status().isOk());
         // then
-        assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
-        assertThat(responseEntity.getBody()).isGreaterThan(0L);
         Company company = companyRepository.findById(updateId).get();
         assertEquals(expectName, company.getName());
         assertEquals(expectLogo, company.getImage());
     }
 
     @Test
-    @DisplayName("5. 회사를 삭제한다")
-    void test_5() {
+    @DisplayName("회사를 삭제한다")
+    void test_5() throws Exception {
         // given
         Company savedCompany = createCompany("testCompany", "testLogo");
         createFood(savedCompany, "testName", "testImage", Category.CHICKEN);
         Long targetId = savedCompany.getCompanyId();
-        String url = "http://localhost:" + port + "/admin/api/companies/{companyId}";
+        String url = "http://localhost:" + port + "/api/admin/companies/" + targetId;
         Map<String, Long> params = new HashMap<>();
         params.put("companyId", targetId);
         // when
-        restTemplate.delete(url, params);
+        mvc.perform(MockMvcRequestBuilders
+            .delete(url)
+            .requestAttr("loginUser", userResDto)
+        ).andExpect(MockMvcResultMatchers.status().isOk());
         // then
         assertEquals(Optional.empty(), companyRepository.findById(targetId));
     }
+
+
+    @Test
+    @DisplayName("메뉴를 삭제한다")
+    void test_3() throws Exception {
+        // given
+        Company savedCompany = createCompany("testCompany", "testLogo");
+        Food savedFood = createFood(savedCompany, "testName", "testImage", Category.CHICKEN);
+        Long targetId = savedFood.getFoodId();
+        String url = "http://localhost:" + port + "/api/admin/menus/" + targetId;
+        // when
+        mvc.perform(MockMvcRequestBuilders
+            .delete(url)
+            .requestAttr("loginUser", userResDto)
+        ).andExpect(MockMvcResultMatchers.status().isOk());
+        // then
+        assertEquals(Optional.empty(), foodRepository.findById(targetId));
+    }
+
+
 
 
 }
