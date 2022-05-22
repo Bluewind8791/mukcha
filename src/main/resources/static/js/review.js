@@ -14,9 +14,10 @@ let index = {
     // 리뷰 삭제 메소드
     delete_review: function() {
         let foodId = $("#foodId").val();
+        let userId = $("#loginUserId").val();
         $.ajax({
             method: 'DELETE',
-            url: '/api/reviews/' + foodId,
+            url: '/api/users/'+userId+'/menus/'+foodId,
             contentType: 'application/json; charset=utf-8'
         }).done(function() {
             alert("리뷰가 삭제되었습니다.");
@@ -30,12 +31,13 @@ let index = {
     // 먹은 날짜 추가/수정
     update_eaten: function() {
         let foodId = $("#foodId").val();
+        let userId = $("#loginUserId").val();
         let data = {
-            eatenDate: $("#datepicker").val()
+            eatenDate: $("#datepicker").val(),
         };
         $.ajax({
-            method: 'POST',
-            url: '/api/reviews/eaten/' + foodId,
+            method: 'PUT',
+            url: '/api/users/'+userId+'/menus/'+foodId,
             data: JSON.stringify(data),
             contentType: 'application/json; charset=utf-8'
         }).done(function() {
@@ -50,6 +52,7 @@ let index = {
     // 리뷰 저장/수정
     save_review: function() {
         let foodId = $("#foodId").val();
+        let userId = $("#loginUserId").val();
         const rateList = document.getElementsByName("rating");
         var rate;
         rateList.forEach((node) => {
@@ -59,11 +62,11 @@ let index = {
         })
         let data = {
             comment: $("#comment").val(),
-            rating : rate
+            rating: rate
         };
         $.ajax({
             method: 'POST',
-            url: '/api/reviews/' + foodId,
+            url: '/api/users/'+userId+'/menus/'+foodId,
             data: JSON.stringify(data),
             contentType: 'application/json; charset=utf-8'
         }).done(function() {

@@ -43,7 +43,7 @@ public class FoodController {
             if (reviewService.isUserWriteReviewOnFood(foodId, user.getUserId())) {
                 model.addAttribute("isReviewed", "true");
                 model.addAttribute("writtenReview", 
-                    reviewService.findByFoodIdAndUserId(foodId, user.getUserId())
+                    reviewService.findDtoByFoodIdAndUserId(foodId, user.getUserId())
                 );
             } else { // 로그인 한 유저가 리뷰를 적지 않았다면
                 model.addAttribute("isReviewed", "false");

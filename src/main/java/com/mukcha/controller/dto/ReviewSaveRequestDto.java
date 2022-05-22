@@ -15,11 +15,11 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 public class ReviewSaveRequestDto {
-
-    private String comment;
-
+    
     @NotBlank(message = "점수 평가는 필수 항목입니다.")
     private String rating;
+    
+    private String comment;
 
 
     @Builder

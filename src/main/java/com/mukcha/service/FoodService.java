@@ -60,7 +60,7 @@ public class FoodService {
 
     // 해당 메뉴를 삭제한다
     @Transactional
-    public void deleteFood(Long foodId) {
+    public boolean deleteById(Long foodId) {
         Food targetFood = findByFoodId(foodId);
         // 연결된 리뷰 모두 삭제
         reviewRepository.deleteAllByFoodId(foodId);
@@ -76,8 +76,14 @@ public class FoodService {
             companyRepository.save(company);
         }
         // repository 에서 삭제
-        foodRepository.delete(targetFood);
-        log.info("해당 메뉴를 삭제하였습니다." + foodId);
+        foodRepository.deleteById(foodId);
+        if (!findFoodOr(foodId).isPresent()) {
+            log.info("해당 메뉴를 삭제하였습니다. "+foodId);
+            return true;
+        } else {
+            log.info("해당 메뉴가 정상적으로 삭제되지 않았습니다. "+foodId);
+            return false;
+        }
     }
 
 

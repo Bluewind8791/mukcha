@@ -11,26 +11,42 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.mukcha.controller.dto.CompanyRequestDto;
 import com.mukcha.controller.dto.FoodSaveRequestDto;
 import com.mukcha.controller.dto.FoodUpdateRequestDto;
-import com.mukcha.controller.helper.MockMvcTestHelper;
+import com.mukcha.controller.dto.SessionUserResponseDto;
+import com.mukcha.controller.helper.WithMockMvcTest;
 import com.mukcha.domain.Category;
 import com.mukcha.domain.Company;
 import com.mukcha.domain.Food;
+import com.mukcha.domain.User;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
+import org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
+import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 
 @ActiveProfiles("test")
 @WithMockUser(roles = "ADMIN")
 @SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
-public class AdminApiControllerTest extends MockMvcTestHelper {
+public class AdminApiControllerTest extends WithMockMvcTest {
+
+    @BeforeEach
+    void before() {
+        prepareTest();
+        User adminUser = createAdminUser("admin@test.com", "admin");
+        this.userResDto = new SessionUserResponseDto(adminUser);
+        mvc = MockMvcBuilders
+            .webAppContextSetup(context)
+            .apply(SecurityMockMvcConfigurers.springSecurity())
+            .build();
+    }
 
     @Test
     @DisplayName("MockMvc 테스트를 이용하여 admin 권한을 가지고 페이지 접근")
@@ -42,6 +58,7 @@ public class AdminApiControllerTest extends MockMvcTestHelper {
 
     @Test
     @DisplayName("메뉴를 새로 생성한다")
+
     void test_1() throws Exception {
         // given
         createCompany("testCompany", "testLogo");

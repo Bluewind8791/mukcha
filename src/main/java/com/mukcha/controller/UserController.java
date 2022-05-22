@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import lombok.RequiredArgsConstructor;
 
 
-// ROLE_USER 권한 있어야 진입가능
+// ROLE_USER 및 ADMIN 권한 있어야 진입가능
 @Controller
 @RequiredArgsConstructor
 @RequestMapping(value = "/user")

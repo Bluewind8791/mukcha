@@ -3,15 +3,19 @@ package com.mukcha.service;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
 
 import com.mukcha.repository.ReviewRepository;
 import com.mukcha.controller.dto.CategoryCountResponseDto;
+import com.mukcha.controller.dto.EatenDateSaveRequestDto;
 import com.mukcha.controller.dto.ReviewResponseDto;
 import com.mukcha.controller.dto.ReviewSaveRequestDto;
 import com.mukcha.domain.Category;
 import com.mukcha.domain.ErrorMessage;
+import com.mukcha.domain.Food;
 import com.mukcha.domain.Review;
+import com.mukcha.domain.User;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -35,45 +39,37 @@ public class ReviewService {
 
 
     // 코멘트와 점수 저장 및 수정
-    public Long saveReview(Long foodId, String userEmail, ReviewSaveRequestDto dto) {
+    public Review saveReview(Long userId, Long foodId,  ReviewSaveRequestDto dto) {
         try {
-            Review review = findByFoodIdAndEmail(foodId, userEmail);
+            Review review = findByFoodIdAndUserId(foodId, userId);
             // update
             review.update(dto.getScore(), dto.getComment());
             log.info(">>> 리뷰가 수정되었습니다. "+review);
-            return review.getReviewId();
-        } catch (IllegalArgumentException e) {
-            Review savedReview = dto.toEntity();
-            savedReview.setFoodAndUser(userService.findByEmail(userEmail), foodService.findByFoodId(foodId));
-            reviewRepository.save(savedReview);
-            log.info(">>> 리뷰가 생성되었습니다. "+savedReview);
-            return savedReview.getReviewId();
+            return review;
+        } catch (IllegalArgumentException | NoSuchElementException e) {
+            // create
+            Review review = dto.toEntity();
+            User user = userService.findUser(userId);
+            Food food = foodService.findByFoodId(foodId);
+            review.setFoodAndUser(user, food);
+            log.info(">>> 리뷰가 생성되었습니다. "+review);
+            return reviewRepository.save(review);
         }
     }
 
-    private Review findByFoodIdAndEmail(Long foodId, String userEmail) {
-        return reviewRepository.findAllByFoodId(foodId).stream().filter(r -> r.getUser().getEmail().equals(userEmail))
-            .findFirst().orElseThrow(() -> 
-                new IllegalArgumentException(ErrorMessage.REVIEW_NOT_FOUND.getMessage()+"/foodId="+foodId+"/email"+userEmail)
-            );
-    }
-
     // 먹은 날짜를 저장 및 수정
-    public Review saveEatenDate(Long foodId, String email, String eatenDate) {
-        // String eatenDate -> LocalDate 로 변환 (yyyy-mm-dd)
-        String[] date = eatenDate.split("-");
-        LocalDate eatenDateLD = LocalDate.of(Integer.parseInt(date[0]), Integer.parseInt(date[1]), Integer.parseInt(date[2]));
-        Review review = findByFoodIdAndEmail(foodId, email);
-        review.setEatenDate(eatenDateLD);
-        log.info(">>> 먹은 날짜를 기록하였습니다. "+eatenDate);
+    public Review saveEatenDate(Long userId, Long foodId, EatenDateSaveRequestDto requestDto) {
+        Review review = findByFoodIdAndUserId(foodId, userId);
+        review.setEatenDate(LocalDate.parse(requestDto.getEatenDate()));
+        log.info(">>> 먹은 날짜를 기록하였습니다. "+review);
         return reviewRepository.save(review);
     }
 
     // Review 삭제
     @Transactional
-    public void deleteReview(Long foodId, String userEmail) {
+    public void deleteReview(Long userId, Long foodId) {
         // 현재 로그인한 유저가 작성한 해당 음식의 리뷰를 찾는다.
-        Review review = findByFoodIdAndEmail(foodId, userEmail);
+        Review review = findByFoodIdAndUserId(foodId, userId);
         // Food 와 User 와의 관계를 null 시킨다.
         review.setUserToNull();
         review.setFoodToNull();
@@ -105,12 +101,20 @@ public class ReviewService {
     }
 
     // 유저 아이디와 음식 아이디를 통하여 리뷰 찾기
-    public ReviewResponseDto findByFoodIdAndUserId(Long foodId, Long userId) {
+    public ReviewResponseDto findDtoByFoodIdAndUserId(Long foodId, Long userId) {
         // 해당 메뉴의 리뷰 리스트
         List<Review> foodReviews = reviewRepository.findAllByFoodId(foodId);
         Review reviewFilterByUserId = foodReviews.stream().filter(
             r -> r.getUser().getUserId().equals(userId)).findFirst().get();
         return new ReviewResponseDto(reviewFilterByUserId);
+    }
+
+    // 유저 아이디와 음식 아이디를 통하여 리뷰 찾기
+    public Review findByFoodIdAndUserId(Long foodId, Long userId) {
+        // 해당 메뉴의 리뷰 리스트
+        List<Review> foodReviews = reviewRepository.findAllByFoodId(foodId);
+        return foodReviews.stream().filter(
+            r -> r.getUser().getUserId().equals(userId)).findFirst().get();
     }
 
     // 해당 메뉴의 모든 리뷰를 페이징 처리하여 가져온다

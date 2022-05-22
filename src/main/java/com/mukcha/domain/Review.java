@@ -15,7 +15,6 @@ import javax.persistence.Table;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.NonNull;
 import lombok.ToString;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -38,7 +37,6 @@ public class Review extends BaseTimeEntity {
 
     private String comment;
 
-    @NonNull
     private Score score;
 
     @Column(name = "likes_count", columnDefinition = "integer default 0")
@@ -57,14 +55,6 @@ public class Review extends BaseTimeEntity {
     private User user;
 
 
-    public void setFoodToNull() {
-        this.food = null;
-    }
-
-    public void setUserToNull() {
-        this.user = null;
-    }
-
     public void update(Score score, String comment) {
         this.score = score;
         this.comment = comment;
@@ -77,6 +67,14 @@ public class Review extends BaseTimeEntity {
     public void setFoodAndUser(User user, Food food) {
         this.food = food;
         this.user = user;
+    }
+
+    public void setFoodToNull() {
+        this.food = null;
+    }
+
+    public void setUserToNull() {
+        this.user = null;
     }
 
 }

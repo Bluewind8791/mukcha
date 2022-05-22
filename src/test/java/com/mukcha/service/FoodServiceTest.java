@@ -77,8 +77,9 @@ public class FoodServiceTest extends WithTest {
         reviewTestHelper.createReview(food, user);
         Long foodId = food.getFoodId();
         // when
-        foodService.deleteFood(foodId);
+        boolean result = foodService.deleteById(foodId);
         // then
+        assertEquals(true, result);
         assertThrows(IllegalArgumentException.class, () -> foodService.findByFoodId(foodId));
         assertEquals(List.of(), foodService.findAllByCompanyId(company.getCompanyId())); // 해당 회사에 삭제한 음식이 있는지 검사
     }

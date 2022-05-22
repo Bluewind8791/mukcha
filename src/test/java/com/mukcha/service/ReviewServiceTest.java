@@ -3,17 +3,14 @@ package com.mukcha.service;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-import java.time.LocalDate;
 import java.util.List;
 
 import com.mukcha.controller.dto.CategoryCountResponseDto;
 import com.mukcha.controller.dto.ReviewResponseDto;
-import com.mukcha.controller.dto.ReviewSaveRequestDto;
 import com.mukcha.domain.Category;
 import com.mukcha.domain.Company;
 import com.mukcha.domain.Food;
 import com.mukcha.domain.Review;
-import com.mukcha.domain.Score;
 import com.mukcha.domain.User;
 import com.mukcha.service.helper.WithTest;
 
@@ -45,60 +42,12 @@ public class ReviewServiceTest extends WithTest {
 
 
     @Test
-    @DisplayName("1. 유저가 해당 음식에 점수와 코멘트를 매긴다.")
-    void test_1() {
-        // given
-        ReviewSaveRequestDto dto = new ReviewSaveRequestDto("testComment", "인생 메뉴에요!");
-        Long reviewId = reviewService.saveReview(food.getFoodId(), user.getEmail(), dto);
-        // when
-        Review savedReview = reviewService.findReview(reviewId);
-        System.out.println(savedReview);
-        // then
-        assertEquals("ReviewTestFood", savedReview.getFood().getName());
-        assertEquals("reviewTestUser", savedReview.getUser().getNickname());
-        assertEquals("testComment", savedReview.getComment());
-        assertEquals(Score.BEST, savedReview.getScore());
-    }
-
-    @Test
-    @DisplayName("2. 점수와 코멘트를 단 리뷰에 추가적으로 먹은날짜를 기록한다.")
-    void testSaveEatenDate() {
-        // given
-        Review review = reviewTestHelper.createReview(food, user);
-        // when
-        reviewService.saveEatenDate(food.getFoodId(), user.getEmail(), "1991-12-14");
-        // then
-        Review savedReview = reviewService.findReview(review.getReviewId());
-        assertEquals(LocalDate.of(1991, 12, 14), savedReview.getEatenDate());
-    }
-
-    @Test
-    @DisplayName("3. 리뷰의 점수, 코멘트, 먹은날짜를 수정한다.")
-    void test_3() {
-        // given
-        reviewTestHelper.createReview(food, user);
-        reviewService.saveEatenDate(food.getFoodId(), user.getEmail(), "2000-01-01");
-        // when
-        ReviewSaveRequestDto dto = new ReviewSaveRequestDto("testComment", "인생 메뉴에요!");
-        Long reviewId = reviewService.saveReview(food.getFoodId(), user.getEmail(), dto);
-        reviewService.saveEatenDate(food.getFoodId(), user.getEmail(), "2022-05-01");
-        // then
-        Review savedReview = reviewService.findReview(reviewId);
-        System.out.println(savedReview);
-        assertEquals("ReviewTestFood", savedReview.getFood().getName());
-        assertEquals("reviewTestUser", savedReview.getUser().getNickname());
-        assertEquals("testComment", savedReview.getComment());
-        assertEquals(Score.BEST, savedReview.getScore());
-        assertEquals(LocalDate.of(2022, 05, 01), savedReview.getEatenDate());
-    }
-
-    @Test
     @DisplayName("4. 사용자가 해당 메뉴에 달았던 리뷰를 삭제한다.")
     void test_4() {
         // given
         Review review = reviewTestHelper.createReview(food, user);
         // when
-        reviewService.deleteReview(food.getFoodId(), user.getEmail());
+        reviewService.deleteReview(user.getUserId(), food.getFoodId());
         // then
         assertThrows(IllegalArgumentException.class, () -> reviewService.findReview(review.getReviewId()));
     }
