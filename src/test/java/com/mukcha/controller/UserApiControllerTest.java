@@ -1,50 +1,71 @@
 package com.mukcha.controller;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.mukcha.controller.dto.SessionUserResponseDto;
 import com.mukcha.controller.dto.UserUpdateRequestDto;
-import com.mukcha.controller.helper.WithControllerTest;
+import com.mukcha.controller.helper.WithMockMvcTest;
 import com.mukcha.domain.User;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.MediaType;
+import org.springframework.security.test.context.support.WithMockUser;
+import org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers;
 import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
+import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
+import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 
 @ActiveProfiles("test")
+@WithMockUser(roles = "USER")
 @SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
-public class UserApiControllerTest extends WithControllerTest {
+public class UserApiControllerTest extends WithMockMvcTest {
 
+    @BeforeEach
+    void before() {
+        prepareTest();
+        User user = createUser("user@test.com", "ben");
+        this.userResDto = new SessionUserResponseDto(user);
+        mvc = MockMvcBuilders
+            .webAppContextSetup(context)
+            .apply(SecurityMockMvcConfigurers.springSecurity())
+            .build();
+    }
 
     @Test
-    @DisplayName("유저가 회원 정보를 업데이트한다.")
-    void testUpdateUserInfo() {
+    @DisplayName("회원 개인정보를 업데이트한다")
+    void testUpdateUserInfo() throws JsonProcessingException, Exception {
         // given
-        User user = createUser("email@test.com", "testnick");
+        User user = userService.findUser(userResDto.getUserId());
         Long userId = user.getUserId();
         String expectNickname = "changed";
         String expectGender = "MALE";
         String expectBirth = "1991";
         String expectProfileImage = "profileImage";
-        String url = "http://localhost:"+port+"/api/users/update";
+        String url = "http://localhost:"+port+"/api/users/"+userId;
         UserUpdateRequestDto requestDto = UserUpdateRequestDto.builder()
             .nickname(expectNickname)
             .gender(expectGender)
             .birthYear(expectBirth)
             .profileImage(expectProfileImage)
             .build();
-        HttpEntity<UserUpdateRequestDto> httpEntity = new HttpEntity<>(requestDto);
         // when
-        ResponseEntity<Long> responseEntity = restTemplate.exchange(url, HttpMethod.PUT, httpEntity, Long.class);
+        mvc.perform(MockMvcRequestBuilders
+            .put(url)
+            .requestAttr("loginUser", userResDto)
+            .contentType(MediaType.APPLICATION_JSON)
+            .content(new ObjectMapper().writeValueAsString(requestDto))
+        ).andExpect(MockMvcResultMatchers.status().isOk());
         // then
-        assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
-        User expectUser = userRepository.findById(userId).get();
+        User expectUser = userService.findUser(userId);
         assertEquals(expectNickname, expectUser.getNickname());
         assertEquals(expectGender, expectUser.getGender().name());
         assertEquals(expectBirth, expectUser.getBirthYear().toString());
@@ -54,18 +75,19 @@ public class UserApiControllerTest extends WithControllerTest {
 
 
     @Test
-    @DisplayName("유저가 회원을 탈퇴한다.")
-    void testDisableUser() {
+    @DisplayName("회원을 탈퇴한다")
+    void testDisableUser() throws Exception {
         // given
-        createUser("email@test.com", "testnick");
-        // String url = "http://localhost:"+port+"/api/users/disable";
-        
-        // HttpEntity<> httpEntity = new HttpEntity<T>(requestDto);
-
+        User user = userService.findUser(userResDto.getUserId());
+        Long userId = user.getUserId();
+        String url = "http://localhost:"+port+"/api/users/"+userId;
         // when
-        // ResponseEntity<Long> responseEntity = restTemplate.exchange(url, HttpMethod.PUT, requestEntity, Long.class);
-
+        mvc.perform(MockMvcRequestBuilders
+            .patch(url)
+            .requestAttr("loginUser", userResDto)
+        ).andExpect(MockMvcResultMatchers.status().isOk());
         // then
+        assertThrows(IllegalArgumentException.class, () -> userService.findUser(userId));
     }
 
 

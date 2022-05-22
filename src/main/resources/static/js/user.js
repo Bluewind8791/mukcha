@@ -11,9 +11,10 @@ let index = {
 
     // 회원 탈퇴 메소드
     disable: function() {
+        let userId = $("#loginUserId").val();
         $.ajax({
             method: 'PATCH',
-            url: '/api/users',
+            url: '/api/users/' + userId,
             contentType: 'application/json; charset=utf-8'
         }).done(function() {
             alert("회원이 탈퇴되었습니다. 확인을 누르면 메인으로 돌아갑니다.");
@@ -26,6 +27,7 @@ let index = {
 
     // 회원 정보 업데이트
     update: function() {
+        let userId = $("#loginUserId").val();
         let userData = {
             nickname: $("#nickname").val(),
             gender: $("#gender").val(),
@@ -33,7 +35,7 @@ let index = {
         };
         $.ajax({
             method: 'PUT',
-            url: '/api/users',
+            url: '/api/users/' + userId,
             data: JSON.stringify(userData),
             contentType: 'application/json; charset=utf-8'
         }).done(function() {

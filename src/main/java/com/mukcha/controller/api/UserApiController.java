@@ -6,13 +6,13 @@ import javax.servlet.http.HttpSession;
 
 import com.mukcha.config.dto.LoginUser;
 import com.mukcha.config.dto.SessionUser;
-import com.mukcha.controller.dto.SessionUserResponseDto;
 import com.mukcha.controller.dto.UserUpdateRequestDto;
 import com.mukcha.service.UserService;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PatchMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -31,35 +31,31 @@ public class UserApiController {
 
 
     // 회원 정보 수정
-    @PutMapping
+    @PutMapping("/{userId}")
     public ResponseEntity<?> updateUserInfo(
+            @PathVariable Long userId,
             @RequestBody UserUpdateRequestDto dto, // json data
             @LoginUser SessionUser sessionUser
     ) {
-        if (sessionUser != null) {
-            SessionUserResponseDto sessionDto = userService.getSessionUserInfo(sessionUser);
-            Long userId = sessionDto.getUserId();
+        if (sessionUser.getEmail() == userService.findUser(userId).getEmail()) {
             userService.update(userId, dto);
             return new ResponseEntity<>(HttpStatus.OK);
         }
         return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
     }
 
-
     // 회원 탈퇴 구현
-    @PatchMapping
+    @PatchMapping("/{userId}")
     public ResponseEntity<?> disableUser(
+        @PathVariable Long userId,
         @LoginUser SessionUser sessionUser,
         HttpServletRequest request
     ) {
-        if (sessionUser != null) {
-            SessionUserResponseDto userDto = userService.getSessionUserInfo(sessionUser);
-            if (userDto.getUserId() == userDto.getUserId()) {
-                userService.disableUser(userDto.getUserId());
-                HttpSession session = request.getSession();
-                session.invalidate(); // delete login session
-                return new ResponseEntity<>(HttpStatus.OK);
-            }
+        if (sessionUser.getEmail() == userService.findUser(userId).getEmail()) {
+            userService.disableUser(userId);
+            HttpSession session = request.getSession();
+            session.invalidate(); // delete login session
+            return new ResponseEntity<>(HttpStatus.OK);
         }
         return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
     }
