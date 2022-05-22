@@ -67,8 +67,10 @@
           </li>
           <!-- 로그인 사용자 노출 영역 -->
           <li class="nav-item">
-            <a class="nav-link" th:href="'/users/'+${loginUser.userId}" sec:authorize="isAuthenticated()">내 정보</a>
-            <input type="hidden" id="loginUserId" th:value="${loginUser.userId}" >
+            <a class="nav-link" th:href="'/users/'+${loginUser.userId}" sec:authorize="isAuthenticated()">
+              <input type="hidden" id="loginUserId" th:value="${loginUser.userId}" >
+              내 정보
+            </a>
           </li>
           <li class="nav-item">
             <a class="nav-link" href="/logout" sec:authorize="isAuthenticated()">로그아웃</a>
