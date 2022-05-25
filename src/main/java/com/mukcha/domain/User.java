@@ -50,7 +50,6 @@ public class User extends BaseTimeEntity { //  implements UserDetails
     private String profileImage;
 
     private String birthYear;
-    // private LocalDate birthday;
 
     @Enumerated(value = EnumType.STRING) // enum 이름을 DB에 저장
     private Gender gender;
