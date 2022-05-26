@@ -53,8 +53,11 @@ public class ReviewApiController {
         @PathVariable Long foodId,
         @PathVariable Long userId
     ) {
-        reviewService.deleteReview(userId, foodId);
-        return new ResponseEntity<>(HttpStatus.OK);
+        if (reviewService.deleteReview(userId, foodId)) {
+            return ResponseEntity.ok().build();
+        } else {
+            return ResponseEntity.badRequest().build();
+        }
     }
 
 

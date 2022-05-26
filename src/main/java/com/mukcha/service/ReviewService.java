@@ -67,15 +67,22 @@ public class ReviewService {
 
     // Review 삭제
     @Transactional
-    public void deleteReview(Long userId, Long foodId) {
+    public boolean deleteReview(Long userId, Long foodId) {
         // 현재 로그인한 유저가 작성한 해당 음식의 리뷰를 찾는다.
         Review review = findByFoodIdAndUserId(foodId, userId);
+        Long reviewId = review.getReviewId();
         // Food 와 User 와의 관계를 null 시킨다.
         review.setUserToNull();
         review.setFoodToNull();
         reviewRepository.save(review);
         reviewRepository.deleteById(review.getReviewId());
-        log.info(">>> 해당 리뷰가 삭제 처리되었습니다."+review.toString());
+        if (!reviewRepository.findById(reviewId).isPresent()) {
+            log.info(">>> 해당 리뷰가 삭제 처리되었습니다."+review.toString());
+            return true;
+        } else {
+            log.error(ErrorMessage.FAIL_DELETE_REVIEW.getMessage()+review.toString());
+            return false;
+        }
     }
 
 
