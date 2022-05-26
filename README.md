@@ -50,7 +50,13 @@ coverY: 0
 ![aws](https://img.shields.io/badge/-AWS-232F3E?style=for-the-badge\&logo=amazonaws\&logoColor=white) ![GitHub Actions](https://github.com/img.shields.io/badge/-GitHub%20Actions-2088FF?style=for-the-badge\&logo=GitHubActions\&logoColor=white) ![NGINX](https://img.shields.io/badge/-NGINX-009639?style=for-the-badge\&logo=NGINX\&logoColor=white) ![MySQL](https://img.shields.io/badge/-MySQL-4479A1?style=for-the-badge\&logo=MySQL\&logoColor=white) ![Linux](https://img.shields.io/badge/-Linux-FCC624?style=for-the-badge\&logo=Linux\&logoColor=white)\
 ![html](https://img.shields.io/badge/-HTML5-E34F26?style=for-the-badge\&logo=html5\&logoColor=white) ![Thymeleaf](https://img.shields.io/badge/-Thymeleaf-005F0F?style=for-the-badge\&logo=Thymeleaf\&logoColor=white) ![Bootstrap5](https://img.shields.io/badge/-Bootstrap5-7952B3?style=for-the-badge\&logo=Bootstrap\&logoColor=white)
 
-***
+
+
+## API 명세서
+
+{% content-ref url="api/" %}
+[api](api/)
+{% endcontent-ref %}
 
 ## 느낀 점
 
