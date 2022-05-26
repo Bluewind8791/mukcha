@@ -1,51 +1,65 @@
 package com.mukcha.controller;
 
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import com.mukcha.config.dto.LoginUser;
 import com.mukcha.config.dto.SessionUser;
-import com.mukcha.controller.dto.SessionUserResponseDto;
-import com.mukcha.controller.dto.UserResponseDto;
+import com.mukcha.domain.Category;
+import com.mukcha.service.ReviewService;
 import com.mukcha.service.UserService;
 
-import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.servlet.ModelAndView;
 
 import lombok.RequiredArgsConstructor;
 
-
-// ROLE_USER 및 ADMIN 권한 있어야 진입가능
-@Controller
+@RestController
 @RequiredArgsConstructor
-@RequestMapping(value = "/user")
+@RequestMapping(value = "/users")
 public class UserController {
 
+    private final ReviewService reviewService;
     private final UserService userService;
 
 
-    // 회원 개인정보 수정 페이지
-    @GetMapping("/edit")
-    public String viewUserEditPage(Model model, @LoginUser SessionUser sessionUser) {
-        // Login User
+    // 해당 유저 정보 페이지
+    @GetMapping("/{userId}")
+    public ModelAndView viewUserInfo(
+        @PathVariable Long userId,
+        @LoginUser SessionUser sessionUser
+    ) {
+        Map<String, Object> response = new HashMap<>();
         if (sessionUser != null) {
-            SessionUserResponseDto sUser = userService.getSessionUserInfo(sessionUser);
-            model.addAttribute("loginUser", sUser);
-            UserResponseDto user = userService.findByUserId(sUser.getUserId());
-            model.addAttribute("user", user);
+            response.put("loginUser", userService.getSessionUserInfo(sessionUser));
         }
-        return "user/editForm";
+        // 해당 유저가 각 카테고리별로 적은 리뷰의 개수
+        response.put("reviewCount", reviewService.getCountByCategoryAndUserId(userId));
+        // 모든 카테고리 리스트
+        response.put("categoryList", List.of(Category.values()));
+        // 해당 유저의 정보
+        response.put("user", userService.findByUserId(userId));
+        return new ModelAndView("user/userPage", response, HttpStatus.OK);
     }
 
-    // 회원 탈퇴 페이지
-    @GetMapping(value = "/delete")
-    public String viewDisableUserPage(@LoginUser SessionUser sessionUser, Model model) {
-        // Login User
+    // 해당 유저의 각 카테고리별 리뷰 페이지
+    @GetMapping("/{userId}/category/{category}")
+    public ModelAndView viewReviewInCategory(
+        @PathVariable Long userId,
+        @PathVariable Category category,
+        @LoginUser SessionUser sessionUser
+    ) {
+        Map<String, Object> response = new HashMap<>();
         if (sessionUser != null) {
-            model.addAttribute("loginUser", userService.getSessionUserInfo(sessionUser));
+            response.put("loginUser", userService.getSessionUserInfo(sessionUser));
         }
-        return "user/deleteForm";
+        response.put("reviewList", reviewService.findAllByCategoryAndUserId(userId, category));
+        return new ModelAndView("food/reviews", response, HttpStatus.OK);
     }
-
 
 }
