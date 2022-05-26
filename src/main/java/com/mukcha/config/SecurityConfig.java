@@ -33,13 +33,10 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http
-            .csrf().disable()
+            .csrf().disable() // for h2-console
             .formLogin().disable()
-            .headers(
-                headers -> {
-                    headers.frameOptions().disable();// for h2-console
-                }
-            )
+            .headers().frameOptions().disable() // for h2-console
+            .and()
             .authorizeRequests(request -> {
                 request
                     .antMatchers("/").permitAll()
@@ -53,9 +50,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
             })
             .oauth2Login(login -> {
                 login.loginPage("/login"); // 로그인 페이지 커스텀
-                login.userInfoEndpoint() // oauth2 로그인 성공 후 가져올 때의 설정들
-                    // 리소스 서버에서 사용자 정보를 가져온 상태에서 추가로 진행하고자 하는 기능 명시
-                    .userService(customOAuth2UserService);
+                // oauth2 로그인 성공 후 사용자 정보를 가져올 때의 설정
+                login.userInfoEndpoint()
+                    .userService(customOAuth2UserService); // 로그인 성공 시 후속 조치를 진행할 userService 구현체
             })
             .logout(logout -> {
                 logout.logoutSuccessUrl("/");

@@ -46,6 +46,15 @@ public class HomeController {
         return "user/loginForm";
     }
 
+    // 권한없음 페이지
+    @GetMapping("/access-denied")
+    public String accessDenied(Model model, @LoginUser SessionUser sessionUser) {
+        if (sessionUser != null) {
+            model.addAttribute("loginUser", userService.getSessionUserInfo(sessionUser));
+        }
+        return "/forbidden";
+    }
+
     // 해당 유저 정보 페이지
     @GetMapping(value = "/users/{userId}")
     public String viewUserInfo(
