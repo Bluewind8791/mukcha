@@ -1,7 +1,3 @@
----
-coverY: 0
----
-
 # MUKCHA
 
 라이브 웹사이트 [바로가기](http://ec2-3-39-16-219.ap-northeast-2.compute.amazonaws.com/)
@@ -102,12 +98,6 @@ coverY: 0
 >>>>>>> 13882d72d20b45f1606815d4e42c48e8e8ebe051
 
 
-
-## API 명세서
-
-{% content-ref url="api/" %}
-[api](api/)
-{% endcontent-ref %}
 
 ## 느낀 점
 
