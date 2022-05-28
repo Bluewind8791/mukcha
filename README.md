@@ -24,19 +24,11 @@
 
 ### 백엔드
 
-<<<<<<< HEAD
 - **Spring Framework** 위에서 **Spring Boot** 및 **Spring Data JPA**를 사용하여 개발하였습니다.
 - 회원 로그인 및 회원 가입 기능은 **OAuth2**를 통하여 Google, Naver 아이디를 통한 간단 회원가입 및 로그인을 구현하였습니다.
 - 간편한 메뉴 데이터베이스 관리를 위하여 관리자 ROLE을 생성하고, **Spring Security** 기술을 통하여 보안 및 권한별 접근 페이지 차별화를 시도하였습니다.
 - **JPA Specification** 기술을 활용한 검색 기능을 구현하였습니다.
 - 프랜차이즈 메뉴 데이터베이스 구축을 최대한 자동화 시키기 위하여 **JSoup** 및 **Selenium** 을 통한 HTML Parsing(크롤링)을 사용하였습니다.
-=======
-* **Spring Framework** 위에서 **Spring Boot** 및 **Spring Data JPA**를 사용하여 개발하였습니다.
-* 회원 로그인 및 회원 가입 기능은 **OAuth2**를 통하여 Google, Naver 아이디를 통한 간단 회원가입 및 로그인을 구현하였습니다.
-* 간편한 메뉴 데이터베이스 관리를 위하여 관리자 ROLE을 생성하고, **Spring Security** 기술을 통하여 보안 및 권한별 접근 페이지 차별화를 시도하였습니다.
-* **JPA Specification** 기술을 활용한 검색 기능을 구현하였습니다.
-* 프랜차이즈 메뉴 데이터베이스 구축을 최대한 자동화 시키기 위하여 **JSoup 및 Selenium 을 통한 HTML Parsing**(크롤링)을 사용하였습니다.
->>>>>>> 13882d72d20b45f1606815d4e42c48e8e8ebe051
 
 ### SERVER
 
@@ -50,7 +42,6 @@
 
 ## 사용 기술
 
-<<<<<<< HEAD
 ### Front-End
 
 <div align="center">
@@ -91,13 +82,8 @@
       <!-- <img alt="docker" src="https://img.shields.io/badge/-Docker-2496ED?style=for-the-badge&logo=docker&logoColor=white" /> -->
   </p>
 </div>
-=======
-![spring](https://img.shields.io/badge/-Spring-6DB33F?style=for-the-badge\&logo=spring\&logoColor=white) ![spring-boot](https://github.com/img.shields.io/badge/-Spring%20Boot-6DB33F?style=for-the-badge\&logo=springboot\&logoColor=white) ![spring security](https://github.com/img.shields.io/badge/-Spring%20Security-6DB33F?style=for-the-badge\&logo=springsecurity\&logoColor=white) ![spring data jpa](https://github.com/img.shields.io/badge/-Spring%20Data%20JPA-6DB33F?style=for-the-badge)\
-![aws](https://img.shields.io/badge/-AWS-232F3E?style=for-the-badge\&logo=amazonaws\&logoColor=white) ![GitHub Actions](https://github.com/img.shields.io/badge/-GitHub%20Actions-2088FF?style=for-the-badge\&logo=GitHubActions\&logoColor=white) ![NGINX](https://img.shields.io/badge/-NGINX-009639?style=for-the-badge\&logo=NGINX\&logoColor=white) ![MySQL](https://img.shields.io/badge/-MySQL-4479A1?style=for-the-badge\&logo=MySQL\&logoColor=white) ![Linux](https://img.shields.io/badge/-Linux-FCC624?style=for-the-badge\&logo=Linux\&logoColor=white)\
-![html](https://img.shields.io/badge/-HTML5-E34F26?style=for-the-badge\&logo=html5\&logoColor=white) ![Thymeleaf](https://img.shields.io/badge/-Thymeleaf-005F0F?style=for-the-badge\&logo=Thymeleaf\&logoColor=white) ![Bootstrap5](https://img.shields.io/badge/-Bootstrap5-7952B3?style=for-the-badge\&logo=Bootstrap\&logoColor=white)
->>>>>>> 13882d72d20b45f1606815d4e42c48e8e8ebe051
 
-
+***
 
 ## 느낀 점
 
