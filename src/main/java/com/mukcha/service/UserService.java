@@ -42,19 +42,25 @@ public class UserService {
     }
 
     // 회원 정보 업데이트
-    public Long update(Long userId, UserUpdateRequestDto dto) {
+    public UserResponseDto update(Long userId, UserUpdateRequestDto dto) {
         findUser(userId).update(dto.getNickname(), dto.getProfileImage(), dto.getGender(), dto.getBirthYear());
-        log.info(">>> 개인정보 수정이 처리되었습니다."+ userId);
-        return userId;
+        log.info(">>> 개인정보 수정이 처리되었습니다. "+userId);
+        return findByUserId(userId);
     }
 
     // 회원 탈퇴
     @Transactional(rollbackFor = {RuntimeException.class})
-    public void disableUser(Long userId) {
+    public boolean disableUser(Long userId) {
         User user = findUser(userId);
         user.disableUser(); // disable 처리
         userRepository.save(user);
-        log.info(">>> 해당 회원이 탈퇴되었습니다."+ userId);
+        if (user.isEnabled()) {
+            log.error(">>> 회원 탈퇴에 실패하였습니다. "+userId);
+            return false;
+        } else {
+            log.info(">>> 해당 회원이 탈퇴되었습니다. "+userId);
+            return true;
+        }
     }
 
 

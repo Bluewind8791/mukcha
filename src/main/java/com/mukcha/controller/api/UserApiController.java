@@ -1,5 +1,6 @@
 package com.mukcha.controller.api;
 
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
@@ -9,7 +10,8 @@ import com.mukcha.config.dto.SessionUser;
 import com.mukcha.controller.dto.UserUpdateRequestDto;
 import com.mukcha.service.UserService;
 
-import org.springframework.http.HttpStatus;
+import org.springframework.hateoas.EntityModel;
+import org.springframework.hateoas.mediatype.problem.Problem;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -32,16 +34,14 @@ public class UserApiController {
 
     // 회원 정보 수정
     @PutMapping("/{userId}")
-    public ResponseEntity<?> updateUserInfo(
+    public ResponseEntity<?> update(
             @PathVariable Long userId,
             @RequestBody UserUpdateRequestDto dto, // json data
             @LoginUser SessionUser sessionUser
     ) {
-        if (sessionUser.getEmail() == userService.findUser(userId).getEmail()) {
-            userService.update(userId, dto);
-            return new ResponseEntity<>(HttpStatus.OK);
-        }
-        return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        return ResponseEntity.ok(EntityModel.of(userService.update(userId, dto))
+            .add(linkTo(methodOn(UserApiController.class).update(userId, dto, sessionUser)).withSelfRel()
+        ));
     }
 
     // 회원 탈퇴 구현
@@ -51,13 +51,17 @@ public class UserApiController {
         @LoginUser SessionUser sessionUser,
         HttpServletRequest request
     ) {
-        if (sessionUser.getEmail() == userService.findUser(userId).getEmail()) {
-            userService.disableUser(userId);
-            HttpSession session = request.getSession();
+        boolean result = userService.disableUser(userId);
+        HttpSession session = request.getSession();
+        if (result) {
             session.invalidate(); // delete login session
-            return new ResponseEntity<>(HttpStatus.OK);
+            return ResponseEntity.ok().build();
+        } else {
+            return ResponseEntity.badRequest().body(Problem.create()
+                .withTitle("회원 탈퇴에 실패하였습니다.")
+                .withDetail("다시 시도해주세요.")
+            );
         }
-        return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
     }
 
 
