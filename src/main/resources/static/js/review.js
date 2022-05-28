@@ -21,7 +21,7 @@ let index = {
             contentType: 'application/json; charset=utf-8'
         }).done(function() {
             alert("리뷰가 삭제되었습니다.");
-            location.href = "/menu/" + foodId;
+            location.href = "/menus/" + foodId;
         }).fail(function(error) {
             alert("리뷰 삭제가 실패하였습니다. 다시 시도해주세요.");
             alert(JSON.stringify(error));
@@ -42,7 +42,7 @@ let index = {
             contentType: 'application/json; charset=utf-8'
         }).done(function() {
             alert("먹은 날짜가 적용되었습니다.");
-            location.href = "/menu/" + foodId;
+            location.href = "/menus/" + foodId;
         }).fail(function(error) {
             alert("실패하였습니다. 다시 시도해주세요.")
             alert(JSON.stringify(error));
@@ -70,7 +70,7 @@ let index = {
             data: JSON.stringify(data),
             contentType: 'application/json; charset=utf-8'
         }).done(function() {
-            location.href = "/menu/" + foodId;
+            location.href = "/menus/" + foodId;
         }).fail(function(error) {
             alert("리뷰에 실패하였습니다. 다시 시도해주세요.")
             alert(JSON.stringify(error));

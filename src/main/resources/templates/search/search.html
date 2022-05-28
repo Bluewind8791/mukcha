@@ -62,7 +62,7 @@
           <div class="carousel-item active">
             <ul class="menu_list row">
               <li th:each="f, i : ${foodList}" th:if="${i.count} <= 5">
-                <a style="text-decoration: none;" th:title="${f.foodName}" th:href="'/menu/'+${f.foodId}">
+                <a style="text-decoration: none;" th:title="${f.foodName}" th:href="'/menus/'+${f.foodId}">
                   <div class="menu_image_box">
                     <img class="menu_image mb-2" th:src="${f.foodImage}">
                   </div>
@@ -75,7 +75,7 @@
           <div class="carousel-item" th:if="${foodList.size() > 5}">
             <ul class="menu_list row">
               <li th:each="f, i : ${foodList}" th:if="6 <= ${i.count} and ${i.count} <= 10">
-                <a style="text-decoration: none;" th:title="${f.foodName}" th:href="'/menu/'+${f.foodId}">
+                <a style="text-decoration: none;" th:title="${f.foodName}" th:href="'/menus/'+${f.foodId}">
                   <div class="menu_image_box">
                     <img class="menu_image mb-2" th:src="${f.foodImage}">
                   </div>
@@ -115,7 +115,7 @@
     <!-- COMPANY LIST -->
     <div class="row mb-5">
       <div class="col-2 me-3 mb-3 p-3" th:each="c, i : ${companyList}">
-        <a style="text-decoration: none;" th:title="${c.companyName}" th:href="'/company/'+${c.companyId}">
+        <a style="text-decoration: none;" th:title="${c.companyName}" th:href="'/companies/'+${c.companyId}">
           <div id="logo_img">
             <div>
               <img th:src="${c.companyLogo}">

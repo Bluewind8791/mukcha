@@ -46,7 +46,7 @@
               <div class="carousel-item active">
                 <ul class="menu_list row">
                   <li th:each="f, i : ${foodList[com.companyName.toString()]}" th:if="${i.count} <= 5">
-                    <a style="text-decoration: none;" th:title="${f.foodName}" th:href="'/menu/'+${f.foodId}">
+                    <a style="text-decoration: none;" th:title="${f.foodName}" th:href="'/menus/'+${f.foodId}">
                       <div class="menu_image_box">
                         <img class="menu_image mb-2" th:src="${f.foodImage}">
                       </div>
@@ -62,7 +62,7 @@
               <div class="carousel-item" th:if="${foodList[ com.companyName ].size() > 5}" >
                 <ul class="menu_list row">
                   <li th:each="f, i : ${foodList[com.companyName.toString()]}" th:if="6 <= ${i.count} and ${i.count} <= 10">
-                    <a style="text-decoration: none;" th:title="${f.foodName}" th:href="'/menu/'+${f.foodId}">
+                    <a style="text-decoration: none;" th:title="${f.foodName}" th:href="'/menus/'+${f.foodId}">
                       <div class="menu_image_box">
                         <img class="menu_image mb-2" th:src="${f.foodImage}">
                       </div>
@@ -78,7 +78,7 @@
               <div class="carousel-item" th:if="${foodList[ com.companyName ].size() > 10}" >
                 <ul class="menu_list row">
                   <li th:each="f, i : ${foodList[com.companyName.toString()]}" th:if="11 <= ${i.count} and ${i.count} <= 15">
-                    <a style="text-decoration: none;" th:title="${f.foodName}" th:href="'/menu/'+${f.foodId}">
+                    <a style="text-decoration: none;" th:title="${f.foodName}" th:href="'/menus/'+${f.foodId}">
                       <div class="menu_image_box">
                         <img class="menu_image mb-2" th:src="${f.foodImage}">
                       </div>
@@ -94,7 +94,7 @@
               <div class="carousel-item" th:if="${foodList[ com.companyName ].size() > 15}" >
                 <ul class="menu_list row">
                   <li th:each="f, i : ${foodList[com.companyName.toString()]}" th:if="16 <= ${i.count} and ${i.count} <= 20">
-                    <a style="text-decoration: none;" th:title="${f.foodName}" th:href="'/menu/'+${f.foodId}">
+                    <a style="text-decoration: none;" th:title="${f.foodName}" th:href="'/menus/'+${f.foodId}">
                       <div class="menu_image_box">
                         <img class="menu_image mb-2" th:src="${f.foodImage}">
                       </div>
@@ -110,7 +110,7 @@
               <div class="carousel-item" th:if="${foodList[ com.companyName ].size() > 20}" >
                 <ul class="menu_list row">
                   <li th:each="f, i : ${foodList[com.companyName.toString()]}" th:if="21 <= ${i.count} and ${i.count} <= 25">
-                    <a style="text-decoration: none;" th:title="${f.foodName}" th:href="'/menu/'+${f.foodId}">
+                    <a style="text-decoration: none;" th:title="${f.foodName}" th:href="'/menus/'+${f.foodId}">
                       <div class="menu_image_box">
                         <img class="menu_image mb-2" th:src="${f.foodImage}">
                       </div>
@@ -126,7 +126,7 @@
               <div class="carousel-item" th:if="${foodList[ com.companyName ].size() > 25}" >
                 <ul class="menu_list row">
                   <li th:each="f, i : ${foodList[com.companyName.toString()]}" th:if="26 <= ${i.count} and ${i.count} <= 30">
-                    <a style="text-decoration: none;" th:title="${f.foodName}" th:href="'/menu/'+${f.foodId}">
+                    <a style="text-decoration: none;" th:title="${f.foodName}" th:href="'/menus/'+${f.foodId}">
                       <div class="menu_image_box">
                         <img class="menu_image mb-2" th:src="${f.foodImage}">
                       </div>

@@ -30,7 +30,7 @@
 
     <input type="hidden" id="foodId" th:value="${food.foodId}"/>
     <img class="food_image mb-4" th:src="${food.foodImage}">
-    <a style="text-decoration: none;" th:href="'/company/'+${food.companyId}">
+    <a style="text-decoration: none;" th:href="'/companies/'+${food.companyId}">
       <div class="text-muted h5" th:text="${food.companyName}">회사 이름</div>
     </a>
     <div class="h2 fw-bold" th:text="${food.foodName}">메뉴 이름</div>
@@ -186,7 +186,7 @@
     </ul>
 
     <!-- 더보기 -->
-    <a type="button" class="btn btn-light text-secondary w-75" th:href="@{/menu/reviews/}+${food.foodId}">더보기</a>
+    <a type="button" class="btn btn-light text-secondary w-75" th:href="'/menus/'+${food.foodId}+'/reviews'">더보기</a>
 
 
 

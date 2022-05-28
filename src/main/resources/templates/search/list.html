@@ -41,7 +41,7 @@
   <div class="container mt-5 mb-5">
 
     <ul class="d-flex flex-wrap">
-      <a style="text-decoration: none;" th:each="f : ${foodList}" th:href="'/menu/'+${f.foodId}" th:title="${f.foodName}">
+      <a style="text-decoration: none;" th:each="f : ${foodList}" th:href="'/menus/'+${f.foodId}" th:title="${f.foodName}">
         <li class="row border p-3 me-4 mb-3">
           <div class="col-3 p-1">
             <div class="profile_box">

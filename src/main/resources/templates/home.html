@@ -20,15 +20,15 @@
                 <div class="carousel-item active">
                   <ul class="menu_list row">
                     <li th:each="f, i : ${scoreTopTen}" th:if="${i.count} <= 5">
-                      <a th:title="${f.foodName}" th:href="'/menu/'+${f.foodId}">
+                      <a th:title="${f.foodName}" th:href="'/menus/'+${f.foodId}">
                         <div class="menu_image_box">
                           <img class="menu_image mb-2" th:src="${f.foodImage}">
                         </div>
                       </a>
-                      <a style="text-decoration: none;" th:title="${f.companyName}" th:href="'/company/'+${f.companyId}">
+                      <a style="text-decoration: none;" th:title="${f.companyName}" th:href="'/companies/'+${f.companyId}">
                         <div class="text-muted small" th:text="${f.companyName}">회사이름</div>
                       </a>
-                      <a style="text-decoration: none;" th:title="${f.foodName}" th:href="'/menu/'+${f.foodId}">
+                      <a style="text-decoration: none;" th:title="${f.foodName}" th:href="'/menus/'+${f.foodId}">
                         <h6 class="menu-name text-dark fw-bold" th:text="${f.foodName}">메뉴이름</h6>
                       </a>
                       <div class="small fw-bold" style="color: tomato;">
@@ -42,15 +42,15 @@
                 <div class="carousel-item">
                   <ul class="menu_list row">
                     <li th:each="f, i : ${scoreTopTen}" th:if="6 <= ${i.count} and ${i.count} <= 10">
-                      <a th:title="${f.foodName}" th:href="'/menu/'+${f.foodId}">
+                      <a th:title="${f.foodName}" th:href="'/menus/'+${f.foodId}">
                         <div class="menu_image_box">
                           <img class="menu_image mb-2" th:src="${f.foodImage}">
                         </div>
                       </a>
-                      <a style="text-decoration: none;" th:title="${f.companyName}" th:href="'/company/'+${f.companyId}">
+                      <a style="text-decoration: none;" th:title="${f.companyName}" th:href="'/companies/'+${f.companyId}">
                         <div class="text-muted small" th:text="${f.companyName}">회사이름</div>
                       </a>
-                      <a style="text-decoration: none;" th:title="${f.foodName}" th:href="'/menu/'+${f.foodId}">
+                      <a style="text-decoration: none;" th:title="${f.foodName}" th:href="'/menus/'+${f.foodId}">
                         <h6 class="menu-name text-dark fw-bold" th:text="${f.foodName}">메뉴이름</h6>
                       </a>
                       <div class="small fw-bold" style="color: tomato;">
@@ -82,15 +82,15 @@
               <div class="carousel-item active">
                 <ul class="menu_list row">
                   <li th:each="f, i : ${newestTen}" th:if="${i.count} <= 5">
-                    <a th:title="${f.foodName}" th:href="'/menu/'+${f.foodId}">
+                    <a th:title="${f.foodName}" th:href="'/menus/'+${f.foodId}">
                       <div class="menu_image_box">
                         <img class="menu_image mb-2" th:src="${f.foodImage}">
                       </div>
                     </a>
-                    <a style="text-decoration: none;" th:title="${f.companyName}" th:href="'/company/'+${f.companyId}">
+                    <a style="text-decoration: none;" th:title="${f.companyName}" th:href="'/companies/'+${f.companyId}">
                       <div class="text-muted small" th:text="${f.companyName}">회사이름</div>
                     </a>
-                    <a style="text-decoration: none;" th:title="${f.foodName}" th:href="'/menu/'+${f.foodId}">
+                    <a style="text-decoration: none;" th:title="${f.foodName}" th:href="'/menus/'+${f.foodId}">
                       <h6 class="menu-name text-dark fw-bold" th:text="${f.foodName}">메뉴이름</h6>
                     </a>
                     <div class="small fw-bold" style="color: tomato;">
@@ -104,15 +104,15 @@
               <div class="carousel-item">
                 <ul class="menu_list row">
                   <li th:each="f, i : ${newestTen}" th:if="6 <= ${i.count} and ${i.count} <= 10">
-                    <a th:title="${f.foodName}" th:href="'/menu/'+${f.foodId}">
+                    <a th:title="${f.foodName}" th:href="'/menus/'+${f.foodId}">
                       <div class="menu_image_box">
                         <img class="menu_image mb-2" th:src="${f.foodImage}">
                       </div>
                     </a>
-                    <a style="text-decoration: none;" th:title="${f.companyName}" th:href="'/company/'+${f.companyId}">
+                    <a style="text-decoration: none;" th:title="${f.companyName}" th:href="'/companies/'+${f.companyId}">
                       <div class="text-muted small" th:text="${f.companyName}">회사이름</div>
                     </a>
-                    <a style="text-decoration: none;" th:title="${f.foodName}" th:href="'/menu/'+${f.foodId}">
+                    <a style="text-decoration: none;" th:title="${f.foodName}" th:href="'/menus/'+${f.foodId}">
                       <h6 class="menu-name text-dark fw-bold" th:text="${f.foodName}">메뉴이름</h6>
                     </a>
                     <div class="small fw-bold" style="color: tomato;">

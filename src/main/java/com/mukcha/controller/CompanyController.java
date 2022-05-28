@@ -1,6 +1,8 @@
 package com.mukcha.controller;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import com.mukcha.config.dto.LoginUser;
 import com.mukcha.config.dto.SessionUser;
@@ -9,16 +11,19 @@ import com.mukcha.service.CompanyService;
 import com.mukcha.service.FoodService;
 import com.mukcha.service.UserService;
 
-import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.servlet.ModelAndView;
 
 import lombok.RequiredArgsConstructor;
 
 
-@Controller
+@RestController
 @RequiredArgsConstructor
+@RequestMapping("/companies")
 public class CompanyController {
 
     private final CompanyService companyService;
@@ -26,22 +31,22 @@ public class CompanyController {
     private final FoodService foodService;
 
     // VIEW - 각 회사 페이지
-    @GetMapping(value = "/company/{companyId}")
-    public String viewCompanyInfo(
-        Model model,
+    @GetMapping(value = "/{companyId}")
+    public ModelAndView getCompany(
         @PathVariable Long companyId,
         @LoginUser SessionUser sessionUser
     ) {
+        Map<String, Object> response = new HashMap<>();
         if (sessionUser != null) {
-            model.addAttribute("loginUser", userService.getSessionUserInfo(sessionUser));
+            response.put("loginUser", userService.getSessionUserInfo(sessionUser));
         }
         // 해당 회사 정보
-        model.addAttribute("company", companyService.findCompany(companyId));
+        response.put("company", companyService.findCompany(companyId));
         // 모든 카테고리
-        model.addAttribute("categoryList", List.of(Category.values()));
+        response.put("categoryList", List.of(Category.values()));
         // 해당 회사의 모든 메뉴 리스트
-        model.addAttribute("foodList", foodService.findAllFoodsByCategory(companyId));
-        return "company/detail";
+        response.put("foodList", foodService.findAllFoodsByCategory(companyId));
+        return new ModelAndView("company/detail", response, HttpStatus.OK);
     }
 
 
