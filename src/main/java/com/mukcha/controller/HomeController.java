@@ -1,18 +1,22 @@
 package com.mukcha.controller;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import com.mukcha.config.dto.LoginUser;
 import com.mukcha.config.dto.SessionUser;
 import com.mukcha.service.FoodService;
 import com.mukcha.service.UserService;
 
-import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.servlet.ModelAndView;
 
 import lombok.RequiredArgsConstructor;
 
 
-@Controller
+@RestController
 @RequiredArgsConstructor
 public class HomeController {
 
@@ -22,31 +26,33 @@ public class HomeController {
 
     // Root page
     @GetMapping(value = {"/", ""})
-    public String home(Model model, @LoginUser SessionUser sessionUser) {
+    public ModelAndView home(@LoginUser SessionUser sessionUser) {
+        Map<String, Object> response = new HashMap<>();
         // login user 정보
         if (sessionUser != null) {
-            model.addAttribute("loginUser", userService.getSessionUserInfo(sessionUser));
+            response.put("loginUser", userService.getSessionUserInfo(sessionUser));
         }
         // 별점순 TOP 10 메뉴
-        model.addAttribute("scoreTopTen", foodService.findTopTenOrderByScore());
+        response.put("scoreTopTen", foodService.findTopTenOrderByScore());
         // 최신 메뉴 TOP 10
-        model.addAttribute("newestTen", foodService.findTopTenNewest());
-        return "home";
+        response.put("newestTen", foodService.findTopTenNewest());
+        return new ModelAndView("home", response, HttpStatus.OK);
     }
 
     // 로그인 페이지
     @GetMapping("/login")
-    public String login() {
-        return "user/loginForm";
+    public ModelAndView login() {
+        return new ModelAndView("user/loginForm", HttpStatus.OK);
     }
 
     // 권한없음 페이지
     @GetMapping("/access-denied")
-    public String accessDenied(Model model, @LoginUser SessionUser sessionUser) {
+    public ModelAndView accessDenied(@LoginUser SessionUser sessionUser) {
+        Map<String, Object> response = new HashMap<>();
         if (sessionUser != null) {
-            model.addAttribute("loginUser", userService.getSessionUserInfo(sessionUser));
+            response.put("loginUser", userService.getSessionUserInfo(sessionUser));
         }
-        return "/forbidden";
+        return new ModelAndView("forbidden", response, HttpStatus.OK);
     }
 
 }
