@@ -1,77 +1,52 @@
----
-description: ROLE_ADMIN 및 ROLE_USER의 권한을 가진 사용자가 접근 가능한 유저 정보를 수정하는 API입니다.
----
-
 # User API
 
-{% swagger method="put" path="/api/users/{userId}" baseUrl="http://ec2-3-39-16-219.ap-northeast-2.compute.amazonaws.com" summary="해당 회원의 정보를 수정합니다." %}
-{% swagger-description %}
+ROLE_ADMIN 및 ROLE_USER의 권한을 가진 사용자가 접근 가능한 유저 정보를 수정하는 API입니다.
 
-{% endswagger-description %}
 
-{% swagger-parameter in="header" name="Authorization" required="true" %}
-"Bearer "+{token}
-{% endswagger-parameter %}
+---
+## 해당 회원의 정보 수정
 
-{% swagger-parameter in="path" name="userId" type="Long" required="true" %}
-해당 회원의 ID
-{% endswagger-parameter %}
+| Method | URI
+|--|--|
+| `PUT` | /api/users/{userId}
 
-{% swagger-parameter in="body" name="nickname" %}
-회원의 닉네임
-{% endswagger-parameter %}
+### Parameters
 
-{% swagger-parameter in="body" name="gender" %}
-회원의 성별
-{% endswagger-parameter %}
+| Name | Type |  Description  | Required
+|-|-|-|-|
+**> Path**
+userId | Long | 현재 로그인한 유저의 ID | required
+**> Header**
+| Authorization | String | "Bearer  "+{token} | required
+**> Body**
+nickname | String | 회원의 닉네임 | optional
+gender | String | 회원의 성별 | optional
+birthYear | String | 회원의 생년 ("yyyy" 형식) | optional
+**> Responses**
+| **Status** | | **Description** |
+200 | | OK
+400 | | Bad Request
 
-{% swagger-parameter in="body" name="birthYear" %}
-회원의 생년 ("yyyy" 형식)
-{% endswagger-parameter %}
 
-{% swagger-response status="200: OK" description="" %}
-```javascript
-{
-    // Response
-}
-```
-{% endswagger-response %}
 
-{% swagger-response status="400: Bad Request" description="" %}
-```javascript
-{
-    // Response
-}
-```
-{% endswagger-response %}
-{% endswagger %}
+---
+## 회원 탈퇴
 
-{% swagger method="patch" path="/api/users/{userId}" baseUrl="http://ec2-3-39-16-219.ap-northeast-2.compute.amazonaws.com" summary="해당 회원 탈퇴(User.enable = false)를 진행합니다." %}
-{% swagger-description %}
+해당 회원 탈퇴 (User.enable = false)를 진행합니다.
 
-{% endswagger-description %}
+| Method | URI
+|--|--|
+| `PATCH` | /api/users/{userId}
 
-{% swagger-parameter in="header" name="Authorization" %}
-"Bearer "+{token}
-{% endswagger-parameter %}
+### Parameters
 
-{% swagger-parameter in="path" name="userId" type="Long" %}
-해당 회원의 ID
-{% endswagger-parameter %}
-
-{% swagger-response status="200: OK" description="" %}
-```javascript
-{
-    // Response
-}
-```
-{% endswagger-response %}
-
-{% swagger-response status="400: Bad Request" description="" %}
-```javascript
-{
-    // Response
-}
-```
-{% endswagger-response %}
-{% endswagger %}
+| Name | Type |  Description  | Required
+|-|-|-|-|
+**> Path**
+userId | Long | 현재 로그인한 유저의 ID | required
+**> Header**
+| Authorization | String | "Bearer  "+{token} | required
+**> Responses**
+| **Status** | | **Description** |
+200 | | OK
+400 | | Bad Request
