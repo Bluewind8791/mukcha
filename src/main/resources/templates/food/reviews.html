@@ -11,7 +11,7 @@
       < 뒤로가기
     </a>
 
-        <div class="h2 fw-bold text-center" th:text="${foodName}"></div>
+    <div class="h2 fw-bold text-center" th:text="${foodName}"></div>
   </div>
 
   <!-- REVIEW LIST -->
@@ -19,7 +19,7 @@
     <div class="card w-50">
       <div class="card-header">
         <div class="d-flex justify-content-between">
-          <a class="text-decoration-none text-black" th:href="'/users/'+${r.userId}">
+          <a class="text-decoration-none text-black" th:href="'/users/' + ${r.userId}">
             <div class="fw-bold" th:text="${r.userName}">username</div>
           </a>
           <div>

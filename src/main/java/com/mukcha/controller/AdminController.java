@@ -1,5 +1,6 @@
 package com.mukcha.controller;
 
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.*;
 
 import java.util.HashMap;
 import java.util.List;
@@ -7,7 +8,6 @@ import java.util.Map;
 
 import com.mukcha.config.dto.LoginUser;
 import com.mukcha.config.dto.SessionUser;
-import com.mukcha.controller.dto.SessionUserResponseDto;
 import com.mukcha.domain.Category;
 import com.mukcha.service.CompanyService;
 import com.mukcha.service.FoodService;
@@ -21,11 +21,9 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
 
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 
 
 // ADMIN 권한 있어야 진입가능
-@Slf4j
 @RestController
 @RequiredArgsConstructor
 @RequestMapping(value = "/admin")
@@ -40,10 +38,11 @@ public class AdminController {
     @GetMapping(value = {"/", ""})
     public ModelAndView home(@LoginUser SessionUser sessionUser) {
         Map<String, Object> response = new HashMap<>();
+        response.put("_links", // self link 추가
+            linkTo(methodOn(AdminController.class).home(sessionUser)).withSelfRel()
+        );
         if (sessionUser != null) {
-            SessionUserResponseDto user = userService.getSessionUserInfo(sessionUser);
-            response.put("loginUser", user);
-            log.info(">>> 관리자 페이지에 진입하였습니다. "+user.getUserEmail());
+            response.put("loginUser", userService.getSessionUserInfo(sessionUser));
         }
         // 모든 회사 리스트
         response.put("companyList", companyService.findAll());
@@ -58,6 +57,9 @@ public class AdminController {
     @GetMapping(value = "/companies/{companyId}")
     public ModelAndView getCompany(@LoginUser SessionUser sessionUser, @PathVariable Long companyId) {
         Map<String, Object> response = new HashMap<>();
+        response.put("_links",
+            linkTo(methodOn(AdminController.class).getCompany(sessionUser, companyId)).withSelfRel()
+        );
         if (sessionUser != null) {
             response.put("loginUser", userService.getSessionUserInfo(sessionUser));
         }
@@ -74,6 +76,9 @@ public class AdminController {
     @GetMapping(value = "/menus")
     public ModelAndView getMenus(@LoginUser SessionUser sessionUser) {
         Map<String, Object> response = new HashMap<>();
+        response.put("_links",
+            linkTo(methodOn(AdminController.class).getMenus(sessionUser)).withSelfRel()
+        );
         if (sessionUser != null) {
             response.put("loginUser", userService.getSessionUserInfo(sessionUser));
         }

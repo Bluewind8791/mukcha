@@ -1,5 +1,6 @@
 package com.mukcha.controller;
 
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.*;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -40,6 +41,9 @@ public class FoodController {
         @RequestParam(value = "size", defaultValue = "3") Integer size
     ) {
         Map<String, Object> response = new HashMap<>();
+        response.put("_links",
+            linkTo(methodOn(FoodController.class).getMenu(foodId, sessionUser, pageNum, size)).withSelfRel()
+        );
         if (sessionUser != null) {
             SessionUserResponseDto user = userService.getSessionUserInfo(sessionUser);
             response.put("loginUser", user);
@@ -66,6 +70,9 @@ public class FoodController {
     @GetMapping(value = "/{foodId}/reviews")
     public ModelAndView getReviews(@PathVariable Long foodId, @LoginUser SessionUser sessionUser) {
         Map<String, Object> response = new HashMap<>();
+        response.put("_links",
+            linkTo(methodOn(FoodController.class).getReviews(foodId, sessionUser)).withSelfRel()
+        );
         if (sessionUser != null) {
             response.put("loginUser", userService.getSessionUserInfo(sessionUser));
         }
