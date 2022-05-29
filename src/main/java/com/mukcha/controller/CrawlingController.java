@@ -36,7 +36,6 @@ public class CrawlingController {
     @GetMapping(value = "/crawling")
     public String crawling() {
         System.out.println(">>> CRAWLING START <<<");
-        // 치킨플러스();
         // kfc();
         // 처갓집양념치킨();
         // dongdaemunYupdduk();
@@ -144,38 +143,6 @@ public class CrawlingController {
             e1.printStackTrace();
         }
     }
-
-    /**
-     * 정확한 image URL는 모달을 통하여 가져올 수 밖에 없어서 못가져올듯
-     */
-    public void 치킨플러스() {
-        Company company = isCompanyPresent("치킨플러스", "");
-
-        List<String> urlList = new ArrayList<>();
-        urlList.add("http://www.chickenplus.co.kr/menu/default.aspx?menu=치킨메뉴");
-        urlList.add("http://www.chickenplus.co.kr/menu/default.aspx?menu=피자메뉴");
-        urlList.add( "http://www.chickenplus.co.kr/menu/default.aspx?menu=떡볶이메뉴");
-        Document doc;
-        try {
-            for (String url : urlList) {
-                doc = Jsoup.connect(url).get();
-                Elements lists = doc.select("div[class=mn_area]").select("div[groupname=MenuItem]");
-                System.out.println(">>> size: "+lists.size());
-                for (Element e : lists) {
-                    // menu name
-                    String foodName = e.select("div.mn1_txt > p.mn1_tit.menu_s_title").text();
-                    System.out.println(">>> food name: "+foodName);
-                    // 만약 같은 이름의 메뉴가 없다면 DB에 저장
-                    saveFood(foodName, "", company);
-                }
-            }
-        } catch (IOException e1) {
-            System.out.println(ErrorMessage.COMPANY_NOT_FOUND.getMessage() + company.getName());
-            e1.printStackTrace();
-        }
-    }
-
-
 
 
     void baedduck() {

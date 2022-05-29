@@ -64,7 +64,7 @@ public class AdminController {
         // 해당 회사의 정보
         response.put("company", companyService.findCompany(companyId));
         // 해당 회사의 모든 메뉴들
-        response.put("foodList", foodService.findAllByCompanyId(companyId));
+        response.put("foodList", foodService.findDtoAllByCompanyId(companyId));
         // 모든 카테고리 리스트
         response.put("categoryList", List.of(Category.values()));
         return new ModelAndView("admin/adminCompany", response, HttpStatus.OK);

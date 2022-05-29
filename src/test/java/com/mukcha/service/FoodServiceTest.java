@@ -81,7 +81,7 @@ public class FoodServiceTest extends WithTest {
         // then
         assertEquals(true, result);
         assertThrows(IllegalArgumentException.class, () -> foodService.findByFoodId(foodId));
-        assertEquals(List.of(), foodService.findAllByCompanyId(company.getCompanyId())); // 해당 회사에 삭제한 음식이 있는지 검사
+        assertEquals(List.of(), foodService.findDtoAllByCompanyId(company.getCompanyId())); // 해당 회사에 삭제한 음식이 있는지 검사
     }
 
     @Test
@@ -95,6 +95,19 @@ public class FoodServiceTest extends WithTest {
         assertTrue(
             list.stream().map(food -> food.getCategory()).allMatch(c -> c == Category.CHICKEN)
         );
+    }
+
+
+    @Test
+    @DisplayName("해당 회사의 메뉴들 중 해당 메뉴가 있는지 확인")
+    void testIsPresentByCompanyAndFoodName() {
+        // given
+        Company company = companyTestHelper.createCompany("testCompany", "companyLogo");
+        Food food = foodTestHelper.createFood("food", company, Category.CHICKEN, null);
+        // when
+        boolean result1 = foodService.isPresentByCompanyAndFoodName(company, food.getName());
+        // then
+        assertEquals(true, result1);
     }
 
 

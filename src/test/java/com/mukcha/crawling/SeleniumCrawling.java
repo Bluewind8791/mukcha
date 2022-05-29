@@ -4,20 +4,14 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.net.URLEncoder;
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.imageio.ImageIO;
 
 import com.mukcha.domain.Category;
 import com.mukcha.domain.Company;
-import com.mukcha.domain.Food;
-import com.mukcha.repository.FoodRepository;
-import com.mukcha.service.CompanyService;
-import com.mukcha.service.FoodService;
-import com.mukcha.service.S3Uploader;
 
 import org.junit.jupiter.api.Test;
 import org.openqa.selenium.By;
@@ -25,30 +19,57 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 
-import lombok.extern.slf4j.Slf4j;
 
-
-@Slf4j
 @SpringBootTest
 @ActiveProfiles("set1")
-public class SeleniumCrawling {
+// @ActiveProfiles("test")
+public class SeleniumCrawling extends WithSelenium {
 
-    @Autowired private S3Uploader s3Uploader;
-    @Autowired private CompanyService companyService;
-    @Autowired private FoodService foodService;
-    @Autowired private FoodRepository foodRepository;
-
-    public static final String WEB_DRIVER_ID = "webdriver.chrome.driver"; // 드라이버 ID
-    public static final String WEB_DRIVER_PATH = "D:\\ChromeDriver\\chromedriver.exe"; // 드라이버 경로 D:\ChromeDriver
     Company company;
 
+    /* >>> 치킨플러스 <<< */
+    @Test
+    void chickenPlus() throws InterruptedException {
+        company = companyService.findByName("치킨플러스");
+        List<String> urlList = new ArrayList<>();
+        urlList.add("http://www.chickenplus.co.kr/menu/default.aspx?menu=치킨메뉴");
+        urlList.add("http://www.chickenplus.co.kr/menu/default.aspx?menu=피자메뉴");
+        urlList.add( "http://www.chickenplus.co.kr/menu/default.aspx?menu=떡볶이메뉴");
+        for (String url : urlList) {
+            Category category = null;
+            if (url.contains("치킨")) {
+                category = Category.CHICKEN;
+            } else if (url.contains("피자")) {
+                category = Category.PIZZA;
+            } else if (url.contains("떡볶이")) {
+                category = Category.TTEOKBOKKI;
+            }
+            WebDriver driver = before(url);
+            List<WebElement> menuItem = driver.findElements(By.cssSelector("div[groupname=MenuItem]"));
+            for (WebElement menu : menuItem) {
+                // menu name
+                String menuName = menu.findElement(By.cssSelector("div.mn1_txt > p.mn1_tit.menu_s_title")).getText();
+                System.out.println(">>>"+menuName);
+                // image url
+                menu.findElement(By.className("thumbMenu")).click(); // thumbMenu click
+                String image = menu.findElement(By.xpath("//*[@id=\"MenuImage\"]")).getAttribute("src");
+                System.out.println(">>>"+image);
+                // save image
+                String imageUrl = saveImage(menuName, image, "chickenplus");
+                // update Food
+                updateMenu(menuName, imageUrl, company, category);
+            }
+            driver.close();
+        }
+    }
 
 
-    /** >>> 굽네치킨 <<< */
+
+
+    /* >>> 굽네치킨 <<< */
     @Test
     void goobne() throws InterruptedException {
         company = isCompanyPresent("굽네치킨", "https://mukcha-bucket.s3.ap-northeast-2.amazonaws.com/logo/logo_goobne.jpg");
@@ -64,7 +85,6 @@ public class SeleniumCrawling {
         goobneMoveTab(driver, "피자 시리즈", Category.PIZZA);
         driver.close();
     }
-
     private void goobneMoveTab(WebDriver driver, String tabName, Category category) {
         List<WebElement> menuTabs = driver.findElements(By.tagName("a")); // 모든 a tag를 가져온다
         for (int i=0; i<menuTabs.size(); i++) {
@@ -82,7 +102,6 @@ public class SeleniumCrawling {
         }
         goobneCrawling(driver, category);
     }
-
     private void goobneCrawling(WebDriver driver, Category category) {
         List<WebElement> menuList = driver.findElements(By.xpath("//*[@id=\"menu_list\"]/li"));
         for (WebElement menu : menuList) {
@@ -179,77 +198,5 @@ public class SeleniumCrawling {
         String imageUrl = s3Uploader.upload(file, "image");
         System.out.println(imageUrl);
     }
-
-
-    /** >>> METHOD <<< */
-
-    private String saveImage(String menuName, String originImageUrl, String companyName) {
-        BufferedImage saveImage = null;
-        try {
-            saveImage = ImageIO.read(new URL(originImageUrl));
-        } catch (MalformedURLException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        String fileName = "/image/"+companyName+"_"+getEncodedFilename(menuName)+".png";
-        File file = new File(fileName);
-        try {
-            ImageIO.write(saveImage, "png", file);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return s3Uploader.upload(file, "image");
-    }
-
-    private String getEncodedFilename(String displayFileName) {
-        String encodedFilename = null;
-        try {
-            encodedFilename = URLEncoder.encode(displayFileName, "UTF-8").replaceAll("\\+", "%20");
-        } catch (UnsupportedEncodingException e) {
-            e.printStackTrace();
-        }
-        return encodedFilename;
-    }
-
-    private Company isCompanyPresent(String companyName, String companyLogo) {
-        return companyService.findByNameOr(companyName).orElse(
-            createCompany(companyName, companyLogo)
-        );
-    }
-
-    private Company createCompany(String companyName, String companyLogo) {
-        Company company = Company.builder()
-                            .image(companyLogo)
-                            .name(companyName)
-                            .build()
-        ;
-        if (company.getImage() == "") {
-            System.out.println(">>> 회사 <"+company.getName()+">의 로고 이미지를 설정해주세요.");
-        }
-        log.info(">>> 회사가 생성되었습니다: "+company.getName());
-        return companyService.save(company);
-    }
-
-    private void saveFood(String foodName, String imageUrl, Company company, Category category) {
-        Food food = Food.builder()
-                .name(foodName)
-                .image(imageUrl)
-                .company(company)
-                .category(category)
-                .build()
-        ;
-        foodRepository.save(food);
-        log.info(">>> 메뉴<"+food.getName()+"> 이 DB에 생성되었습니다." + food.toString());
-    }
-
-    private Boolean isFoodPresent(String foodName) {
-        if (foodService.findByNameOr(foodName).isPresent()) {
-            return true;
-        } else {
-            return false;
-        }
-    }
-
 
 }

@@ -183,7 +183,11 @@ public class FoodService {
     }
 
     // 해당 회사의 모든 메뉴 가져오기
-    public List<FoodResponseDto> findAllByCompanyId(Long companyId) {
+    public List<Food> findAllByCompany(Company company) {
+        return foodRepository.findAllByCompany(company);
+    }
+
+    public List<FoodResponseDto> findDtoAllByCompanyId(Long companyId) {
         return transDtoList(foodRepository.findAllByCompany( companyRepository.findById(companyId).orElseThrow(() -> 
             new IllegalArgumentException(ErrorMessage.COMPANY_NOT_FOUND.getMessage())
         )));
@@ -191,7 +195,7 @@ public class FoodService {
 
     // 해당 회사의 모든 메뉴 리스트를 카테고리 별로 매핑하여 가져온다
     public Map<String, List<FoodResponseDto>> findAllFoodsByCategory(Long companyId) {
-        List<FoodResponseDto> foods = findAllByCompanyId(companyId);
+        List<FoodResponseDto> foods = findDtoAllByCompanyId(companyId);
         Map<String, List<FoodResponseDto>> map = new HashMap<>();
         for (Category ctg : Category.values()) {
             map.put(ctg.name(), foods
@@ -203,9 +207,19 @@ public class FoodService {
         return map;
     }
 
+    // 해당 회사의 메뉴들 중 해당 메뉴가 있는지 확인
+    public boolean isPresentByCompanyAndFoodName(Company company, String menuName) {
+        return findAllByCompany(company).stream().anyMatch(f -> f.getName().equals(menuName));
+    }
 
+    public Food findByNameAndCompany(Company company, String menuName) {
+        return findAllByCompany(company).stream().filter(f -> f.getName().equals(menuName)).findFirst().orElseThrow(
+            () -> new IllegalArgumentException(ErrorMessage.MENU_NOT_FOUND.getMessage())
+        );
+    }
 
-    // method - Food 리스트를 dto 리스트로 변환한다
+    /* PRIVATE METHODS */
+    // Food 리스트를 dto 리스트로 변환한다
     private List<FoodResponseDto> transDtoList(List<Food> foodList) {
         List<FoodResponseDto> dtos = new ArrayList<>();
         foodList.forEach(food -> {
@@ -214,17 +228,5 @@ public class FoodService {
         });
         return dtos;
     }
-
-    // 해당 회사의 메뉴 이름과 같은 메뉴가 있는지 확인
-    public boolean isPresentFindByFoodNameAndCompanyName(String foodName, String companyName) {
-        boolean isPresent;
-        if (findByNameOr(foodName).isPresent()) {
-            if (findByNameOr(foodName).get().getCompany().getName().equals(companyName))
-                isPresent = true;
-        }
-        isPresent = false;
-        return isPresent;
-    }
-
 
 }
