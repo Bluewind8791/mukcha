@@ -1,10 +1,10 @@
 # Company API
 
-`ROLE_ADMIN`의 권한을 가진 사용자만이 접근 가능한, 회사 정보를 CRUD 하는 API입니다.
-
 
 ---
 ## 새로운 회사 테이블 추가
+
+`ROLE_ADMIN`의 권한을 가진 관리자만이 접근 가능한, 회사 테이블을 추가하는 API입니다.
 
 | Method | URI
 |--|--|
@@ -26,6 +26,8 @@ companyLogo | String | 회사 로고 이미지 URL | optional
 
 ---
 ## 해당 회사 정보 수정
+
+`ROLE_ADMIN`의 권한을 가진 관리자만이 접근 가능한, 해당 회사의 정보를 수정하는 API입니다.
 
 | Method | URI
 |--|--|
@@ -50,6 +52,8 @@ companyLogo | String | 회사 로고 이미지 URL | optional
 
 ---
 ## 해당 회사 테이블 삭제
+
+`ROLE_ADMIN`의 권한을 가진 관리자만이 접근 가능한, 해당 회사 테이블을 삭제하는 API입니다.
 
 | Method | URI
 |--|--|
