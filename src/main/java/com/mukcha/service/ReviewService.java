@@ -80,7 +80,7 @@ public class ReviewService {
             log.info(">>> 해당 리뷰가 삭제 처리되었습니다."+review.toString());
             return true;
         } else {
-            log.error(ErrorMessage.FAIL_DELETE_REVIEW.getMessage()+review.toString());
+            log.error(ErrorMessage.FAIL_DELETE.getMessage()+review.toString());
             return false;
         }
     }

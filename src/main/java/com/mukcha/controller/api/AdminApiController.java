@@ -5,6 +5,7 @@ import javax.validation.Valid;
 import com.mukcha.controller.dto.CompanyRequestDto;
 import com.mukcha.controller.dto.FoodSaveRequestDto;
 import com.mukcha.controller.dto.FoodUpdateRequestDto;
+import com.mukcha.domain.ErrorMessage;
 import com.mukcha.service.CompanyService;
 import com.mukcha.service.FoodService;
 
@@ -44,7 +45,6 @@ public class AdminApiController {
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
-
     // 회사 수정 메소드
     @PutMapping("/companies/{companyId}")
     public ResponseEntity<?> editCompany(
@@ -61,10 +61,13 @@ public class AdminApiController {
         @PathVariable Long foodId,
         @RequestBody FoodUpdateRequestDto requestDto
     ) {
-        foodService.update(foodId, requestDto);
-        return new ResponseEntity<>(HttpStatus.OK);
+        boolean result = foodService.update(foodId, requestDto);
+        if (result) {
+            return ResponseEntity.ok().build();
+        } else {
+            return new ResponseEntity<>(ErrorMessage.FAIL_UPDATE.getMessage(), HttpStatus.BAD_REQUEST);
+        }
     }
-
 
     // 회사 삭제 메소드
     @DeleteMapping("/companies/{companyId}")
@@ -82,16 +85,9 @@ public class AdminApiController {
         if (foodService.deleteById(foodId)) {
             return new ResponseEntity<>(HttpStatus.OK);
         } else {
-            return new ResponseEntity<>("정상적으로 삭제되지 않았습니다.", HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>(ErrorMessage.FAIL_DELETE.getMessage(), HttpStatus.BAD_REQUEST);
         }
     }
-    // @DeleteMapping(value = "/menus/{foodId}")
-    // public String deleteFood(@PathVariable Long foodId, HttpServletRequest request) {
-    //     foodService.deleteFood(foodId);
-    //     // return "redirect:/admin";
-    //     String referer = request.getHeader("Referer");
-    //     return "redirect:"+ referer;
-    // }
 
 
 }

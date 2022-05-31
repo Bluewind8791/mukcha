@@ -1,5 +1,7 @@
 package com.mukcha.controller.dto;
 
+import com.mukcha.domain.Food;
+
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -19,6 +21,24 @@ public class FoodUpdateRequestDto {
         this.foodName = foodName;
         this.foodImage = foodImage;
         this.category = category;
+    }
+
+    public boolean equals(Food food) {
+        if (food.getName().equals(this.foodName)) {
+            if (food.getImage().equals(this.foodImage)) {
+                if (food.getCategory().toString().equals(this.category))
+                    return true;
+            }
+        }
+        return false;
+    }
+
+    @Override
+    public String toString() {
+        return ">>> foodName = "+foodName+
+            " /foodImage = "+foodImage+
+            " /category = "+ category
+        ;
     }
 
 }

@@ -48,14 +48,20 @@ public class FoodService {
         return foodRepository.save(requestDto.toEntity()).getFoodId();
     }
 
-    public Long update(Long foodId, FoodUpdateRequestDto requestDto) {
+    public boolean update(Long foodId, FoodUpdateRequestDto requestDto) {
         findByFoodId(foodId).update(
             requestDto.getFoodName(), 
             requestDto.getFoodImage(),
             Category.valueOf(requestDto.getCategory())
         );
-        log.info(">>> 메뉴 정보가 업데이트 되었습니다." + foodId);
-        return foodId;
+        Food food = findByFoodId(foodId);
+        if (requestDto.equals(food)) {
+            log.info(">>> 메뉴 정보가 업데이트 되었습니다. "+requestDto.getFoodName());
+            return true;
+        } else {
+            log.info(ErrorMessage.FAIL_UPDATE.getMessage()+requestDto.toString());
+            return false;
+        }
     }
 
     // 해당 메뉴를 삭제한다
@@ -81,7 +87,7 @@ public class FoodService {
 
         // 삭제 확인
         if (findFoodOr(foodId).isPresent()) {
-            log.info(">>> 해당 메뉴가 정상적으로 삭제되지 않았습니다. "+foodId);
+            log.info(ErrorMessage.FAIL_UPDATE.getMessage()+foodId);
             return false;
         } else {
             log.info(">>> 해당 메뉴를 삭제하였습니다. "+foodId);
