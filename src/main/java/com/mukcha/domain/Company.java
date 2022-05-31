@@ -46,8 +46,8 @@ public class Company extends BaseTimeEntity {
     private List<Food> foods = new ArrayList<>();
 
 
-    public void addFood(Food food) {
-        this.foods.add(food);
+    public void deleteFood(Food food) {
+        this.foods.remove(food);
     }
 
     public void editCompanyImageUrl(String imageUrl) {

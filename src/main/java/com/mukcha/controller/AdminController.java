@@ -64,7 +64,7 @@ public class AdminController {
             response.put("loginUser", userService.getSessionUserInfo(sessionUser));
         }
         // 해당 회사의 정보
-        response.put("company", companyService.findCompany(companyId));
+        response.put("company", companyService.findDtoById(companyId));
         // 해당 회사의 모든 메뉴들
         response.put("foodList", foodService.findDtoAllByCompanyId(companyId));
         // 모든 카테고리 리스트

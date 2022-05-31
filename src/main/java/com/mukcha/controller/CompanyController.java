@@ -41,7 +41,7 @@ public class CompanyController {
             response.put("loginUser", userService.getSessionUserInfo(sessionUser));
         }
         // 해당 회사 정보
-        response.put("company", companyService.findCompany(companyId));
+        response.put("company", companyService.findDtoById(companyId));
         // 모든 카테고리
         response.put("categoryList", List.of(Category.values()));
         // 해당 회사의 모든 메뉴 리스트

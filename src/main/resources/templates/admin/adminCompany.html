@@ -81,7 +81,6 @@
     </div>
   </div> <!-- end of 메뉴 추가 modal -->
 
-
   <!-- Update Company Modal -->
   <div class="modal" id="updateCompanyModal">
     <div class="modal-dialog">
@@ -110,7 +109,6 @@
       </div>
     </div>
   </div> <!-- end of Update Company modal -->
-
 
   <!-- 회사 삭제 MODAL -->
   <div class="modal fade" th:id="'delCompany'+${companyId}" aria-hidden="true"
@@ -198,7 +196,8 @@
                 <div class="modal-body">
                   <div class="mb-3 mt-3">
                     <label>메뉴 이름</label>
-                    <input id="updateFoodName" name="foodName" class="form-control" placeholder="메뉴 이름을 적어주세요" th:value="${f.foodName}">
+                    <input name="foodName" th:value="${f.foodName}" class="form-control" placeholder="메뉴 이름을 적어주세요" >
+                    <input type="hidden" id="updateFoodName" th:value="${f.foodName}">
                   </div>
                   <div class="mb-3">
                     <label>메뉴 이미지</label>
@@ -230,9 +229,7 @@
               </div>
             </div>
           </div>
-          <!-- 메뉴 삭제 모달2 -->
-          <!-- <form th:action="@{/admin/api/menus/}+${f.foodId}" th:method="DELETE"> -->
-          <!-- </form> -->
+          <!-- 메뉴 삭제 세컨드 모달 -->
           <div class="modal fade" th:id="'deleteMenuModal'+${f.foodId}" aria-hidden="true"
             aria-labelledby="deleteModalToggleLabel" tabindex="-1">
             <div class="modal-dialog modal-dialog-centered">
@@ -248,10 +245,8 @@
                   <p>메뉴를 삭제하시면 해당 메뉴의 모든 리뷰는 삭제됩니다.</p>
                 </div>
                 <div class="modal-footer">
-                  <a class="btn btn-secondary" th:data-bs-target="'#editMenuModal'+${f.foodId}" data-bs-toggle="modal"
-                    data-bs-dismiss="modal">돌아가기</a>
-                  <button id="btn-delete-menu" class="btn btn-danger" type="button">삭제하기</button>
-                  <!-- <button class="btn btn-danger" type="submit">삭제하기</button> -->
+                  <a class="btn btn-secondary" th:data-bs-target="'#editMenuModal'+${f.foodId}" data-bs-toggle="modal" data-bs-dismiss="modal">취소</a>
+                  <button id="btn-delete-menu" type="button" class="btn btn-danger">삭제</button>
                 </div>
               </div>
             </div>

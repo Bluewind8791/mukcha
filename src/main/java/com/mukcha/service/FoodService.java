@@ -61,28 +61,31 @@ public class FoodService {
     // 해당 메뉴를 삭제한다
     @Transactional
     public boolean deleteById(Long foodId) {
-        Food targetFood = findByFoodId(foodId);
         // 연결된 리뷰 모두 삭제
         reviewRepository.deleteAllByFoodId(foodId);
+        log.info(">>> 해당 메뉴의 리뷰가 모두 삭제되었습니다. "+foodId);
+        
         // 연결된 회사의 null 처리
+        Food targetFood = findByFoodId(foodId);
         Long companyId = targetFood.getCompany().getCompanyId();
         Company company = companyRepository.findById(companyId).orElseThrow(
             () -> new IllegalArgumentException(ErrorMessage.COMPANY_NOT_FOUND.getMessage()+companyId)
         );
-        List<Food> originFoods = foodRepository.findAllByCompany(company);
-        // 기존 food 리스트에 삭제하려는 food가 들어있다면
-        if (originFoods.contains(targetFood)) {
-            originFoods.remove(targetFood);
-            companyRepository.save(company);
-        }
+        Food originFood = company.getFoods().stream().filter(f -> f.getFoodId().equals(foodId)).findFirst().get();
+        company.deleteFood(originFood);
+        companyRepository.save(company);
+
         // repository 에서 삭제
         foodRepository.deleteById(foodId);
-        if (!findFoodOr(foodId).isPresent()) {
-            log.info("해당 메뉴를 삭제하였습니다. "+foodId);
-            return true;
-        } else {
-            log.info("해당 메뉴가 정상적으로 삭제되지 않았습니다. "+foodId);
+        foodRepository.flush();
+
+        // 삭제 확인
+        if (findFoodOr(foodId).isPresent()) {
+            log.info(">>> 해당 메뉴가 정상적으로 삭제되지 않았습니다. "+foodId);
             return false;
+        } else {
+            log.info(">>> 해당 메뉴를 삭제하였습니다. "+foodId);
+            return true;
         }
     }
 

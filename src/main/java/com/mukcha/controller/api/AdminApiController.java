@@ -69,11 +69,11 @@ public class AdminApiController {
     // 회사 삭제 메소드
     @DeleteMapping("/companies/{companyId}")
     public ResponseEntity<?> deleteCompany(@PathVariable Long companyId) {
-        companyService.deleteCompany(companyId);
-        if (!companyService.findByCompanyIdOr(companyId).isPresent()) {
-            return new ResponseEntity<>(HttpStatus.OK);
+        boolean result = companyService.deleteCompany(companyId);
+        if (result) {
+            return ResponseEntity.ok().build();
         }
-        return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        return ResponseEntity.badRequest().build();
     }
 
     // 메뉴 삭제 메소드

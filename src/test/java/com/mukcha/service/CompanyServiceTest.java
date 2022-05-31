@@ -38,7 +38,7 @@ public class CompanyServiceTest extends WithTest {
         CompanyRequestDto requestDto = new CompanyRequestDto("ChickenPlus", "NewCompanyLogo");
         companyService.update(company.getCompanyId(), requestDto);
         // assert
-        Company savedCompany = companyService.findByCompanyId(company.getCompanyId());
+        Company savedCompany = companyService.findById(company.getCompanyId());
         assertEquals("ChickenPlus", savedCompany.getName());
         assertEquals("NewCompanyLogo", savedCompany.getImage());
     }
@@ -54,7 +54,7 @@ public class CompanyServiceTest extends WithTest {
         // delete
         companyService.deleteCompany(companyId);
         // assert
-        assertThrows(IllegalArgumentException.class, () -> companyService.findByCompanyId(companyId));
+        assertThrows(IllegalArgumentException.class, () -> companyService.findById(companyId));
         assertNull(food1.getCompany());
     }
 

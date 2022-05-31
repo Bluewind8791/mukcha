@@ -42,22 +42,28 @@ public class CompanyService {
     }
 
     public Long update(Long companyId, CompanyRequestDto requestDto) {
-        Company company = findByCompanyId(companyId);
+        Company company = findById(companyId);
         company.update(requestDto.getCompanyName(), requestDto.getCompanyLogo());
         return companyId;
     }
 
     // 회사 삭제
-    public void deleteCompany(Long companyId) {
-        Company targetCompany = findByCompanyId(companyId);
+    public boolean deleteCompany(Long companyId) {
+        Company targetCompany = findById(companyId);
         // 해당 회사의 모든 음식을 찾는다
         List<Food> originFoods = foodRepository.findAllByCompany(targetCompany);
-        if (originFoods.isEmpty()) {
-            return;
+        if (!originFoods.isEmpty()) {
+            // 만약 회사에 메뉴들이 존재한다면 연관관계를 끊는다
+            originFoods.forEach(f -> f.setCompanyNull());
         }
-        // 만약 회사에 메뉴들이 존재한다면 연관관계를 끊는다
-        originFoods.forEach(f -> f.setCompanyNull());
         companyRepository.delete(targetCompany);
+        if (!findByIdOr(companyId).isPresent()) {
+            log.info(">>> 해당 회사가 성공적으로 삭제되었습니다.");
+            return true;
+        } else {
+            log.info(">>> 해당 회사 삭제에 실패하였습니다.");
+            return false;
+        }
     }
 
 
@@ -81,19 +87,19 @@ public class CompanyService {
     }
 
     @Transactional(readOnly = true)
-    public Company findByCompanyId(Long companyId) {
+    public Company findById(Long companyId) {
         return companyRepository.findById(companyId).orElseThrow(() -> 
             new IllegalArgumentException(ErrorMessage.COMPANY_NOT_FOUND.getMessage() + companyId)
         );
     }
 
     @Transactional(readOnly = true)
-    public Optional<Company> findByCompanyIdOr(Long companyId) {
+    public Optional<Company> findByIdOr(Long companyId) {
         return companyRepository.findById(companyId);
     }
 
     @Transactional(readOnly = true)
-    public CompanyResponseDto findCompany(Long companyId) {
+    public CompanyResponseDto findDtoById(Long companyId) {
         Company company = companyRepository.findById(companyId).orElseThrow(() -> 
             new IllegalArgumentException(ErrorMessage.COMPANY_NOT_FOUND.getMessage() + companyId)
         );
