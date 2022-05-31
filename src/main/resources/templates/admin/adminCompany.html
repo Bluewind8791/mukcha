@@ -219,8 +219,7 @@
                   </div>
                 </div>
                 <div class="modal-footer">
-                  <button id="btn-update-menu" th:attr="onclick=|update_menu(${index.index})|" 
-                    type="button" class="btn btn-success">수정</button>
+                  <button th:attr="onclick=|update_menu(${index.index})|" type="button" class="btn btn-success">수정</button>
                   <a class="btn btn-secondary" data-bs-dismiss="modal">취소</a>
                   <a class="btn btn-danger" th:data-bs-target="'#deleteMenuModal'+${f.foodId}" data-bs-toggle="modal" data-bs-dismiss="modal">
                     메뉴 삭제하기
@@ -248,7 +247,7 @@
                   <a class="btn btn-secondary" th:data-bs-target="'#editMenuModal'+${f.foodId}" data-bs-toggle="modal" data-bs-dismiss="modal">
                     취소
                   </a>
-                  <button id="btn-delete-menu" type="button" class="btn btn-danger">삭제</button>
+                  <button type="button" class="btn btn-danger" th:attr="onclick=|delete_menu(${index.index})|" >삭제</button>
                 </div>
               </div>
             </div>

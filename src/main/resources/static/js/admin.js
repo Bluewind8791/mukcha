@@ -6,62 +6,12 @@ let index = {
         $("#btn-save-menu").on("click", () => {
             this.save_menu();
         });
-        // $("#btn-update-menu").on("click", () => {
-        //     this.update_menu();
-        // });
         $("#btn-update-company").on("click", () => {
             this.update_company();
         });
         $("#btn-delete-company").on("click", () => {
             this.delete_company();
         });
-        $("#btn-delete-menu").on("click", () => {
-            this.delete_menu();
-        });
-    },
-
-    // // 메뉴 수정 메소드
-    // update_menu: function() {
-    //     var foodId = $("#updateFoodId").val();
-    //     var targetFoodName = $("#updateFoodName").val();
-    //     var companyId = $("#companyId").val();
-    //     let data = {
-    //         foodName: targetFoodName,
-    //         foodImage: $("#updateFoodImage").val(),
-    //         category: $("#updateCategory").val()
-    //     }
-    //     $.ajax({
-    //         method: 'PUT',
-    //         url: '/api/admin/menus/' + foodId,
-    //         data: JSON.stringify(data),
-    //         contentType: 'application/json; charset=utf-8'
-    //     }).done(function() {
-    //         alert("메뉴 <"+targetFoodName+">가 수정되었습니다.");
-    //         location.href = "/admin/companies/" + companyId;
-    //     }).fail(function(error) {
-    //         alert("메뉴 수정에 실패하였습니다. 다시 시도해주세요.");
-    //         alert(JSON.stringify(error));
-    //     });
-    // },
-
-    // 메뉴 삭제 메소드
-    delete_menu: function() {
-        var companyId = $("#companyId").val();
-        var foodId = $("#updateFoodId").val();
-        var foodName = $("#updateFoodName").val();
-        $.ajax({
-            method: 'DELETE',
-            url: '/api/admin/menus/' + foodId,
-            contentType: 'application/json; charset=utf-8',
-        }).done(function() {
-            alert("메뉴 <"+foodName+">이 삭제되었습니다.");
-            location.href = "/admin/companies/" + companyId;
-        })
-        .fail(function(error) {
-            alert("삭제에 실패하였습니다. 다시 시도해주세요.");
-            alert(JSON.stringify(error));
-        })
-        ;
     },
 
     // 회사 추가 메소드
@@ -152,6 +102,7 @@ let index = {
 
 index.init();
 
+// 메뉴 수정 메소드
 function update_menu(index) {
     var companyId = $("#companyId").val();
     var foodId = $("#updateFoodId"+index).val();
@@ -177,6 +128,25 @@ function update_menu(index) {
         location.href = "/admin/companies/" + companyId;
     }).fail(function(error) {
         alert("메뉴 수정에 실패하였습니다. 다시 시도해주세요.");
+        alert(JSON.stringify(error));
+    });
+}
+
+// 메뉴 삭제 메소드
+function delete_menu(index) {
+    var companyId = $("#companyId").val();
+    var foodId = $("#updateFoodId"+index).val();
+    var foodName = $("#updateFoodName"+index).val();
+    $.ajax({
+        method: 'DELETE',
+        url: '/api/admin/menus/' + foodId,
+        contentType: 'application/json; charset=utf-8',
+    }).done(function() {
+        alert("메뉴 <"+foodName+">이 삭제되었습니다.");
+        location.href = "/admin/companies/" + companyId;
+    })
+    .fail(function(error) {
+        alert("삭제에 실패하였습니다. 다시 시도해주세요.");
         alert(JSON.stringify(error));
     });
 }
