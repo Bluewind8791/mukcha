@@ -6,6 +6,8 @@
 ---
 ## 관리자 루트 페이지
 
+![admin](https://user-images.githubusercontent.com/85560758/171651058-4c131dc6-c96e-4024-a4c6-df45b172aa69.png)
+
 | Method | URI
 |--|--|
 | `GET` | /admin
@@ -64,6 +66,10 @@
 
 ---
 ## 해당 회사 정보 관리자 페이지
+
+
+![admin_companies_1](https://user-images.githubusercontent.com/85560758/171652954-1a5aaf6d-05cd-4388-a53f-bbe55da8e392.png)
+
 
 | Method | URI
 |--|--|
@@ -124,6 +130,9 @@
 
 ---
 ## 모든 메뉴 보기 관리자 페이지
+
+
+![admin_menus](https://user-images.githubusercontent.com/85560758/171653540-65cf7ba6-c8cf-42ed-8b72-ee7918dddbe9.png)
 
 | Method | URI
 |--|--|

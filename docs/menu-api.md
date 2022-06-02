@@ -1,11 +1,13 @@
 # Menu API
 
-## 해당 메뉴의 정보와 리뷰 3개를 보여주는 페이지
+## 해당 메뉴의 정보와 리뷰 최대 3개를 보여주는 페이지
 
 | Method | URI
 |--|--|
 | `GET` | `/menus/{foodId}`
 
+
+![menus_706](https://user-images.githubusercontent.com/85560758/171654893-22b29507-4274-474d-b537-16a2fef92830.png)
 
 ### Parameters
 
@@ -85,6 +87,10 @@ foodId | Long | 해당 메뉴 ID | required
 
 ## 해당 메뉴의 모든 리뷰를 보는 페이지
 
+URL: `/menus/{foodId}` 에서 `더보기` 버튼을 눌러 해당 메뉴의 모든 리뷰를 가져옵니다.
+
+![image](https://user-images.githubusercontent.com/85560758/171655145-a014a39b-30f2-47d8-8f8f-14cead460d99.png)
+
 | Method | URI
 |--|--|
 | `GET` | `/menus/{foodId}/reviews`
@@ -130,7 +136,10 @@ foodId | Long | 해당 메뉴 ID | required
 ---
 ## 새로운 메뉴 테이블 추가
 
-`ROLE_ADMIN`의 권한을 가진 관리자만 접근 가능한 API입니다.
+- `ROLE_ADMIN`의 권한을 가진 관리자만 접근 가능한 API입니다.
+- `/admin/companies/{companyId}`의 URL에 접근하여 해당 회사의 메뉴를 추가합니다.
+
+![image](https://user-images.githubusercontent.com/85560758/171655583-efd83a38-1c92-4ffc-ab89-414b6d761000.png)
 
 | Method | URI
 |--|--|
@@ -155,7 +164,10 @@ companyName | String | 해당 메뉴의 회사명 | required
 ---
 ## 해당 메뉴 정보 수정
 
-`ROLE_ADMIN`의 권한을 가진 관리자만 접근 가능한 API입니다.
+- `ROLE_ADMIN`의 권한을 가진 관리자만 접근 가능한 API입니다.
+- `/admin/companies/{companyId}`의 URL에 접근하여 해당 메뉴를 선택하여 정보를 수정합니다.
+
+![image](https://user-images.githubusercontent.com/85560758/171655968-d93791ed-110d-41bd-a1b3-7b33de183e7c.png)
 
 | Method | URI
 |--|--|
@@ -183,7 +195,11 @@ companyName | String | 해당 메뉴의 회사명 | required
 ---
 ## 해당 메뉴 테이블 삭제
 
-`ROLE_ADMIN`의 권한을 가진 관리자만 접근 가능한 API입니다.
+- `ROLE_ADMIN`의 권한을 가진 관리자만 접근 가능한 API입니다.
+- `/admin/companies/{companyId}`의 URL에 접근하여 해당 메뉴 테이블을 삭제합니다.
+- 해당 메뉴에 연결된 리뷰 또한 함께 삭제됩니다.
+
+![image](https://user-images.githubusercontent.com/85560758/171656436-48bb29c3-606f-454d-a805-e88bd9f5dc62.png)
 
 | Method | URI
 |--|--|

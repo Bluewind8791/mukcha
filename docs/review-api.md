@@ -1,13 +1,16 @@
 # Review API
 
-ROLE_ADMIN 및 ROLE_USER의 권한을 가진 사용자가 접근 가능한, 리뷰 CRUD API입니다.
 
-
-
----
 ## 리뷰 테이블 추가 / 수정
 
-리뷰 항목 중, '코멘트'와 '별점' 항목을 추가 혹은 수정합니다.
+- 로그인 한 유저만이 접근 가능한 API입니다.
+- 리뷰 항목 중, '코멘트'와 '별점' 항목을 추가 혹은 수정합니다.
+- `/menus/{foodId}`의 URL에 접근하여 해당 메뉴에 `평가하기` 버튼을 눌러서 리뷰를 추가합니다.
+- 평가 수정은 해당 `/menus/{foodId}` URL에서 `평가 수정` 버튼을 눌러서 리뷰를 수정합니다.
+
+
+![image](https://user-images.githubusercontent.com/85560758/171657872-b8c9165d-0ff4-4c3a-a392-f88504f7de5d.png)
+
 
 | Method | URI
 |--|--|
@@ -34,7 +37,11 @@ rating | String | 해당 리뷰 점수 | required
 ---
 ## 리뷰 테이블 수정
 
-리뷰 항목 중, '먹은 날짜'를 추가 혹은 수정합니다.
+- 로그인 한 유저만이 접근 가능한 API입니다.
+- 리뷰 항목 중, '먹은 날짜'를 추가 혹은 수정합니다.
+- `/menus/{foodId}`의 URL에 접근하여 해당 메뉴에 `먹은 날짜` 버튼을 눌러서 먹은 날짜를 추가 및 수정합니다.
+
+![image](https://user-images.githubusercontent.com/85560758/171658821-8f1030cd-c743-4086-b8c9-e530819c7b80.png)
 
 | Method | URI
 |--|--|
@@ -59,6 +66,9 @@ eatenDate | String | "yyyy-mm-dd" 형태의 날짜 | required
 
 ---
 ## 리뷰 테이블 삭제
+
+
+![image](https://user-images.githubusercontent.com/85560758/171659102-692cbdb3-b4ec-4191-a815-5bd5965d9f6e.png)
 
 | Method | URI
 |--|--|

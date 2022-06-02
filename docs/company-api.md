@@ -6,6 +6,9 @@
 
 `ROLE_ADMIN`의 권한을 가진 관리자만이 접근 가능한, 회사 테이블을 추가하는 API입니다.
 
+![image](https://user-images.githubusercontent.com/85560758/171653972-ef8e7012-ee2b-44e3-af16-14b53ee66aea.png)
+
+
 | Method | URI
 |--|--|
 | `POST` | /api/admin/companies
@@ -28,6 +31,9 @@ companyLogo | String | 회사 로고 이미지 URL | optional
 ## 해당 회사 정보 수정
 
 `ROLE_ADMIN`의 권한을 가진 관리자만이 접근 가능한, 해당 회사의 정보를 수정하는 API입니다.
+
+![image](https://user-images.githubusercontent.com/85560758/171654110-80703ccc-d0ba-4b53-a7e3-114c8067ee73.png)
+
 
 | Method | URI
 |--|--|
@@ -54,6 +60,8 @@ companyLogo | String | 회사 로고 이미지 URL | optional
 ## 해당 회사 테이블 삭제
 
 `ROLE_ADMIN`의 권한을 가진 관리자만이 접근 가능한, 해당 회사 테이블을 삭제하는 API입니다.
+
+![image](https://user-images.githubusercontent.com/85560758/171654456-979496cf-6a78-4ec8-83af-0627a1fd6013.png)
 
 | Method | URI
 |--|--|
