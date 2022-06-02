@@ -77,7 +77,10 @@ public class FoodService {
         Company company = companyRepository.findById(companyId).orElseThrow(
             () -> new IllegalArgumentException(ErrorMessage.COMPANY_NOT_FOUND.getMessage()+companyId)
         );
-        Food originFood = company.getFoods().stream().filter(f -> f.getFoodId().equals(foodId)).findFirst().get();
+        Food originFood = company.getFoods().stream().filter(f -> 
+            f.getFoodId().equals(foodId)).findFirst().orElseThrow(() -> 
+                new IllegalArgumentException(">>> 테스트중 해당 메뉴를 찾을 수 없습니다.")
+        );
         company.deleteFood(originFood);
         companyRepository.save(company);
 

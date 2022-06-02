@@ -1,7 +1,6 @@
 package com.mukcha.service;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.List;
@@ -60,28 +59,13 @@ public class FoodServiceTest extends WithTest {
         // given
         Food food = foodTestHelper.createFood("name", company, Category.CHICKEN, "image");
         // when
-        Long foodId = foodService.update(food.getFoodId(), new FoodUpdateRequestDto("foodName", "foodImage", "PIZZA"));
+        boolean result = foodService.update(food.getFoodId(), new FoodUpdateRequestDto("foodName", "foodImage", "PIZZA"));
         // then
-        assertTrue(foodId > 0);
-        Food savedFood = foodService.findByFoodId(foodId);
+        Food savedFood = foodService.findByFoodId(food.getFoodId());
+        assertEquals(result, true);
         assertEquals("foodName", savedFood.getName());
         assertEquals("foodImage", savedFood.getImage());
         assertEquals(Category.PIZZA, savedFood.getCategory());
-    }
-
-    @Test
-    @DisplayName("음식을 삭제한다. deleteFood")
-    void test_3() {
-        // given
-        Food food = foodTestHelper.createFood("test1", company, Category.HAMBURGER, null);
-        reviewTestHelper.createReview(food, user);
-        Long foodId = food.getFoodId();
-        // when
-        boolean result = foodService.deleteById(foodId);
-        // then
-        assertEquals(true, result);
-        assertThrows(IllegalArgumentException.class, () -> foodService.findByFoodId(foodId));
-        assertEquals(List.of(), foodService.findDtoAllByCompanyId(company.getCompanyId())); // 해당 회사에 삭제한 음식이 있는지 검사
     }
 
     @Test
@@ -96,7 +80,6 @@ public class FoodServiceTest extends WithTest {
             list.stream().map(food -> food.getCategory()).allMatch(c -> c == Category.CHICKEN)
         );
     }
-
 
     @Test
     @DisplayName("해당 회사의 메뉴들 중 해당 메뉴가 있는지 확인")
