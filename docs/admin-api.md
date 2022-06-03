@@ -10,7 +10,7 @@
 
 | Method | URI
 |--|--|
-| `GET` | /admin
+| `GET` | `/admin`
 
 ### Parameters
 
@@ -73,7 +73,7 @@
 
 | Method | URI
 |--|--|
-| `GET` | /admin/companies/{companyId}
+| `GET` | `/admin/companies/{companyId}`
 
 ### Parameters
 
@@ -136,7 +136,7 @@
 
 | Method | URI
 |--|--|
-| `GET` | /admin/menus
+| `GET` | `/admin/menus`
 
 ### Parameters
 

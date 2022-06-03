@@ -1,6 +1,31 @@
 # Company API
 
 
+## 회사 페이지
+
+![companies_1](https://user-images.githubusercontent.com/85560758/171858843-67de3914-a0f1-4dc1-9519-17076222392e.png)
+
+| Method | URI
+|--|--|
+| `GET` | `/companies/{companyId}`
+
+### Parameters
+
+| Name | Type |  Description  | Required
+|-|-|-|-|
+**> Path**
+companyId | Long | 해당 회사의 ID | required
+**> Responses**
+| **Status** | | **Description** |
+200 | | OK
+
+- Sample Response:
+```json
+
+```
+
+
+
 ---
 ## 새로운 회사 테이블 추가
 
@@ -11,7 +36,7 @@
 
 | Method | URI
 |--|--|
-| `POST` | /api/admin/companies
+| `POST` | `/api/admin/companies`
 
 ### Parameters
 
@@ -37,7 +62,7 @@ companyLogo | String | 회사 로고 이미지 URL | optional
 
 | Method | URI
 |--|--|
-| `PUT` | /api/admin/companies/{companyId}
+| `PUT` | `/api/admin/companies/{companyId}`
 
 
 ### Parameters
@@ -65,7 +90,7 @@ companyLogo | String | 회사 로고 이미지 URL | optional
 
 | Method | URI
 |--|--|
-| `DELETE` | /api/admin/companies/{companyId}
+| `DELETE` | `/api/admin/companies/{companyId}`
 
 
 ### Parameters

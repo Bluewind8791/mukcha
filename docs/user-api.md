@@ -1,14 +1,15 @@
 # User API
 
-ROLE_ADMIN 및 ROLE_USER의 권한을 가진 사용자가 접근 가능한 유저 정보를 수정하는 API입니다.
-
-
----
 ## 해당 회원의 정보 수정
+
+- 로그인 한 유저만이 접근 가능한 API입니다.
+- `/api/user/edit`의 URL에 접근하여 회원 정보를 수정합니다.
+
+![user_edit](https://user-images.githubusercontent.com/85560758/171837027-161e34c0-38f7-48aa-a5f7-97935c4f03e5.png)
 
 | Method | URI
 |--|--|
-| `PUT` | /api/users/{userId}
+| `PUT` | `/api/users/{userId}`
 
 ### Parameters
 
@@ -32,11 +33,15 @@ birthYear | String | 회원의 생년 ("yyyy" 형식) | optional
 ---
 ## 회원 탈퇴
 
-해당 회원 탈퇴 (User.enable = false)를 진행합니다.
+- 로그인 한 유저만이 접근 가능한 API입니다.
+- `/api/user/edit`의 URL에 접근하여 해당 회원 탈퇴 (`User.enable = false`)를 진행합니다.
+
+![image](https://user-images.githubusercontent.com/85560758/171837668-e7bf4663-dcd5-4bbd-984f-641f8e9e4238.png)
+
 
 | Method | URI
 |--|--|
-| `PATCH` | /api/users/{userId}
+| `PATCH` | `/api/users/{userId}`
 
 ### Parameters
 

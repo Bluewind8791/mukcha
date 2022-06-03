@@ -1,6 +1,9 @@
 # Review API
 
 
+## /users/2/category/CHICKEN
+
+
 ## 리뷰 테이블 추가 / 수정
 
 - 로그인 한 유저만이 접근 가능한 API입니다.
@@ -14,7 +17,7 @@
 
 | Method | URI
 |--|--|
-| `POST` | /api/users/{userId}/menus/{foodId}
+| `POST` | `/api/users/{userId}/menus/{foodId}`
 
 ### Parameters
 
@@ -45,7 +48,7 @@ rating | String | 해당 리뷰 점수 | required
 
 | Method | URI
 |--|--|
-| `PUT` | /api/users/{userId}/menus/{foodId}
+| `PUT` | `/api/users/{userId}/menus/{foodId}`
 
 ### Parameters
 
@@ -67,12 +70,14 @@ eatenDate | String | "yyyy-mm-dd" 형태의 날짜 | required
 ---
 ## 리뷰 테이블 삭제
 
+- 로그인 한 유저만이 접근 가능한 API입니다.
+- `/menus/{foodId}`의 URL에 접근하여 해당 메뉴에 `리뷰 삭제` 버튼을 눌러서 본인이 작성한 리뷰를 삭제합니다.
 
 ![image](https://user-images.githubusercontent.com/85560758/171659102-692cbdb3-b4ec-4191-a815-5bd5965d9f6e.png)
 
 | Method | URI
 |--|--|
-| `DELETE` | /api/users/{userId}/menus/{foodId}
+| `DELETE` | `/api/users/{userId}/menus/{foodId}`
 
 ### Parameters
 

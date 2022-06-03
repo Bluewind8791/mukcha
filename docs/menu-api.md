@@ -1,13 +1,15 @@
 # Menu API
 
-## 해당 메뉴의 정보와 리뷰 최대 3개를 보여주는 페이지
+## 메뉴 페이지
+
+- 해당 메뉴의 정보와 리뷰 최대 3개를 보여주는 페이지
+
+![menus_706](https://user-images.githubusercontent.com/85560758/171654893-22b29507-4274-474d-b537-16a2fef92830.png)
 
 | Method | URI
 |--|--|
 | `GET` | `/menus/{foodId}`
 
-
-![menus_706](https://user-images.githubusercontent.com/85560758/171654893-22b29507-4274-474d-b537-16a2fef92830.png)
 
 ### Parameters
 
@@ -85,6 +87,8 @@ foodId | Long | 해당 메뉴 ID | required
 }
 ```
 
+
+---
 ## 해당 메뉴의 모든 리뷰를 보는 페이지
 
 URL: `/menus/{foodId}` 에서 `더보기` 버튼을 눌러 해당 메뉴의 모든 리뷰를 가져옵니다.
@@ -133,6 +137,30 @@ foodId | Long | 해당 메뉴 ID | required
 }
 ```
 
+
+## 카테고리 페이지
+
+- 해당 카테고리의 모든 메뉴 리스트를 보여줍니다.
+
+
+
+
+| Method | URI
+|--|--|
+| `GET` | `/category/{category}`
+
+### Parameters
+
+| Name | Type |  Description  | Required
+|-|-|-|-|
+**> Path**
+category | String | 모두 대문자로 이루어진 해당 카테고리의 영문 이름 (ex.CHICKEN) | required
+**> Responses**
+| **Status** | | **Description** |
+200 | | OK
+
+
+
 ---
 ## 새로운 메뉴 테이블 추가
 
@@ -143,7 +171,7 @@ foodId | Long | 해당 메뉴 ID | required
 
 | Method | URI
 |--|--|
-| `POST` | /api/admin/menus
+| `POST` | `/api/admin/menus`
 
 ### Parameters
 
@@ -161,6 +189,7 @@ companyName | String | 해당 메뉴의 회사명 | required
 201 | | Created
 
 
+
 ---
 ## 해당 메뉴 정보 수정
 
@@ -171,7 +200,7 @@ companyName | String | 해당 메뉴의 회사명 | required
 
 | Method | URI
 |--|--|
-| `PUT` | /api/admin/menus/{foodId}
+| `PUT` | `/api/admin/menus/{foodId}`
 
 ### Parameters
 
@@ -203,7 +232,7 @@ companyName | String | 해당 메뉴의 회사명 | required
 
 | Method | URI
 |--|--|
-| `DELETE` | /api/admin/menus/{foodId}
+| `DELETE` | `/api/admin/menus/{foodId}`
 
 
 ### Parameters
