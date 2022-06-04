@@ -16,7 +16,7 @@ import org.springframework.test.context.ActiveProfiles;
 
 
 @SpringBootTest
-@ActiveProfiles("local")
+@ActiveProfiles("test")
 public class CrawlingControllerTest {
 
     @Test

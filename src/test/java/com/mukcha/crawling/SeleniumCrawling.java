@@ -24,8 +24,8 @@ import org.springframework.test.context.ActiveProfiles;
 
 
 @SpringBootTest
-@ActiveProfiles("set1")
-// @ActiveProfiles("test")
+// @ActiveProfiles("set1")
+@ActiveProfiles("test")
 public class SeleniumCrawling extends WithSelenium {
 
     Company company;

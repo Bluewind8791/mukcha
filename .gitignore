@@ -48,3 +48,4 @@ setting.tar
 ### DB Init ###
 src/main/java/com/mukcha/config/DBInit.java
 
+src/test/resources/application-test2.yml

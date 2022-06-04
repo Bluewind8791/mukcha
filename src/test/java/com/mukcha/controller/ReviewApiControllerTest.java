@@ -46,7 +46,7 @@ public class ReviewApiControllerTest extends WithMockMvcTest {
         User user = createUser("user@test.com", "ben-user");
         this.userResDto = new SessionUserResponseDto(user);
         this.userDto = userService.findByUserId(user.getUserId());
-        mvc = MockMvcBuilders
+        this.mvc = MockMvcBuilders
             .webAppContextSetup(context)
             .apply(SecurityMockMvcConfigurers.springSecurity())
             .build();

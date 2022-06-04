@@ -48,22 +48,33 @@ jobs:
       - name: Grant execute permission for gradlew
         run: chmod +x ./gradlew
         shell: bash
-      
+
+      - name: Setup MySQL for test
+        uses: samin/mysql-action@v1
+        with:
+          mysql database: 'test'
+          mysql root password: ${{ secrets.RootPassword }} # Required if "mysql user" is empty, default is empty. The root superuser password
+          mysql user: 'developer' # Required if "mysql root password" is empty, default is empty. The superuser for the specified database. Of course you can use secrets, too
+          mysql password: ${{ secrets.DatabasePassword }} # Required if "mysql user" exists. The password for the "mysql user"
+
       - name: Build with Gradle
-        run: ./gradlew build -x test
+        run: ./gradlew build
         shell: bash
-        
+      # - name: Build with Gradle
+      #   run: ./gradlew build -x test
+      #   shell: bash
+
       - name: Make zip file
         run: zip -r ./$GITHUB_SHA.zip .
         shell: bash
-      
+
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v1
         with:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: ${{ env.AWS_REGION }}
-      
+
       - name: Upload to S3
         run: aws s3 cp --region ${{ env.AWS_REGION }} ./$GITHUB_SHA.zip s3://$S3_BUCKET_NAME/mukcha.zip
 
