@@ -25,7 +25,7 @@ public class HomeController {
 
 
     // Root page
-    @GetMapping(value = {"/", ""})
+    @GetMapping({"/", ""})
     public ModelAndView home(@LoginUser SessionUser sessionUser) {
         Map<String, Object> response = new HashMap<>();
         // login user 정보

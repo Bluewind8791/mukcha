@@ -24,7 +24,7 @@ public class SearchController {
     private final CompanyService companyService;
 
 
-    @GetMapping(value = "/search")
+    @GetMapping("/search")
     public String search(
         @RequestParam(required = false) String keyword,
         Model model,
@@ -40,7 +40,7 @@ public class SearchController {
         return "search/search";
     }
 
-    @GetMapping(value = "/search/menu")
+    @GetMapping("/search/menu")
     public String foodSearchList(
         @RequestParam(required = false) String keyword,
         Model model,
@@ -54,7 +54,7 @@ public class SearchController {
         return "search/list";
     }
 
-    @GetMapping(value = "/search/company")
+    @GetMapping("/search/company")
     public String companySearchList(
         @RequestParam(required = false) String keyword,
         Model model,

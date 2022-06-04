@@ -33,7 +33,7 @@ public class FoodController {
 
 
     // 해당 메뉴의 정보와 리뷰 3개를 보여주는 페이지
-    @GetMapping(value = "/{foodId}")
+    @GetMapping("/{foodId}")
     public ModelAndView getMenu(
         @PathVariable Long foodId,
         @LoginUser SessionUser sessionUser,
@@ -67,7 +67,7 @@ public class FoodController {
     }
 
     // '리뷰 더보기'를 눌러 해당 메뉴의 모든 리뷰 보기
-    @GetMapping(value = "/{foodId}/reviews")
+    @GetMapping("/{foodId}/reviews")
     public ModelAndView getReviews(@PathVariable Long foodId, @LoginUser SessionUser sessionUser) {
         Map<String, Object> response = new HashMap<>();
         response.put("_links",

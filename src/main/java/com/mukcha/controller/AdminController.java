@@ -35,7 +35,7 @@ public class AdminController {
 
 
     // 관리자 루트 페이지
-    @GetMapping(value = {"/", ""})
+    @GetMapping({"/", ""})
     public ModelAndView home(@LoginUser SessionUser sessionUser) {
         Map<String, Object> response = new HashMap<>();
         response.put("_links", // self link 추가
@@ -54,7 +54,7 @@ public class AdminController {
     }
 
     // 해당 회사 정보 페이지
-    @GetMapping(value = "/companies/{companyId}")
+    @GetMapping("/companies/{companyId}")
     public ModelAndView getCompany(@LoginUser SessionUser sessionUser, @PathVariable Long companyId) {
         Map<String, Object> response = new HashMap<>();
         response.put("_links",
@@ -73,7 +73,7 @@ public class AdminController {
     }
 
     // 모든 메뉴 더보기 페이지
-    @GetMapping(value = "/menus")
+    @GetMapping("/menus")
     public ModelAndView getMenus(@LoginUser SessionUser sessionUser) {
         Map<String, Object> response = new HashMap<>();
         response.put("_links",

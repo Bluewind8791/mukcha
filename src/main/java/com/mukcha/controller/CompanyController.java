@@ -31,7 +31,7 @@ public class CompanyController {
     private final FoodService foodService;
 
     // VIEW - 각 회사 페이지
-    @GetMapping(value = "/{companyId}")
+    @GetMapping("/{companyId}")
     public ModelAndView getCompany(
         @PathVariable Long companyId,
         @LoginUser SessionUser sessionUser
