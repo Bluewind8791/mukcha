@@ -20,7 +20,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Transactional
 @SpringBootTest
-@ActiveProfiles("test")
+@ActiveProfiles("test2")
 public class CompanyServiceTest extends WithTest {
 
     @BeforeEach
