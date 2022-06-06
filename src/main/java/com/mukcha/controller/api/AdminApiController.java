@@ -12,7 +12,6 @@ import com.mukcha.service.FoodService;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
-import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 
 import org.springframework.http.HttpStatus;
@@ -30,7 +29,6 @@ import lombok.RequiredArgsConstructor;
 
 @RestController
 @RequiredArgsConstructor
-@SecurityRequirement(name = "security_auth")
 @RequestMapping(value = "/api/admin")
 @Tag(
     name = "Admin API Controller", 
@@ -46,8 +44,7 @@ public class AdminApiController {
     @PostMapping("/companies")
     @Operation(summary = "회사 추가 메소드", description = "새로운 회사 테이블을 추가합니다.")
     public ResponseEntity<?> saveCompany(@Valid @RequestBody CompanyRequestDto requestDto) {
-        boolean result = companyService.save(requestDto);
-        if (result) {
+        if (companyService.save(requestDto)) {
             return ResponseEntity.status(HttpStatus.CREATED).build();
         } else {
             return ResponseEntity.badRequest().build();
@@ -58,8 +55,7 @@ public class AdminApiController {
     @PostMapping("/menus")
     @Operation(summary = "메뉴 추가 메소드", description = "새로운 메뉴 테이블을 추가합니다.")
     public ResponseEntity<?> saveFood(@Valid @RequestBody FoodSaveRequestDto requestDto) {
-        boolean result = foodService.save(requestDto);
-        if (result) {
+        if (foodService.save(requestDto)) {
             return new ResponseEntity<>(HttpStatus.CREATED);
         } else {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
@@ -73,8 +69,7 @@ public class AdminApiController {
         @Parameter(description = "수정하고자 하는 회사의 ID", required = true) @PathVariable Long companyId,
         @RequestBody CompanyRequestDto requestDto
     ) {
-        boolean result = companyService.update(companyId, requestDto);
-        if (result) {
+        if (companyService.update(companyId, requestDto)) {
             return new ResponseEntity<>(HttpStatus.OK);
         }
         return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
@@ -87,8 +82,7 @@ public class AdminApiController {
         @Parameter(description = "수정하고자 하는 메뉴의 ID", required = true) @PathVariable Long foodId,
         @RequestBody FoodUpdateRequestDto requestDto
     ) {
-        boolean result = foodService.update(foodId, requestDto);
-        if (result) {
+        if (foodService.update(foodId, requestDto)) {
             return ResponseEntity.ok().build();
         } else {
             return new ResponseEntity<>(ErrorMessage.FAIL_UPDATE.getMessage(), HttpStatus.BAD_REQUEST);
@@ -101,8 +95,7 @@ public class AdminApiController {
     public ResponseEntity<?> deleteCompany(
         @Parameter(description = "삭제하고자 하는 회사의 ID", required = true) @PathVariable Long companyId
     ) {
-        boolean result = companyService.deleteCompany(companyId);
-        if (result) {
+        if (companyService.deleteCompany(companyId)) {
             return ResponseEntity.ok().build();
         }
         return ResponseEntity.badRequest().build();

@@ -5,6 +5,7 @@ import javax.validation.constraints.NotBlank;
 import com.mukcha.domain.Review;
 import com.mukcha.domain.Score;
 
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -15,10 +16,12 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 public class ReviewSaveRequestDto {
-    
+
     @NotBlank(message = "점수 평가는 필수 항목입니다.")
+    @Schema(description = "해당 리뷰 점수", required = true, example = "또 먹고 싶어요")
     private String rating;
-    
+
+    @Schema(description = "리뷰 코멘트", required = false, example = "맛있어요!")
     private String comment;
 
 
