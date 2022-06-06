@@ -23,6 +23,8 @@ import javax.persistence.Table;
 
 import org.hibernate.annotations.Where;
 
+import com.mukcha.controller.dto.UserUpdateRequestDto;
+
 
 @Getter
 @Entity
@@ -74,6 +76,15 @@ public class User extends BaseTimeEntity { //  implements UserDetails
         if (birthYear != null) this.birthYear = birthYear;
         if (gender != null) this.gender = transClassGender(gender);
         return this;
+    }
+
+    public boolean isEqual(UserUpdateRequestDto dto) {
+        if (dto.getNickname() == this.nickname
+            && dto.getProfileImage() == this.profileImage
+            && dto.getGender() == this.gender.name()
+            && dto.getBirthYear() == this.birthYear
+        ) return true;
+        else return false;
     }
 
     // 회원가입 성별 클래스 전환

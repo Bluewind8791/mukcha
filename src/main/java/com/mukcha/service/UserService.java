@@ -37,15 +37,19 @@ public class UserService {
         }
         // set enable
         user.enableUser();
-        log.info("회원가입이 진행되었습니다." + user.toString());
+        log.info(">>> 회원가입이 진행되었습니다. "+user.toString());
         return userRepository.save(user);
     }
 
     // 회원 정보 업데이트
-    public UserResponseDto update(Long userId, UserUpdateRequestDto dto) {
+    public boolean update(Long userId, UserUpdateRequestDto dto) {
         findUser(userId).update(dto.getNickname(), dto.getProfileImage(), dto.getGender(), dto.getBirthYear());
-        log.info(">>> 개인정보 수정이 처리되었습니다. "+userId);
-        return findByUserId(userId);
+        if (findUser(userId).isEqual(dto)) {
+            log.info(">>> 개인정보 수정이 처리되었습니다. "+dto.toString());
+            return true;
+        }
+        log.info(ErrorMessage.FAIL_UPDATE.getMessage()+dto.toString());
+        return false;
     }
 
     // 회원 탈퇴
@@ -55,7 +59,7 @@ public class UserService {
         user.disableUser(); // disable 처리
         userRepository.save(user);
         if (user.isEnabled()) {
-            log.error(">>> 회원 탈퇴에 실패하였습니다. "+userId);
+            log.error(ErrorMessage.FAIL_DELETE.getMessage()+userId);
             return false;
         } else {
             log.info(">>> 해당 회원이 탈퇴되었습니다. "+userId);
