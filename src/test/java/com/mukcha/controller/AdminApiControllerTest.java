@@ -28,6 +28,7 @@ import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
+import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
@@ -49,11 +50,14 @@ public class AdminApiControllerTest extends WithMockMvcTest {
     }
 
     @Test
-    @DisplayName("MockMvc 테스트를 이용하여 admin 권한을 가지고 페이지 접근")
+    @DisplayName("관리자 루트 페이지 접근")
     void urlTest() throws Exception {
         String url = "http://localhost:" + port + "/admin";
         mvc.perform(MockMvcRequestBuilders.get(url).requestAttr("loginUser", userResDto))
-            .andExpect(MockMvcResultMatchers.status().isOk());
+            .andExpect(MockMvcResultMatchers.status().isOk())
+            .andExpect(MockMvcResultMatchers.model().attribute("loginUser", userResDto))
+            .andDo(MockMvcResultHandlers.print())
+            ;
     }
 
     @Test
@@ -76,10 +80,12 @@ public class AdminApiControllerTest extends WithMockMvcTest {
         String url = "http://localhost:" + port + "/api/admin/menus";
         // when
         mvc.perform(MockMvcRequestBuilders.post(url)
-            .requestAttr("loginUser", userResDto)
-            .contentType(MediaType.APPLICATION_JSON)
-            .content(new ObjectMapper().writeValueAsString(requestDto))
-        ).andExpect(MockMvcResultMatchers.status().isCreated());
+                .requestAttr("loginUser", userResDto)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(new ObjectMapper().writeValueAsString(requestDto)))
+            .andExpect(MockMvcResultMatchers.status().isCreated())
+            .andDo(MockMvcResultHandlers.print())
+        ;
         // then
         Food food = foodRepository.findByName("testName").get();
         assertEquals(foodName, food.getName());
@@ -107,11 +113,12 @@ public class AdminApiControllerTest extends WithMockMvcTest {
         String url = "http://localhost:" + port + "/api/admin/menus/" + updateId;
         // when
         mvc.perform(MockMvcRequestBuilders
-            .put(url)
-            .requestAttr("loginUser", userResDto)
-            .contentType(MediaType.APPLICATION_JSON)
-            .content(new ObjectMapper().writeValueAsString(requestDto))
-        ).andExpect(MockMvcResultMatchers.status().isOk());
+                .put(url)
+                .requestAttr("loginUser", userResDto)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(new ObjectMapper().writeValueAsString(requestDto)))
+            .andExpect(MockMvcResultMatchers.status().isOk())
+            .andDo(MockMvcResultHandlers.print());
         // then
         Food editedFood = foodRepository.findById(updateId).get();
         assertEquals("testName2", editedFood.getName());
@@ -132,11 +139,12 @@ public class AdminApiControllerTest extends WithMockMvcTest {
         String url = "http://localhost:" + port + "/api/admin/companies";
         // when
         mvc.perform(MockMvcRequestBuilders
-            .post(url)
-            .requestAttr("loginUser", userResDto)
-            .contentType(MediaType.APPLICATION_JSON)
-            .content(new ObjectMapper().writeValueAsString(companyRequestDto))
-        ).andExpect(MockMvcResultMatchers.status().isCreated());
+                .post(url)
+                .requestAttr("loginUser", userResDto)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(new ObjectMapper().writeValueAsString(companyRequestDto)))
+            .andExpect(MockMvcResultMatchers.status().isCreated())
+            .andDo(MockMvcResultHandlers.print());
         // then
         Company company = companyRepository.findByName(companyName).get();
         assertEquals(companyName, company.getName());
@@ -158,11 +166,12 @@ public class AdminApiControllerTest extends WithMockMvcTest {
         String url = "http://localhost:" + port + "/api/admin/companies/" + updateId;
         // when
         mvc.perform(MockMvcRequestBuilders
-            .put(url)
-            .requestAttr("loginUser", userResDto)
-            .contentType(MediaType.APPLICATION_JSON)
-            .content(new ObjectMapper().writeValueAsString(requestDto))
-        ).andExpect(MockMvcResultMatchers.status().isOk());
+                .put(url)
+                .requestAttr("loginUser", userResDto)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(new ObjectMapper().writeValueAsString(requestDto)))
+            .andExpect(MockMvcResultMatchers.status().isOk())
+            .andDo(MockMvcResultHandlers.print());
         // then
         Company company = companyRepository.findById(updateId).get();
         assertEquals(expectName, company.getName());
@@ -181,9 +190,10 @@ public class AdminApiControllerTest extends WithMockMvcTest {
         params.put("companyId", targetId);
         // when
         mvc.perform(MockMvcRequestBuilders
-            .delete(url)
-            .requestAttr("loginUser", userResDto)
-        ).andExpect(MockMvcResultMatchers.status().isOk());
+                .delete(url)
+                .requestAttr("loginUser", userResDto))
+            .andExpect(MockMvcResultMatchers.status().isOk())
+            .andDo(MockMvcResultHandlers.print());
         // then
         assertEquals(Optional.empty(), companyRepository.findById(targetId));
     }
@@ -199,14 +209,13 @@ public class AdminApiControllerTest extends WithMockMvcTest {
         String url = "http://localhost:" + port + "/api/admin/menus/" + targetId;
         // when
         mvc.perform(MockMvcRequestBuilders
-            .delete(url)
-            .requestAttr("loginUser", userResDto)
-        ).andExpect(MockMvcResultMatchers.status().isOk());
+                .delete(url)
+                .requestAttr("loginUser", userResDto))
+            .andExpect(MockMvcResultMatchers.status().isOk())
+            .andDo(MockMvcResultHandlers.print());
         // then
         assertEquals(Optional.empty(), foodRepository.findById(targetId));
     }
-
-
 
 
 }
