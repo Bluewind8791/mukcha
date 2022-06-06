@@ -36,9 +36,15 @@ public class CompanyService {
         return companyRepository.save(company);
     }
 
-    public Long save(CompanyRequestDto requestDto) {
-        log.info(">>> 회사 <"+requestDto.getCompanyName()+">를 생성합니다." + requestDto.toString());
-        return companyRepository.save(requestDto.toEntity()).getCompanyId();
+    public boolean save(CompanyRequestDto requestDto) {
+        Long companyId = companyRepository.save(requestDto.toEntity()).getCompanyId();
+        if (findByIdOr(companyId).isPresent()) {
+            log.info(ErrorMessage.FAIL_SAVE+requestDto.toString());
+            return false;
+        } else {
+            log.info(">>> 회사 <"+requestDto.getCompanyName()+">가 생성되었습니다." + requestDto.toString());
+            return true;
+        }
     }
 
     public Long update(Long companyId, CompanyRequestDto requestDto) {

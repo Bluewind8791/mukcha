@@ -21,51 +21,58 @@ repositories {
 dependencies {
 	// Spring Boot
 	implementation('org.springframework.boot:spring-boot-starter-web')
-	compileClasspath("org.springframework.boot:spring-boot-devtools")
 	testImplementation('org.springframework.boot:spring-boot-starter-test')
+	// Spring Boot Devtools
+	compileClasspath("org.springframework.boot:spring-boot-devtools")
 	// Spring Security
 	implementation("org.springframework.boot:spring-boot-starter-security")
 	implementation("org.springframework.security:spring-security-taglibs")
-	// https://mvnrepository.com/artifact/org.springframework.security/spring-security-test
+	// Spring Security Test - https://mvnrepository.com/artifact/org.springframework.security/spring-security-test
 	testImplementation 'org.springframework.security:spring-security-test:4.2.3.RELEASE'
-	// JPA
+	// Spring Data JPA
 	implementation('org.springframework.boot:spring-boot-starter-data-jpa')
+	// Spring Boot Validation
+	implementation('org.springframework.boot:spring-boot-starter-validation')
+	// Spring BOot Actuator: 스프링부트 프로젝트의 여러 상태를 확인해줄 수 있는 의존성
+	implementation('org.springframework.boot:spring-boot-starter-actuator')
+	// Spring Boot OAuth2
+	implementation('org.springframework.boot:spring-boot-starter-oauth2-client')
+	// Spring Cloud AWS - https://mvnrepository.com/artifact/org.springframework.cloud/spring-cloud-starter-aws
+	implementation 'org.springframework.cloud:spring-cloud-starter-aws:2.2.6.RELEASE'
+	// Spring HATEOAS - https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-starter-hateoas
+	implementation('org.springframework.boot:spring-boot-starter-hateoas:2.6.6')
+	// Thymeleaf
+	implementation('org.springframework.boot:spring-boot-starter-thymeleaf')
+	implementation('nz.net.ultraq.thymeleaf:thymeleaf-layout-dialect')
+	implementation('org.thymeleaf.extras:thymeleaf-extras-springsecurity5')
 	// lombok
 	compileOnly('org.projectlombok:lombok')
 	annotationProcessor('org.projectlombok:lombok')
 	testCompileOnly('org.projectlombok:lombok')
 	testAnnotationProcessor('org.projectlombok:lombok')
-	// thymeleaf
-	implementation('org.springframework.boot:spring-boot-starter-thymeleaf')
-	implementation('nz.net.ultraq.thymeleaf:thymeleaf-layout-dialect')
-	implementation('org.thymeleaf.extras:thymeleaf-extras-springsecurity5')
-	// validation
-	implementation('org.springframework.boot:spring-boot-starter-validation')
-	// jsoup HTML parser library @ https://jsoup.org/
+	// Jsoup HTML parser library @ https://jsoup.org/
 	implementation('org.jsoup:jsoup:1.14.3')
-	// https://mvnrepository.com/artifact/org.seleniumhq.selenium/selenium-server
+	// Selenium - https://mvnrepository.com/artifact/org.seleniumhq.selenium/selenium-server
 	implementation 'org.seleniumhq.selenium:selenium-server:3.141.59'
-	// https://mvnrepository.com/artifact/org.json/json
+	// json - https://mvnrepository.com/artifact/org.json/json
 	implementation('org.json:json:20211205')
 	// MySQL
 	implementation('mysql:mysql-connector-java:8.0.23')
 	// H2 DB
 	runtimeClasspath('com.h2database:h2')
-	// Actuator: 스프링부트 프로젝트의 여러 상태를 확인해줄 수 있는 의존성
-	implementation('org.springframework.boot:spring-boot-starter-actuator')
-	// OAuth2
-	implementation('org.springframework.boot:spring-boot-starter-oauth2-client')
-	// https://mvnrepository.com/artifact/org.springframework.cloud/spring-cloud-starter-aws
-	implementation 'org.springframework.cloud:spring-cloud-starter-aws:2.2.6.RELEASE'
-	// https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-starter-hateoas
-	implementation 'org.springframework.boot:spring-boot-starter-hateoas:2.6.6'
+	// Springdoc OpenAPI UI - https://mvnrepository.com/artifact/org.springdoc/springdoc-openapi-ui
+	implementation 'org.springdoc:springdoc-openapi-ui:1.6.9'
+	// Springdoc OpenAPI Security - https://mvnrepository.com/artifact/org.springdoc/springdoc-openapi-security
+	implementation 'org.springdoc:springdoc-openapi-security:1.6.9'
 }
 
 test {
+	filter {
+		excludeTestsMatching "com.mukcha.crawling.*" // exclude all tests from the package
+	}
 	useJUnitPlatform()
 }
 
 jar {
-	// *-plain.jar 만들지 않도록 설정
-    enabled = false
+    enabled = false	// *-plain.jar 만들지 않도록 설정
 }

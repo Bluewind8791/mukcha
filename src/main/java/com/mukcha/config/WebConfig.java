@@ -15,7 +15,6 @@ public class WebConfig implements WebMvcConfigurer {
 
     private final LoginUserArgumentResolver loginUserArgumentResolver;
 
-
     // LoginUserArgumentResolver가 스프링에 인식될 수 있도록 WebMvcConfiguer에 등록
     @Override
     public void addArgumentResolvers(List<HandlerMethodArgumentResolver> resolvers) {

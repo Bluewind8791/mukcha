@@ -6,6 +6,7 @@ import com.mukcha.domain.Category;
 import com.mukcha.domain.Company;
 import com.mukcha.domain.Food;
 
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -18,14 +19,18 @@ import lombok.Setter;
 public class FoodSaveRequestDto {
 
     @NotBlank(message = "메뉴 이름은 필수 입력 값입니다.")
+    @Schema(description = "메뉴 이름", required = true, example = "꿀꿀햄버거")
     private String foodName;
 
+    @Schema(description = "메뉴 이미지 URL", required = false, example = "none")
     private String foodImage;
 
     @NotBlank(message = "카테고리는 필수 입력 값입니다.")
+    @Schema(description = "해당 메뉴의 카테고리", required = true, example = "HAMBURGER")
     private String category;
 
     @NotBlank(message = "회사명은 필수 입력 값입니다.")
+    @Schema(description = "해당 메뉴의 회사명", required = true, example = "먹챠푸드")
     private String companyName;
 
     private Company companyEntity;
