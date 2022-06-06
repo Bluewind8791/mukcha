@@ -55,9 +55,7 @@ public class AdminApiControllerTest extends WithMockMvcTest {
         String url = "http://localhost:" + port + "/admin";
         mvc.perform(MockMvcRequestBuilders.get(url).requestAttr("loginUser", userResDto))
             .andExpect(MockMvcResultMatchers.status().isOk())
-            .andExpect(MockMvcResultMatchers.model().attribute("loginUser", userResDto))
-            .andDo(MockMvcResultHandlers.print())
-            ;
+            .andDo(MockMvcResultHandlers.print());
     }
 
     @Test

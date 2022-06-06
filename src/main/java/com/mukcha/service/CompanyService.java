@@ -32,25 +32,31 @@ public class CompanyService {
 
 
     public Company save(Company company) {
-        log.info(">>> 회사 <"+company.getName()+">를 생성합니다." + company.toString());
+        log.info(">>> 회사 <"+company.getName()+">를 생성합니다. "+company.toString());
         return companyRepository.save(company);
     }
 
     public boolean save(CompanyRequestDto requestDto) {
         Long companyId = companyRepository.save(requestDto.toEntity()).getCompanyId();
-        if (findByIdOr(companyId).isPresent()) {
+        if (companyRepository.findById(companyId).isPresent()) {
+            log.info(">>> 회사 <"+requestDto.getCompanyName()+">가 생성되었습니다. "+requestDto.toString());
+            return true;
+        } else {
             log.info(ErrorMessage.FAIL_SAVE+requestDto.toString());
             return false;
-        } else {
-            log.info(">>> 회사 <"+requestDto.getCompanyName()+">가 생성되었습니다." + requestDto.toString());
-            return true;
         }
     }
 
-    public Long update(Long companyId, CompanyRequestDto requestDto) {
+    public boolean update(Long companyId, CompanyRequestDto requestDto) {
+        String updateName = requestDto.getCompanyName();
+        String updateLogo = requestDto.getCompanyLogo();
         Company company = findById(companyId);
-        company.update(requestDto.getCompanyName(), requestDto.getCompanyLogo());
-        return companyId;
+        company.update(updateName, updateLogo);
+        Company com = findById(companyId);
+        if (com.getName() == updateName && com.getImage() == updateLogo) {
+            return true;
+        }
+        return false;
     }
 
     // 회사 삭제

@@ -73,8 +73,11 @@ public class AdminApiController {
         @Parameter(description = "수정하고자 하는 회사의 ID", required = true) @PathVariable Long companyId,
         @RequestBody CompanyRequestDto requestDto
     ) {
-        companyService.update(companyId, requestDto);
-        return new ResponseEntity<>(HttpStatus.OK);
+        boolean result = companyService.update(companyId, requestDto);
+        if (result) {
+            return new ResponseEntity<>(HttpStatus.OK);
+        }
+        return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
     }
 
     @SpringDocApiResponse

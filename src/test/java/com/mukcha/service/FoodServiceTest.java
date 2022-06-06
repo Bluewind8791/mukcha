@@ -40,13 +40,15 @@ public class FoodServiceTest extends WithTest {
     @Test
     @DisplayName("메뉴를 새로 생성한다. save")
     void test_1() {
+        // given
+        String menuName = "foodName";
         // when
-        Long foodId = foodService.save(
-            new FoodSaveRequestDto("foodName", "foodImage", "CHICKEN", company.getName())
+        boolean result = foodService.save(
+            new FoodSaveRequestDto(menuName, "foodImage", "CHICKEN", company.getName())
         );
         // then
-        assertTrue(foodId > 0);
-        Food food = foodService.findByFoodId(foodId);
+        assertTrue(result);
+        Food food = foodService.findByNameAndCompany(company, menuName);
         assertEquals("foodName", food.getName());
         assertEquals("foodImage", food.getImage());
         assertEquals(Category.CHICKEN, food.getCategory());
