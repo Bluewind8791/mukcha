@@ -8,7 +8,6 @@ public enum ErrorMessage {
     REVIEW_NOT_FOUND(">>> 해당 리뷰를 찾을 수 없습니다."),
     MENU_NOT_FOUND(">>> 해당 메뉴를 찾을 수 없습니다."),
     FAIL_DELETE(">>> 정상적으로 삭제되지 않았습니다."),
-    FAIL_SAVE(">>> 정상적으로 생성되지 않았습니다."),
     FAIL_UPDATE(">>> 정상적으로 수정되지 않았습니다.")
     ;
 

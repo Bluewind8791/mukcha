@@ -33,7 +33,6 @@ public class FoodSaveRequestDto {
     @Schema(description = "해당 메뉴의 회사명", required = true, example = "먹챠푸드")
     private String companyName;
 
-    private Company companyEntity;
 
     @Builder
     public FoodSaveRequestDto(String foodName, String foodImage, String category, String companyName) {
@@ -43,7 +42,7 @@ public class FoodSaveRequestDto {
         this.companyName = companyName;
     }
 
-    public Food toEntity() {
+    public Food toEntity(Company companyEntity) {
         return Food.builder()
             .name(foodName)
             .image(foodImage)
@@ -65,8 +64,13 @@ public class FoodSaveRequestDto {
         return null;
     }
 
-    public void setCompanyEntity(Company company) {
-        this.companyEntity = company;
+    @Override
+    public String toString() {
+        return ">>> foodName: "+this.foodName
+            +" /foodImage: "+this.foodImage
+            +" /category: "+this.category
+            +" /companyName: "+this.companyName
+        ;
     }
 
 }

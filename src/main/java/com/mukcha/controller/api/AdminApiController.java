@@ -58,8 +58,12 @@ public class AdminApiController {
     @PostMapping("/menus")
     @Operation(summary = "메뉴 추가 메소드", description = "새로운 메뉴 테이블을 추가합니다.")
     public ResponseEntity<?> saveFood(@Valid @RequestBody FoodSaveRequestDto requestDto) {
-        foodService.save(requestDto);
-        return new ResponseEntity<>(HttpStatus.CREATED);
+        boolean result = foodService.save(requestDto);
+        if (result) {
+            return new ResponseEntity<>(HttpStatus.CREATED);
+        } else {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
     }
 
     @SpringDocApiResponse

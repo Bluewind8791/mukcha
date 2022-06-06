@@ -39,13 +39,18 @@ public class FoodService {
     private final ReviewRepository reviewRepository;
 
 
-    public Long save(FoodSaveRequestDto requestDto) {
+    public boolean save(FoodSaveRequestDto requestDto) {
         Company com = companyRepository.findByName(requestDto.getCompanyName()).orElseThrow(() -> 
-            new IllegalArgumentException(ErrorMessage.COMPANY_NOT_FOUND.getMessage() + requestDto.getCompanyName())
+            new IllegalArgumentException(ErrorMessage.COMPANY_NOT_FOUND.getMessage()+requestDto.getCompanyName())
         );
-        requestDto.setCompanyEntity(com);
-        log.info(">>> 메뉴가 생성되었습니다." + requestDto.toString());
-        return foodRepository.save(requestDto.toEntity()).getFoodId();
+        Long foodId = foodRepository.save(requestDto.toEntity(com)).getFoodId();
+        if (foodRepository.findById(foodId).isPresent()) {
+            log.info(">>> 메뉴가 생성되었습니다. "+requestDto.toString());
+            return true;
+        } else {
+            log.info(ErrorMessage.FAIL_SAVE.getMessage()+requestDto.toString());
+            return false;
+        }
     }
 
     public boolean update(Long foodId, FoodUpdateRequestDto requestDto) {
