@@ -1,5 +1,8 @@
 package com.mukcha.controller.api;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import javax.validation.Valid;
 
 import com.mukcha.config.dto.SpringDocApiResponse;
@@ -12,6 +15,7 @@ import com.mukcha.service.FoodService;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 
 import org.springframework.http.HttpStatus;
@@ -26,6 +30,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import lombok.RequiredArgsConstructor;
 
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.*;
 
 @RestController
 @RequiredArgsConstructor
@@ -41,13 +46,21 @@ public class AdminApiController {
 
 
     @SpringDocApiResponse
+    @ApiResponse(
+        responseCode = "200", 
+        description = "응답에 성공하였습니다."
+    )
     @PostMapping("/companies")
     @Operation(summary = "회사 추가 메소드", description = "새로운 회사 테이블을 추가합니다.")
     public ResponseEntity<?> saveCompany(@Valid @RequestBody CompanyRequestDto requestDto) {
+        Map<String, Object> headers = new HashMap<>();
+        headers.put("_links",
+            linkTo(methodOn(AdminApiController.class).saveCompany(requestDto)).withSelfRel()
+        );
         if (companyService.save(requestDto)) {
-            return ResponseEntity.status(HttpStatus.CREATED).build();
+            return new ResponseEntity<>(headers, HttpStatus.OK);
         } else {
-            return ResponseEntity.badRequest().build();
+            return new ResponseEntity<>(headers, HttpStatus.BAD_REQUEST);
         }
     }
 
