@@ -32,9 +32,10 @@
     <button class="btn btn-secondary w-50 mb-3" data-bs-toggle="modal" data-bs-target="#updateCompanyModal" >
       회사 수정
     </button>
-    <button class="btn btn-danger w-50" data-bs-toggle="modal" th:data-bs-target="'#delCompany'+${companyId}">
+    <button class="btn btn-danger w-50 mb-3" data-bs-toggle="modal" th:data-bs-target="'#delCompany'+${companyId}">
       회사 삭제
     </button>
+    <a th:href="'/api/admin/crawling/'+${company.companyName}" class="btn btn-success w-50">크롤링</a>
     <div class="text-center h4 mt-5">메뉴 수정 및 삭제는 해당 <strong>메뉴명</strong>을 클릭해주세요.</div>
   </div>
 

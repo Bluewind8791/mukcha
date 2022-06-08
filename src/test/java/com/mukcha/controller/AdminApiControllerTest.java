@@ -33,7 +33,7 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 
-@ActiveProfiles("test")
+@ActiveProfiles("local")
 @WithMockUser(roles = "ADMIN")
 @SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
 public class AdminApiControllerTest extends WithMockMvcTest {
@@ -60,7 +60,6 @@ public class AdminApiControllerTest extends WithMockMvcTest {
 
     @Test
     @DisplayName("메뉴를 새로 생성한다")
-
     void test_1() throws Exception {
         // given
         createCompany("testCompany", "testLogo");

@@ -1,4 +1,4 @@
-package com.mukcha.crawling;
+package com.mukcha.controller.api.helper;
 
 import java.awt.image.BufferedImage;
 import java.io.File;
@@ -36,10 +36,10 @@ public class WithSelenium {
     public static final String WEB_DRIVER_ID = "webdriver.chrome.driver"; // 드라이버 ID
     public static final String WEB_DRIVER_PATH = "D:\\ChromeDriver\\chromedriver.exe"; // 드라이버 경로 D:\ChromeDriver
 
-    protected WebDriver before(String url) throws InterruptedException {
+    protected WebDriver setupDriver(String url) throws InterruptedException {
         System.setProperty(WEB_DRIVER_ID, WEB_DRIVER_PATH);
         ChromeOptions options = new ChromeOptions();
-        // options.addArguments("headless"); // 브라우저 보이지 않기
+        options.addArguments("headless"); // 브라우저 보이지 않기
         WebDriver driver = new ChromeDriver(options);
         driver.get(url); // WebDriver을 해당 url로 이동한다.
         //브라우저 이동시 생기는 로드시간을 기다린다.
@@ -58,14 +58,15 @@ public class WithSelenium {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        String fileName = "/image/"+companyName+"_"+getEncodedFilename(menuName)+".png";
+        String fileName = "/image/"+companyName+"/"+getEncodedFilename(menuName)+".png";
         File file = new File(fileName);
         try {
             ImageIO.write(saveImage, "png", file);
         } catch (IOException e) {
             e.printStackTrace();
         }
-        return s3Uploader.upload(file, "image");
+        log.info(">>> 이미지가 S3로 업로드 되었습니다. "+fileName);
+        return s3Uploader.upload(file, "image/"+companyName);
     }
 
     protected String getEncodedFilename(String displayFileName) {
@@ -76,37 +77,6 @@ public class WithSelenium {
             e.printStackTrace();
         }
         return encodedFilename;
-    }
-
-    protected Company isCompanyPresent(String companyName, String companyLogo) {
-        return companyService.findByNameOr(companyName).orElse(
-            createCompany(companyName, companyLogo)
-        );
-    }
-
-    protected Company createCompany(String companyName, String companyLogo) {
-        Company company = Company.builder()
-                            .image(companyLogo)
-                            .name(companyName)
-                            .build()
-        ;
-        if (company.getImage() == "") {
-            System.out.println(">>> 회사 <"+company.getName()+">의 로고 이미지를 설정해주세요.");
-        }
-        log.info(">>> 회사가 생성되었습니다: "+company.getName());
-        return companyService.save(company);
-    }
-
-    protected void saveFood(String foodName, String imageUrl, Company company, Category category) {
-        Food food = Food.builder()
-                .name(foodName)
-                .image(imageUrl)
-                .company(company)
-                .category(category)
-                .build()
-        ;
-        foodRepository.save(food);
-        log.info(">>> 메뉴<"+food.getName()+"> 이 DB에 생성되었습니다." + food.toString());
     }
 
     protected void updateMenu(String menuName, String imageUrl, Company company, Category category) {
@@ -129,12 +99,5 @@ public class WithSelenium {
         }
     }
 
-    protected Boolean isFoodPresent(String foodName) {
-        if (foodService.findByNameOr(foodName).isPresent()) {
-            return true;
-        } else {
-            return false;
-        }
-    }
 
 }

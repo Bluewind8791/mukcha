@@ -7,7 +7,9 @@ public enum Category {
     HAMBURGER("햄버거"),
     TTEOKBOKKI("떡볶이"), // tteok-bokki
     PASTA("파스타"),
-    SIDEMENU("사이드메뉴");
+    SIDEMENU("사이드메뉴"),
+    ICECREAM("아이스크림"),
+    ;
 
     private String korean;
 
@@ -18,6 +20,5 @@ public enum Category {
     public String getKorean() {
         return korean;
     }
-
 
 }

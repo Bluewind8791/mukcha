@@ -1,4 +1,4 @@
-package com.mukcha.controller;
+package com.mukcha.controller.api;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -27,7 +27,7 @@ import lombok.RequiredArgsConstructor;
 @Controller
 @RequiredArgsConstructor
 @RequestMapping(value = "/admin")
-public class CrawlingController {
+public class JSoupApiController {
 
     private final FoodService foodService;
     private final CompanyService companyService;
@@ -42,107 +42,6 @@ public class CrawlingController {
         return "redirect:/admin";
     }
 
-
-    /**
-     * 이미지를 가져올 때 아이콘이 있는 메뉴는 아이콘만 가져오는 현상이 있음.
-     */
-    void dongdaemunYupdduk() {
-        Company company = isCompanyPresent("불닭발땡초동대문엽기떡볶이", "https://www.yupdduk.com/images/logo61.png");
-        Document doc;
-        String url = "https://www.yupdduk.com/sub/hotmenu?mode=1";
-        try {
-            doc = Jsoup.connect(url).get();
-            Elements tap = doc.select("#cust1div"); // 떡볶이 메뉴
-            yupddukCrawling(tap, company);
-            tap = doc.select("#cust5div");  // 닭발 메뉴
-            yupddukCrawling(tap, company);
-        } catch (IOException e) {
-            System.out.println(ErrorMessage.COMPANY_NOT_FOUND.getMessage() + company.getName());
-            e.printStackTrace();
-        }
-    }
-    private void yupddukCrawling(Elements tap, Company company) {
-        Elements menuList = tap.select("div[class=col-lg-4]");
-        for (Element menu : menuList) {
-            String menuName = menu.select("p[class=mpnone hotmenutitle]").text();
-            if (!isFoodPresent(menuName) && !menuName.isEmpty()) {
-                String image = menu.select("div").select("img").attr("src").replace("..", "");
-                if (image.contains("icon")) {
-                    image = "";
-                } else {
-                    image = "https://www.yupdduk.com" + image;
-                }
-                saveFood(menuName, image, company);
-            }
-        }
-    }
-
-
-    /**
-     * 메뉴 이름 뒤에 설명들도 함께 딸려오는 문제가 있음.
-    */
-    public void 처갓집양념치킨() {
-        Company company = isCompanyPresent("처갓집양념치킨", "/logo/logo-cheoga.png");
-        Document doc;
-        List<String> urlList = new ArrayList<>();
-        urlList.add("http://www.cheogajip.co.kr/bbs/board.php?bo_table=allmenu&page=1"); // 1페이지
-        urlList.add("http://www.cheogajip.co.kr/bbs/board.php?bo_table=allmenu&page=2"); // 2페이지
-        for (String url : urlList) {
-            try {
-                doc = Jsoup.connect(url).get();
-                // 메뉴 리스트 - #gall_ul > li:nth-child(1)
-                Elements menuList = doc.select("#gall_ul").select("li");
-                for (Element menu : menuList) {
-                    // #gall_ul > li:nth-child(1) > ul > li.gall_text_href
-                    Elements menuElement = menu.select("ul > li.gall_text_href").not("hr").not("ul").not("p").not("h3");
-                    String menuName = menuElement.text();
-                    if (menuName.length() == 0) {
-                        continue;
-                    }
-                    String image = menu.select("ul > li.gall_href > img").attr("src");
-                    saveFood(menuName, image, company);
-                }
-            } catch (IOException e) {
-                System.out.println(ErrorMessage.COMPANY_NOT_FOUND.getMessage() + company);
-                e.printStackTrace();
-            }
-        }
-    }
-
-    /**
-     * <img data-v-c16af4d8="" img-server="" alt="타워버거 세트할인" src="https://kfcapi.inicis.com/kfcs_api_img/KFCS/goods/DL_2275376_20220404112503357.png">
-     * 찍으면 <img img-server="" alt="쏘랑이블랙라벨치킨 5조각" data-v-c16af4d8> 에서 어떻게 url를 가져올 것인가.
-     */
-    public void kfc() {
-        Company company = isCompanyPresent("KFC", "");
-        Document doc;
-        List<String> urlList = new ArrayList<>();
-        urlList.add("https://www.kfckorea.com/menu/burger"); // 버거
-        urlList.add("https://www.kfckorea.com/menu/chicken"); // 치킨
-        try {
-            for (String url : urlList) {
-                doc = Jsoup.connect(url).get();
-                // 메뉴 리스트
-                Elements menuList = doc.select("div[menu-list= ]").select("section > ul > li");
-                for (Element li : menuList) {
-                    // 메뉴 이름을 가져온다 - section > ul > li:nth-child(1) > h3
-                    String foodName = li.select("h3").text();
-                    String[] name = foodName.split(" ");
-                    foodName = name[0].replace("1＋1", "");
-                    // 만약 같은 이름의 메뉴가 없다면
-                    if (!isFoodPresent(foodName)) {
-                        Elements imageE = li.select("div > a > img");
-                        String image = imageE.attr("src");
-                        // 실행 전 체크할 것
-                        saveFood(foodName, image, company);
-                    }
-                }
-            }
-        } catch (IOException e1) {
-            System.out.println(ErrorMessage.COMPANY_NOT_FOUND.getMessage() + company.getName());
-            e1.printStackTrace();
-        }
-    }
 
 
     void baedduck() {

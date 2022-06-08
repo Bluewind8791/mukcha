@@ -3,21 +3,58 @@ package com.mukcha.crawling;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
+import com.mukcha.domain.Company;
 import com.mukcha.domain.ErrorMessage;
+import com.mukcha.service.CompanyService;
 
 import org.junit.jupiter.api.Test;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 
 
 @SpringBootTest
 @ActiveProfiles("test")
-public class CrawlingControllerTest {
+public class JSoupControllerTest {
+
+    @Autowired private CompanyService companyService;
+
+    @Test
+    void baskin31() throws IOException {
+        companyService.findByNameOr("배스킨라빈스").or(() -> {
+            Company company = Company.builder()
+                .name("배스킨라빈스")
+                .image("https://mukcha-bucket.s3.ap-northeast-2.amazonaws.com/logo/logo_baskin.png")
+                .build();
+            Company saved = companyService.save(company);
+            return Optional.of(saved);
+        });
+        List<String> urlList = new ArrayList<>();
+        urlList.add("http://www.baskinrobbins.co.kr/menu/list.php?Page=1&top=A&sub="); // 1 page
+        urlList.add("http://www.baskinrobbins.co.kr/menu/list.php?Page=2&top=A&sub="); // 2 page
+        for (String url : urlList) {
+            Document doc = Jsoup.connect(url).get();
+            // #prd_list > aside > ul > li:nth-child(1) > a > figure > figcaption > span
+            Elements blocks = doc.select("li[class=item]");
+            for (Element menu : blocks) {
+                String name = menu.select("a > figure > figcaption > span").text();
+                if (!name.contains("레디팩")) {
+                    System.out.println(">>> "+name);
+                    // #prd_list > aside > ul > li:nth-child(1) > a > figure > span > img
+                    String image = menu.select("a > figure > span > img").attr("alt");
+                    System.out.println(">>> "+image);
+                }
+            }
+        }
+    }
+
+
 
     @Test
     void dongdaemunYupdduk() {
