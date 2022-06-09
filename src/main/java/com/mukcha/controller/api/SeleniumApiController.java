@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 
 import com.mukcha.controller.api.helper.WithSelenium;
 import com.mukcha.domain.Category;
@@ -50,54 +49,241 @@ public class SeleniumApiController extends WithSelenium {
         }
     }
 
+    @GetMapping("/crawling/굽네치킨")
+    public ResponseEntity<Object> crawlingGoobne() {
+        try {
+            Map<String, String> body = goobne();
+            return ResponseEntity.ok(body);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+            return ResponseEntity.internalServerError().build();
+        }
+    }
 
-    private Map<String, String> baskin31() throws InterruptedException {
+    @GetMapping("/crawling/버거킹")
+    public ResponseEntity<Object> crawlingBurgerKing() {
+        try {
+            Map<String, String> body = burgerking();
+            return ResponseEntity.ok(body);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+            return ResponseEntity.internalServerError().build();
+        }
+    }
+
+    @GetMapping("/crawling/불닭발땡초동대문엽기떡볶이")
+    public ResponseEntity<Object> crawlingYupdduk() {
+        Map<String, String> body = dongdaemunYupdduk();
+        return ResponseEntity.ok(body);
+    }
+
+
+    private void save(Map<String, String> data, Company company, String folderName, Category category) {
+        data.forEach((menuName, image) -> {
+            String imageUrl = saveImage(menuName, image, folderName);
+            updateMenu(menuName, imageUrl, company, category);
+        });
+    }
+
+
+    public Map<String, String> dongdaemunYupdduk() {
+        Map<String, String> result = new HashMap<>();
+        String companyName = "불닭발땡초동대문엽기떡볶이";
+        Company targetCompany = companyRepository.findByName(companyName).orElseGet(() -> {
+            Company company = Company.builder()
+                .name(companyName)
+                .image("https://mukcha-bucket.s3.ap-northeast-2.amazonaws.com/logo/logo_dongyupdduk.png")
+                .build();
+            Company saved = companyService.save(company);
+            return saved;
+        });
+        WebDriver driver = setupDriver("https://www.yupdduk.com/sub/hotmenu?mode=1");
+        // 떡볶이 메뉴
+        Map<String, String> data = new HashMap<>();
+        List<WebElement> ddokList = driver.findElements(By.xpath("//*[@id=\"cust1div\"]/div/div[4]/div"));
+        for (WebElement menu : ddokList) {
+            String menuName = menu.findElement(By.xpath("div/p[1]")).getText();
+            if (!menuName.isEmpty()) {
+                String image = menu.findElement(By.xpath("div/img")).getAttribute("src");
+                data.put(menuName, image);
+            }
+        }
+        save(data, targetCompany, "yupdduk", Category.TTEOKBOKKI);
+        result.putAll(data);
+        data.clear();
+        // 닭발 메뉴
+        driver.findElement(By.cssSelector("#FunctionTab5")).click();
+        List<WebElement> feetList = driver.findElements(By.xpath("//*[@id=\"cust5div\"]/div/div[2]/div"));
+        for (WebElement menu : feetList) {
+            String menuName = menu.findElement(By.xpath("div/p[1]")).getText();
+            if (!menuName.isEmpty()) {
+                String image = menu.findElement(By.xpath("div/img")).getAttribute("src");
+                data.put(menuName, image);
+            }
+        }
+        driver.quit();
+        save(data, targetCompany, "yupdduk", Category.SIDEMENU);
+        result.putAll(data);
+        return result;
+    }
+
+
+    public Map<String, String> burgerking() throws InterruptedException {
+        Map<String, String> result = new HashMap<>();
+        String companyName = "버거킹";
+        Company savedCompany = companyRepository.findByName(companyName).orElseGet(() -> {
+            Company company = Company.builder()
+                .name(companyName)
+                .image("https://mukcha-bucket.s3.ap-northeast-2.amazonaws.com/logo/logo_burgerking.png")
+                .build();
+            Company saved = companyService.save(company);
+            return saved;
+        });
+        WebDriver driver = setupDriver("https://www.burgerking.co.kr");
+        Map<String, String> data = new HashMap<>();
+        data = burgerkingMoveTabAndCrawling(driver, "프리미엄");
+        save(data, savedCompany, "burgerking", Category.HAMBURGER);
+        result.putAll(data);
+        data.clear();
+
+        data = burgerkingMoveTabAndCrawling(driver, "와퍼");
+        save(data, savedCompany, "burgerking", Category.HAMBURGER);
+        result.putAll(data);
+        data.clear();
+
+        data = burgerkingMoveTabAndCrawling(driver, "주니어&버거");
+        save(data, savedCompany, "burgerking", Category.HAMBURGER);
+        result.putAll(data);
+        data.clear();
+
+        data = burgerkingMoveTabAndCrawling(driver, "올데이킹&치킨버거");
+        save(data, savedCompany, "burgerking", Category.HAMBURGER);
+        result.putAll(data);
+        data.clear();
+
+        data = burgerkingMoveTabAndCrawling(driver, "사이드");
+        save(data, savedCompany, "burgerking", Category.SIDEMENU);
+        result.putAll(data);
+        driver.quit();
+        return result;
+    }
+    private Map<String, String> burgerkingMoveTabAndCrawling(WebDriver driver, String tabName) throws InterruptedException {
+        Map<String, String> result = new HashMap<>();
+        List<WebElement> menuTabs = driver.findElements(By.tagName("span")); // 모든 span tag를 가져온다
+        for (int i=0; i<menuTabs.size(); i++) {
+			if (menuTabs.get(i).getText().equals(tabName)) {
+				menuTabs.get(i).click();
+                System.out.println("<<< 탭 진입 "+tabName);
+				break;
+			}
+		}
+		Thread.sleep(1000);
+        List<WebElement> menus = driver.findElements(By.xpath("//*[@id=\"app\"]/div/div[3]/div[2]/div/div[2]/ul/li"));
+        for (WebElement menu : menus) {
+            String menuName = menu.findElement(By.className("tit")).getText();
+            // 행사, 세트, 소스, 시즈닝 제품은 제외
+            String[] filtering = {"행사", "세트", "소스", "시즈닝"};
+            if ( !List.of(filtering).stream().anyMatch(n -> menuName.contains(n)) ) {
+                // System.out.println(">>> "+menuName);
+                String image = menu.findElement(By.xpath("div[1]/span/img")).getAttribute("src");
+                result.put(menuName, image);
+                // System.out.println(">>> "+image);
+            }
+        }
+        return result;
+    }
+
+
+    public Map<String, String> goobne() throws InterruptedException {
+        Map<String, String> result = new HashMap<>();
+        String companyName = "굽네치킨";
+        Company targetCompany = companyRepository.findByName(companyName).orElseGet(() -> {
+            Company company = Company.builder()
+                    .name(companyName)
+                    .image("https://mukcha-bucket.s3.ap-northeast-2.amazonaws.com/logo/logo_goobne.jpg")
+                    .build();
+            return companyService.save(company);
+        });
+        WebDriver driver = setupDriver("https://www.goobne.co.kr/menu/menu_list.jsp");
+        Map<String, String> chickenList = goobneCrawling(driver, "치킨 시리즈");
+        chickenList.forEach((menuName, image) -> {
+            String imageUrl = saveImage(menuName, image, "goobne");
+            updateMenu(menuName, imageUrl, targetCompany, Category.CHICKEN);
+        });
+        result.putAll(chickenList);
+        Map<String, String> pizzaList = goobneCrawling(driver, "피자 시리즈");
+        chickenList.forEach((menuName, image) -> {
+            String imageUrl = saveImage(menuName, image, "goobne");
+            updateMenu(menuName, imageUrl, targetCompany, Category.PIZZA);
+        });
+        result.putAll(pizzaList);
+        driver.quit();
+        return result;
+    }
+    private Map<String, String> goobneCrawling(WebDriver driver, String tabName) throws InterruptedException {
+        Map<String, String> result = new HashMap<>();
+        List<WebElement> menuTabs = driver.findElements(By.tagName("a")); // 모든 a tag를 가져온다
+        for (int i=0; i<menuTabs.size(); i++) {
+			if (menuTabs.get(i).getText().equals(tabName)) {
+				menuTabs.get(i).click();
+                System.out.println(">>> 탭 진입 - "+tabName);
+                Thread.sleep(1000);
+                break;
+			}
+		}
+        List<WebElement> chickenList = driver.findElements(By.xpath("//*[@id=\"menu_list\"]/li"));
+        for (WebElement menu : chickenList) {
+            String menuName = menu.findElement(By.xpath("p/span")).getText();
+            if (!menuName.contains("반반")) { // 반반메뉴 제외
+                String image = menu.findElement(By.xpath("img")).getAttribute("src");
+                result.put(menuName, image);
+            }
+        }
+        return result;
+    }
+
+
+    public Map<String, String> baskin31() throws InterruptedException {
         Map<String, String> result = new HashMap<>();
         String companyName = "배스킨라빈스";
-        companyRepository.findByName(companyName).or(() -> {
+        companyRepository.findByName(companyName).orElseGet(() -> {
             Company company = Company.builder()
                 .name(companyName)
                 .image("https://mukcha-bucket.s3.ap-northeast-2.amazonaws.com/logo/logo_baskin.png")
                 .build();
-            Company saved = companyService.save(company);
-            return Optional.of(saved);
+            return companyService.save(company);
         });
         List<String> urlList = new ArrayList<>();
         urlList.add("http://www.baskinrobbins.co.kr/menu/list.php?Page=1&top=A&sub="); // 1 page
         urlList.add("http://www.baskinrobbins.co.kr/menu/list.php?Page=2&top=A&sub="); // 2 page
         for (String url : urlList) {
             WebDriver driver = setupDriver(url);
-            // #prd_list > aside > ul > li:nth-child(1) > a > figure > figcaption > span
             List<WebElement> menuItem = driver.findElements(By.cssSelector("li[class=item]"));
             for (WebElement menu : menuItem) {
                 String menuName = menu.findElement(By.cssSelector("a > figure > figcaption > span")).getText();
                 if (!menuName.contains("레디팩")) {
-                    // #prd_list > aside > ul > li:nth-child(1) > a > figure > span > img
                     String image = menu.findElement(By.cssSelector("a > figure > span > img")).getAttribute("src");
                     result.put(menuName, image);
-                    // save image
                     String imageUrl = saveImage(menuName, image, "baskin31");
-                    // update Food
                     updateMenu(menuName, imageUrl, companyService.findByName(companyName), Category.ICECREAM);
                 }
             }
-            driver.close();
+            driver.quit();
         }
         return result;
     }
 
-    private Map<String, String> chickenPlus() throws InterruptedException {
+
+    public Map<String, String> chickenPlus() throws InterruptedException {
         Map<String, String> result = new HashMap<>();
         String companyName = "치킨플러스";
-        companyRepository.findByName(companyName).or(() -> {
+        Company saved = companyRepository.findByName(companyName).orElseGet(() -> {
             Company company = Company.builder()
                 .name(companyName)
                 .image("https://mukcha-bucket.s3.ap-northeast-2.amazonaws.com/logo/logo_chickenPlus.jpg")
                 .build();
-            Company saved = companyService.save(company);
-            return Optional.of(saved);
+            return companyService.save(company);
         });
-
         List<String> urlList = new ArrayList<>();
         urlList.add("http://www.chickenplus.co.kr/menu/default.aspx?menu=치킨메뉴");
         urlList.add("http://www.chickenplus.co.kr/menu/default.aspx?menu=피자메뉴");
@@ -114,16 +300,14 @@ public class SeleniumApiController extends WithSelenium {
             WebDriver driver = setupDriver(url);
             List<WebElement> menuItem = driver.findElements(By.cssSelector("div[groupname=MenuItem]"));
             for (WebElement menu : menuItem) {
-                // menu name
                 String menuName = menu.findElement(By.cssSelector("div.mn1_txt > p.mn1_tit.menu_s_title")).getText();
-                // image url
                 menu.findElement(By.className("thumbMenu")).click(); // thumbMenu click
                 String image = menu.findElement(By.xpath("//*[@id=\"MenuImage\"]")).getAttribute("src");
                 result.put(menuName, image);
                 // save image
                 String imageUrl = saveImage(menuName, image, "chickenplus");
                 // update Food
-                updateMenu(menuName, imageUrl, companyService.findByName(companyName), category);
+                updateMenu(menuName, imageUrl, saved, category);
             }
             driver.close();
         }
