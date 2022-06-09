@@ -8,6 +8,7 @@ import com.mukcha.domain.Category;
 import com.mukcha.domain.Company;
 import com.mukcha.domain.ErrorMessage;
 import com.mukcha.domain.Food;
+import com.mukcha.repository.CompanyRepository;
 import com.mukcha.repository.FoodRepository;
 import com.mukcha.service.CompanyService;
 import com.mukcha.service.FoodService;
@@ -32,6 +33,7 @@ public class JSoupApiController {
     private final FoodService foodService;
     private final CompanyService companyService;
     private final FoodRepository foodRepository;
+    private final CompanyRepository companyRepository;
 
     @GetMapping(value = "/crawling")
     public String crawling() {
@@ -261,7 +263,7 @@ public class JSoupApiController {
 
 
     private Company isCompanyPresent(String companyName, String companyLogo) {
-        Company company = companyService.findByNameOr(companyName).orElse(
+        Company company = companyRepository.findByName(companyName).orElse(
             createCompany(companyName, companyLogo)
         );
         return company;

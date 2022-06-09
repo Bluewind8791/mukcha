@@ -39,10 +39,22 @@ public class SeleniumApiController extends WithSelenium {
         }
     }
 
+    @GetMapping("/crawling/치킨플러스")
+    public ResponseEntity<Object> crawlingChickenPlus() {
+        try {
+            Map<String, String> body = chickenPlus();
+            return ResponseEntity.ok(body);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+            return ResponseEntity.internalServerError().build();
+        }
+    }
+
+
     private Map<String, String> baskin31() throws InterruptedException {
         Map<String, String> result = new HashMap<>();
         String companyName = "배스킨라빈스";
-        companyService.findByNameOr(companyName).or(() -> {
+        companyRepository.findByName(companyName).or(() -> {
             Company company = Company.builder()
                 .name(companyName)
                 .image("https://mukcha-bucket.s3.ap-northeast-2.amazonaws.com/logo/logo_baskin.png")
@@ -74,21 +86,18 @@ public class SeleniumApiController extends WithSelenium {
         return result;
     }
 
-
-    @GetMapping("/crawling/치킨플러스")
-    public ResponseEntity<Object> crawlingChickenPlus() {
-        try {
-            Map<String, String> body = chickenPlus();
-            return ResponseEntity.ok(body);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-            return ResponseEntity.internalServerError().build();
-        }
-    }
-
     private Map<String, String> chickenPlus() throws InterruptedException {
         Map<String, String> result = new HashMap<>();
-        Company company = companyService.findByName("치킨플러스");
+        String companyName = "치킨플러스";
+        companyRepository.findByName(companyName).or(() -> {
+            Company company = Company.builder()
+                .name(companyName)
+                .image("https://mukcha-bucket.s3.ap-northeast-2.amazonaws.com/logo/logo_chickenPlus.jpg")
+                .build();
+            Company saved = companyService.save(company);
+            return Optional.of(saved);
+        });
+
         List<String> urlList = new ArrayList<>();
         urlList.add("http://www.chickenplus.co.kr/menu/default.aspx?menu=치킨메뉴");
         urlList.add("http://www.chickenplus.co.kr/menu/default.aspx?menu=피자메뉴");
@@ -114,7 +123,7 @@ public class SeleniumApiController extends WithSelenium {
                 // save image
                 String imageUrl = saveImage(menuName, image, "chickenplus");
                 // update Food
-                updateMenu(menuName, imageUrl, company, category);
+                updateMenu(menuName, imageUrl, companyService.findByName(companyName), category);
             }
             driver.close();
         }

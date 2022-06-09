@@ -6,7 +6,6 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
-import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers;
 import org.springframework.test.context.ActiveProfiles;
@@ -37,17 +36,30 @@ public class CrawlingMockTest extends WithMockMvcTest {
     }
 
     @Test
-    @DisplayName("1. 배스킨라빈스 크롤링 테스트")
-    void test_1() throws Exception {
+    @DisplayName("배스킨라빈스 크롤링 테스트")
+    void baskinTest() throws Exception {
         // given
-        String url = "http://localhost:" + port + "/api/admin/crawling/selenium";
+        String url = "http://localhost:" + port + "/api/admin/crawling/배스킨라빈스";
         // when
         mvc.perform(MockMvcRequestBuilders
-            .post(url)
-            .requestAttr("loginUser", userResDto)
-            .contentType(MediaType.APPLICATION_JSON))
+            .get(url)
+            .requestAttr("loginUser", userResDto))
         .andExpect(MockMvcResultMatchers.status().isOk())
         .andDo(MockMvcResultHandlers.print());
     }
+
+    @Test
+    @DisplayName("치킨플러스 크롤링 테스트")
+    void ChikenplusTest() throws Exception {
+        // given
+        String url = "http://localhost:" + port + "/api/admin/crawling/치킨플러스";
+        // when
+        mvc.perform(MockMvcRequestBuilders
+            .get(url)
+            .requestAttr("loginUser", userResDto))
+        .andExpect(MockMvcResultMatchers.status().isOk())
+        .andDo(MockMvcResultHandlers.print());
+    }
+
 
 }

@@ -3,7 +3,6 @@ package com.mukcha.service;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 import com.mukcha.controller.dto.CompanyRequestDto;
 import com.mukcha.controller.dto.CompanyResponseDto;
@@ -69,7 +68,7 @@ public class CompanyService {
             originFoods.forEach(f -> f.setCompanyNull());
         }
         companyRepository.delete(targetCompany);
-        if (!findByIdOr(companyId).isPresent()) {
+        if (!companyRepository.findById(companyId).isPresent()) {
             log.info(">>> 해당 회사가 성공적으로 삭제되었습니다.");
             return true;
         } else {
@@ -106,11 +105,6 @@ public class CompanyService {
     }
 
     @Transactional(readOnly = true)
-    public Optional<Company> findByIdOr(Long companyId) {
-        return companyRepository.findById(companyId);
-    }
-
-    @Transactional(readOnly = true)
     public CompanyResponseDto findDtoById(Long companyId) {
         Company company = companyRepository.findById(companyId).orElseThrow(() -> 
             new IllegalArgumentException(ErrorMessage.COMPANY_NOT_FOUND.getMessage() + companyId)
@@ -123,11 +117,6 @@ public class CompanyService {
         return companyRepository.findByName(companyName).orElseThrow(() -> 
             new IllegalArgumentException(ErrorMessage.COMPANY_NOT_FOUND.getMessage() + companyName)
         );
-    }
-
-    @Transactional(readOnly = true)
-    public Optional<Company> findByNameOr(String companyName) {
-        return companyRepository.findByName(companyName);
     }
 
 

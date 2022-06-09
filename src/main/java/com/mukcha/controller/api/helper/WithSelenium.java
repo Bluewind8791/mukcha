@@ -13,6 +13,7 @@ import javax.imageio.ImageIO;
 import com.mukcha.domain.Category;
 import com.mukcha.domain.Company;
 import com.mukcha.domain.Food;
+import com.mukcha.repository.CompanyRepository;
 import com.mukcha.repository.FoodRepository;
 import com.mukcha.service.CompanyService;
 import com.mukcha.service.FoodService;
@@ -32,11 +33,12 @@ public class WithSelenium {
     @Autowired protected CompanyService companyService;
     @Autowired protected FoodService foodService;
     @Autowired protected FoodRepository foodRepository;
+    @Autowired protected CompanyRepository companyRepository;
 
     public static final String WEB_DRIVER_ID = "webdriver.chrome.driver"; // 드라이버 ID
     public static final String WEB_DRIVER_PATH = "D:\\ChromeDriver\\chromedriver.exe"; // 드라이버 경로 D:\ChromeDriver
 
-    protected WebDriver setupDriver(String url) throws InterruptedException {
+    protected WebDriver setupDriver(String url) {
         System.setProperty(WEB_DRIVER_ID, WEB_DRIVER_PATH);
         ChromeOptions options = new ChromeOptions();
         options.addArguments("headless"); // 브라우저 보이지 않기
@@ -44,7 +46,12 @@ public class WithSelenium {
         driver.get(url); // WebDriver을 해당 url로 이동한다.
         //브라우저 이동시 생기는 로드시간을 기다린다.
 		//HTTP 응답속도보다 자바의 컴파일 속도가 더 빠르기 때문에 임의적으로 대기한다.
-		Thread.sleep(2000);
+		try {
+            Thread.sleep(2000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+            driver.quit();
+        }
         return driver;
     }
 
