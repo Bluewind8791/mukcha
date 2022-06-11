@@ -77,12 +77,87 @@ public class SeleniumApiController extends WithSelenium {
         return ResponseEntity.ok(body);
     }
 
+    @GetMapping("/crawling/처갓집양념치킨")
+    public ResponseEntity<Object> crawlingCheoga() {
+        Map<String, String> body = cheoga();
+        return ResponseEntity.ok(body);
+    }
 
-    private void save(Map<String, String> data, Company company, String folderName, Category category) {
-        data.forEach((menuName, image) -> {
-            String imageUrl = saveImage(menuName, image, folderName);
-            updateMenu(menuName, imageUrl, company, category);
+    public Map<String, String> kfc() {
+        Map<String, String> result = new HashMap<>();
+        String companyName = "KFC";
+        Company saved = companyRepository.findByName(companyName).orElseGet(() -> {
+            Company company = Company.builder()
+                .name(companyName)
+                .image("https://mukcha-bucket.s3.ap-northeast-2.amazonaws.com/logo/logo_KFC.png")
+                .build();
+            return companyService.save(company);
         });
+        List<String> urlList = new ArrayList<>();
+        urlList.add("https://www.kfckorea.com/menu/burger"); // 버거
+        urlList.add("https://www.kfckorea.com/menu/chicken"); // 치킨
+        for (String url : urlList) {
+            Map<String, String> data = new HashMap<>();
+            WebDriver driver = setupDriver(url);
+            List<WebElement> menuList = driver.findElements(By.xpath("//*[@id=\"app\"]/div[2]/div/section/div[2]/div/ul/li"));
+            for (WebElement menu : menuList) {
+                String menuName = menu.findElement(By.xpath("h3")).getText();
+                if (menuName.contains("5조각")) {
+                    menuName = menuName.replace("5조각", "");
+                }
+                String name = menuName;
+                String[] filtering = {"팩" ,"박스", "세트", "1조각", "3조각", "8조각"};
+                if ( !List.of(filtering).stream().anyMatch(n -> name.contains(n)) ) { // filtering
+                    String image = menu.findElement(By.xpath("div[1]/a/img")).getAttribute("src");
+                    data.put(name, image);
+                }
+            }
+            driver.quit();
+            if (url.contains("burger")) {
+                save(data, saved, "kfc", Category.HAMBURGER); // save
+            } else if (url.contains("chicken")) {
+                save(data, saved, "kfc", Category.CHICKEN); // save
+            }
+            result.putAll(data);
+        }
+        return result;
+    }
+
+
+    public Map<String, String> cheoga() {
+        Map<String, String> result = new HashMap<>();
+        String companyName = "처갓집양념치킨";
+        Company saved = companyRepository.findByName(companyName).orElseGet(() -> {
+            Company company = Company.builder()
+                .name(companyName)
+                .image("https://mukcha-bucket.s3.ap-northeast-2.amazonaws.com/logo/logo_cheoga.png")
+                .build();
+            return companyService.save(company);
+        });
+        List<String> urlList = new ArrayList<>();
+        urlList.add("http://www.cheogajip.co.kr/bbs/board.php?bo_table=allmenu&page=1"); // 1페이지
+        urlList.add("http://www.cheogajip.co.kr/bbs/board.php?bo_table=allmenu&page=2"); // 2페이지
+        for (String url : urlList) {
+            WebDriver driver = setupDriver(url);
+            List<WebElement> menuList = driver.findElements(By.xpath("//*[@id=\"gall_ul\"]/li"));
+            for (WebElement menu : menuList) {
+                String menuName = menu.findElement(By.xpath("ul/li[2]")).getText().split("\\n")[0];
+                if (!menuName.contains("+") && !menuName.contains("9개")) {
+                    String image = menu.findElement(By.xpath("ul/li[1]/img")).getAttribute("src");
+                    Map<String, String> data = new HashMap<>();
+                    data.put(menuName, image);
+                    String[] classification = {"치즈볼", "후라이", "라이스", "근위"};
+                    if (List.of(classification).stream().anyMatch(n -> menuName.contains(n))) {
+                        save(data, saved, "cheoga", Category.SIDEMENU); // save
+                    } else {
+                        save(data, saved, "cheoga", Category.CHICKEN); // save
+                    }
+                    result.putAll(data);
+                }
+            }
+            driver.quit();
+        }
+        return result;
     }
 
 
@@ -94,8 +169,7 @@ public class SeleniumApiController extends WithSelenium {
                 .name(companyName)
                 .image("https://mukcha-bucket.s3.ap-northeast-2.amazonaws.com/logo/logo_dongyupdduk.png")
                 .build();
-            Company saved = companyService.save(company);
-            return saved;
+            return companyService.save(company);
         });
         WebDriver driver = setupDriver("https://www.yupdduk.com/sub/hotmenu?mode=1");
         // 떡볶이 메뉴
@@ -108,7 +182,7 @@ public class SeleniumApiController extends WithSelenium {
                 data.put(menuName, image);
             }
         }
-        save(data, targetCompany, "yupdduk", Category.TTEOKBOKKI);
+        save(data, targetCompany, "yupdduk", Category.TTEOKBOKKI); // save
         result.putAll(data);
         data.clear();
         // 닭발 메뉴
@@ -122,7 +196,7 @@ public class SeleniumApiController extends WithSelenium {
             }
         }
         driver.quit();
-        save(data, targetCompany, "yupdduk", Category.SIDEMENU);
+        save(data, targetCompany, "yupdduk", Category.SIDEMENU); // save
         result.putAll(data);
         return result;
     }
@@ -136,33 +210,32 @@ public class SeleniumApiController extends WithSelenium {
                 .name(companyName)
                 .image("https://mukcha-bucket.s3.ap-northeast-2.amazonaws.com/logo/logo_burgerking.png")
                 .build();
-            Company saved = companyService.save(company);
-            return saved;
+            return companyService.save(company);
         });
         WebDriver driver = setupDriver("https://www.burgerking.co.kr");
         Map<String, String> data = new HashMap<>();
         data = burgerkingMoveTabAndCrawling(driver, "프리미엄");
-        save(data, savedCompany, "burgerking", Category.HAMBURGER);
+        save(data, savedCompany, "burgerking", Category.HAMBURGER); // save
         result.putAll(data);
         data.clear();
 
         data = burgerkingMoveTabAndCrawling(driver, "와퍼");
-        save(data, savedCompany, "burgerking", Category.HAMBURGER);
+        save(data, savedCompany, "burgerking", Category.HAMBURGER); // save
         result.putAll(data);
         data.clear();
 
         data = burgerkingMoveTabAndCrawling(driver, "주니어&버거");
-        save(data, savedCompany, "burgerking", Category.HAMBURGER);
+        save(data, savedCompany, "burgerking", Category.HAMBURGER); // save
         result.putAll(data);
         data.clear();
 
         data = burgerkingMoveTabAndCrawling(driver, "올데이킹&치킨버거");
-        save(data, savedCompany, "burgerking", Category.HAMBURGER);
+        save(data, savedCompany, "burgerking", Category.HAMBURGER); // save
         result.putAll(data);
         data.clear();
 
         data = burgerkingMoveTabAndCrawling(driver, "사이드");
-        save(data, savedCompany, "burgerking", Category.SIDEMENU);
+        save(data, savedCompany, "burgerking", Category.SIDEMENU); // save
         result.putAll(data);
         driver.quit();
         return result;
@@ -184,10 +257,8 @@ public class SeleniumApiController extends WithSelenium {
             // 행사, 세트, 소스, 시즈닝 제품은 제외
             String[] filtering = {"행사", "세트", "소스", "시즈닝"};
             if ( !List.of(filtering).stream().anyMatch(n -> menuName.contains(n)) ) {
-                // System.out.println(">>> "+menuName);
                 String image = menu.findElement(By.xpath("div[1]/span/img")).getAttribute("src");
                 result.put(menuName, image);
-                // System.out.println(">>> "+image);
             }
         }
         return result;
@@ -208,13 +279,13 @@ public class SeleniumApiController extends WithSelenium {
         Map<String, String> chickenList = goobneCrawling(driver, "치킨 시리즈");
         chickenList.forEach((menuName, image) -> {
             String imageUrl = saveImage(menuName, image, "goobne");
-            updateMenu(menuName, imageUrl, targetCompany, Category.CHICKEN);
+            updateMenu(menuName, imageUrl, targetCompany, Category.CHICKEN); // save
         });
         result.putAll(chickenList);
         Map<String, String> pizzaList = goobneCrawling(driver, "피자 시리즈");
         chickenList.forEach((menuName, image) -> {
             String imageUrl = saveImage(menuName, image, "goobne");
-            updateMenu(menuName, imageUrl, targetCompany, Category.PIZZA);
+            updateMenu(menuName, imageUrl, targetCompany, Category.PIZZA); // save
         });
         result.putAll(pizzaList);
         driver.quit();
@@ -304,16 +375,21 @@ public class SeleniumApiController extends WithSelenium {
                 menu.findElement(By.className("thumbMenu")).click(); // thumbMenu click
                 String image = menu.findElement(By.xpath("//*[@id=\"MenuImage\"]")).getAttribute("src");
                 result.put(menuName, image);
-                // save image
-                String imageUrl = saveImage(menuName, image, "chickenplus");
-                // update Food
-                updateMenu(menuName, imageUrl, saved, category);
+                String imageUrl = saveImage(menuName, image, "chickenplus"); // save image
+                updateMenu(menuName, imageUrl, saved, category); // update Food
             }
             driver.close();
         }
         return result;
     }
 
+
+    private void save(Map<String, String> data, Company company, String folderName, Category category) {
+        data.forEach((menuName, image) -> {
+            String imageUrl = saveImage(menuName, image, folderName);
+            updateMenu(menuName, imageUrl, company, category);
+        });
+    }
 
 
 }

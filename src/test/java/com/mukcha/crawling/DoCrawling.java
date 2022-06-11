@@ -49,5 +49,19 @@ public class DoCrawling {
         seleniumApiController.dongdaemunYupdduk();
     }
 
+    @Test
+    @DisplayName("처갓집양념치킨 크롤링")
+    void crawlingCheoga() {
+        seleniumApiController.cheoga();
+    }
+
+    @Test
+    @DisplayName("KFC 크롤링")
+    void crawlingKFC() {
+        seleniumApiController.kfc();
+    }
+
+
+
 
 }
