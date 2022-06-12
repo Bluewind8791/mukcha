@@ -1,12 +1,15 @@
 package com.mukcha.crawling;
 
 
+import java.io.IOException;
+
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 
+import com.mukcha.controller.api.JSoupApiController;
 import com.mukcha.controller.api.SeleniumApiController;
 
 
@@ -15,8 +18,8 @@ import com.mukcha.controller.api.SeleniumApiController;
 @ActiveProfiles("set1")
 public class DoCrawling {
 
-    @Autowired
-    private SeleniumApiController seleniumApiController;
+    @Autowired private SeleniumApiController seleniumApiController;
+    @Autowired private JSoupApiController jSoupApiController;
 
 
     @Test
@@ -61,7 +64,41 @@ public class DoCrawling {
         seleniumApiController.kfc();
     }
 
+    @Test
+    @DisplayName("배떡 크롤링")
+    void crawlingBbadduk() throws IOException {
+        jSoupApiController.baedduck();
+    }
 
+    @Test
+    @DisplayName("신전떡볶이 크롤링")
+    void crawlingSinjeon() throws IOException {
+        jSoupApiController.sinjeon();
+    }
+
+    @Test
+    @DisplayName("BBQ 크롤링")
+    void crawlingBBQ() throws InterruptedException {
+        seleniumApiController.BBQ();
+    }
+
+    @Test
+    @DisplayName("도미노피자 크롤링")
+    void crawlingDomino() throws IOException {
+        jSoupApiController.dominoPizza();
+    }
+
+    @Test
+    @DisplayName("페리카나 크롤링")
+    void crawlingPericana() throws IOException {
+        jSoupApiController.pericana();
+    }
+
+    @Test
+    @DisplayName("빅스타피자 크롤링")
+    void crawlingBigstar() throws IOException {
+        seleniumApiController.bigstarPizza();
+    }
 
 
 }

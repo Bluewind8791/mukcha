@@ -73,16 +73,31 @@ public class SeleniumTest extends WithSelenium {
         });
     }
 
-
     @Test
     public void kfc() {
         Map<String, String> result = seleniumApiController.kfc();
+        result.forEach((key, value) -> {
+            System.out.println(">>> "+key+">");
+            System.out.println(">>> "+value+">");
+        });
+    }
+
+    @Test
+    void BBQ() throws InterruptedException {
+        Map<String, String> result = seleniumApiController.BBQ();
         result.forEach((key, value) -> {
             System.out.println(">>> "+key);
             System.out.println(">>> "+value);
         });
     }
 
-
+    @Test
+    void bigstarTest() {
+        Map<String, String> result = seleniumApiController.bigstarPizza();
+        result.forEach((key, value) -> {
+            System.out.println(">>> "+key+">");
+            System.out.println(">>> "+value);
+        });
+    }
 
 }

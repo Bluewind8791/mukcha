@@ -1,6 +1,7 @@
 package com.mukcha.controller.api;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -83,6 +84,142 @@ public class SeleniumApiController extends WithSelenium {
         return ResponseEntity.ok(body);
     }
 
+    @GetMapping("/crawling/BBQ")
+    public ResponseEntity<Object> crawlingBBQ() {
+        Map<String, String> body;
+        try {
+            body = BBQ();
+            return ResponseEntity.ok(body);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+            return ResponseEntity.internalServerError().build();
+        }
+    }
+
+    @GetMapping("/crawling/빅스타피자")
+    public ResponseEntity<Object> crawlingBigstar() {
+        Map<String, String> body;
+        body = bigstarPizza();
+        return ResponseEntity.ok(body);
+    }
+
+
+    public Map<String, String> bigstarPizza() {
+        Map<String, String> result = new HashMap<>();
+        String companyName = "빅스타피자";
+        Company saved = companyRepository.findByName(companyName).orElseGet(() -> {
+            Company company = Company.builder()
+                .name(companyName)
+                .image("/logo/logo-bigstar_pizza.png")
+                .build();
+            return companyService.save(company);
+        });
+        String originUrl = "http://www.bigstarpizza.co.kr/page/menu";
+        List<String> urlList = new ArrayList<>();
+        WebDriver driver = setupDriver(originUrl);
+        List<WebElement> categoryList = driver.findElements(By.className("menu_list"));
+        for (WebElement cate : categoryList) {
+            List<WebElement> menuList = cate.findElements(By.cssSelector("div"));
+            for (WebElement menu : menuList) {
+                String nUrl = menu.getAttribute("onclick");
+                if (nUrl != null) {
+                    nUrl = nUrl.replace("location.href=", "");
+                    nUrl = nUrl.replace("\'", "");
+                    nUrl = "http://www.bigstarpizza.co.kr" + nUrl;
+                    urlList.add(nUrl);
+                }
+            }
+        }
+        driver.quit();
+        List<String> classifySide = Arrays.asList("후라이", "새우링", "핫바");
+        List<String> classifyChicken = Arrays.asList("버팔로", "텐더", "치킨");
+        List<String> classifyPasta = Arrays.asList("스파게티", "파스타");
+        for (String url : urlList) {
+            WebDriver nDriver = setupDriver(url);
+            String menuName = nDriver.findElement(By.xpath("//*[@id=\"container\"]/article/div/div[1]/div[1]/div/span[2]")).getText();
+            if (!menuName.contains("반반")) {
+                String image = nDriver.findElement(By.xpath("//*[@id=\"container\"]/article/div/div[1]/div[3]/div[1]/img")).getAttribute("src");
+                result.put(menuName, image);
+                String imageUrl = saveImage(menuName, image, "bigstarPizza");
+                if (menuName.contains("떡볶이")) {
+                    updateMenu(menuName, imageUrl, saved, Category.TTEOKBOKKI);
+                } else if (classifyChicken.stream().anyMatch(m -> menuName.contains(m))) {
+                    updateMenu(menuName, imageUrl, saved, Category.CHICKEN);
+                } else if (classifyPasta.stream().anyMatch(m -> menuName.contains(m))) {
+                    updateMenu(menuName, imageUrl, saved, Category.PASTA);
+                } else if (classifySide.stream().anyMatch(m -> menuName.contains(m))) {
+                    updateMenu(menuName, imageUrl, saved, Category.SIDEMENU);
+                } else {
+                    updateMenu(menuName, imageUrl, saved, Category.PIZZA);
+                }
+            }
+            nDriver.quit();
+        }
+        return result;
+    }
+
+
+    public Map<String, String> BBQ() throws InterruptedException {
+        Map<String, String> result = new HashMap<>();
+        String companyName = "BBQ";
+        Company saved = companyRepository.findByName(companyName).orElseGet(() -> {
+            Company company = Company.builder()
+                .name(companyName)
+                .image("")
+                .build();
+            return companyService.save(company);
+        });
+        String originUrl = "https://www.bbq.co.kr/menu/menuList.asp";
+        WebDriver driver = setupDriver(originUrl);
+        String[] filterTag = {"세트", "음료", "반반"};
+        List<String> urlList = new ArrayList<>();
+        // find tags
+        List<WebElement> tags = driver.findElements(By.xpath("/html/body/div[5]/div[2]/article/section/div[2]/ul/li"));
+        for (WebElement tag : tags) {
+            String tagName = tag.findElement(By.cssSelector("a")).getText();
+            if (!List.of(filterTag).stream().anyMatch(t -> tagName.contains(t))) {
+                String newUrl = tag.findElement(By.cssSelector("a")).getAttribute("href");
+                urlList.add(newUrl);
+            }
+        }
+        driver.quit();
+        String[] filterMenu = {"반반", "레귤러", "소스", "시즈닝", "10개", "반마리"};
+        for (String url : urlList) {
+            WebDriver nDriver = setupDriver(url);
+            List<WebElement> boxes = nDriver.findElements(By.xpath("/html/body/div[5]/div[2]/article/section/div[2]/div/div"));
+            for (WebElement box : boxes) {
+                String menuName = box.findElement(By.xpath("div[2]/p[1]")).getText();
+                if (!List.of(filterMenu).stream().anyMatch(n -> menuName.contains(n))) {
+                    String name = menuName;
+                    if (name.contains("(라지)")) {
+                        name = name.replace(" (라지)", "");
+                    } else if (name.contains("\n")) {
+                        name = name.replace("\n", " ");
+                    }
+                    String image = box.findElement(By.xpath("div[1]/a/img")).getAttribute("src");
+                    result.put(name, image);
+                }
+            }
+            nDriver.quit();
+        }
+        String[] classifySide = {"볼", "칩스", "스틱", "멘보샤", "튀김", "껍데기", "소떡", "삼계탕"};
+        result.forEach((menuName, image) -> {
+            String imageUrl = saveImage(menuName, image, "bbq");
+            if (menuName.contains("버거")) {
+                updateMenu(menuName, imageUrl, saved, Category.HAMBURGER);
+            } else if (menuName.contains("피자")) {
+                updateMenu(menuName, imageUrl, saved, Category.PIZZA);
+            } else if (List.of(classifySide).stream().anyMatch(n -> menuName.contains(n))) {
+                updateMenu(menuName, imageUrl, saved, Category.SIDEMENU);
+            } else {
+                updateMenu(menuName, imageUrl, saved, Category.CHICKEN);
+            }
+        });
+        return result;
+    }
+
+
+
     public Map<String, String> kfc() {
         Map<String, String> result = new HashMap<>();
         String companyName = "KFC";
@@ -103,7 +240,7 @@ public class SeleniumApiController extends WithSelenium {
             for (WebElement menu : menuList) {
                 String menuName = menu.findElement(By.xpath("h3")).getText();
                 if (menuName.contains("5조각")) {
-                    menuName = menuName.replace("5조각", "");
+                    menuName = menuName.replace(" 5조각", "");
                 }
                 String name = menuName;
                 String[] filtering = {"팩" ,"박스", "세트", "1조각", "3조각", "8조각"};
@@ -382,14 +519,5 @@ public class SeleniumApiController extends WithSelenium {
         }
         return result;
     }
-
-
-    private void save(Map<String, String> data, Company company, String folderName, Category category) {
-        data.forEach((menuName, image) -> {
-            String imageUrl = saveImage(menuName, image, folderName);
-            updateMenu(menuName, imageUrl, company, category);
-        });
-    }
-
 
 }
