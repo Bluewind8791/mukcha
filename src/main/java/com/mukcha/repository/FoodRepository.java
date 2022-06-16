@@ -30,4 +30,7 @@ public interface FoodRepository extends JpaRepository<Food, Long>, JpaSpecificat
 
     List<Food> findAllByCompanyAndCategory(Company company, Category category);
 
+    // 가장 최신의 메뉴 10개
+    List<Food> findTop10ByOrderByUpdatedAtDesc();
+
 }

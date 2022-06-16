@@ -70,5 +70,12 @@ public class FoodRepositoryTest extends WithRepositoryTest {
         assertEquals("testFoodImage", foundFood.getImage());
     }
 
+    @Test
+    void testFindUpdatedAtTopTen() {
+        List<Food> foundFoods = foodRepository.findTop10ByOrderByUpdatedAtDesc();
+        for (Food food : foundFoods) {
+            System.out.println(food);
+        }
+    }
 
 }

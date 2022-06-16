@@ -17,7 +17,6 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.springframework.data.jpa.domain.Specification;
@@ -94,7 +93,7 @@ public class FoodService {
         foodRepository.flush();
 
         // 삭제 확인
-        if (findFoodOr(foodId).isPresent()) {
+        if (foodRepository.findById(foodId).isPresent()) {
             log.info(ErrorMessage.FAIL_UPDATE.getMessage()+foodId);
             return false;
         } else {
@@ -110,16 +109,6 @@ public class FoodService {
         return foodRepository.findById(foodId).orElseThrow(() -> 
             new IllegalArgumentException(ErrorMessage.MENU_NOT_FOUND.getMessage() + foodId)
         );
-    }
-
-    @Transactional(readOnly = true)
-    public Optional<Food> findFoodOr(Long foodId) {
-        return foodRepository.findById(foodId);
-    }
-
-    @Transactional(readOnly = true)
-    public Optional<Food> findByNameOr(String foodName) {
-        return foodRepository.findByName(foodName);
     }
 
     @Transactional(readOnly = true)
@@ -170,13 +159,9 @@ public class FoodService {
     // 가장 최신의 10개 메뉴를 가져온다
     @Transactional(readOnly = true)
     public List<FoodResponseDto> findTopTenNewest() {
-        List<Food> allFoodList = foodRepository.findAll();
-        // sort
-        if (allFoodList.size() > 2) {
-            Collections.sort(allFoodList, Comparator.comparing(Food::getCreatedAt).reversed());
-        }
+        List<Food> foodList = foodRepository.findTop10ByOrderByUpdatedAtDesc();
         // 가장 최신 10개의 메뉴를 가져오고 dto로 변환
-        return transDtoList(allFoodList.stream().limit(10).collect(Collectors.toList()));
+        return transDtoList(foodList.stream().collect(Collectors.toList()));
     }
 
     // 각 회사별 메뉴들을 카테고리 별로 가져온다
