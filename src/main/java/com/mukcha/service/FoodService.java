@@ -13,7 +13,6 @@ import com.mukcha.repository.ReviewRepository;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -145,15 +144,8 @@ public class FoodService {
     // 평균 점수를 기준으로 가장 높은 10개의 메뉴를 가져오기
     @Transactional(readOnly = true)
     public List<FoodResponseDto> findTopTenOrderByScore() {
-        List<FoodResponseDto> dtos = findAll();
-        // sort
-        if (dtos.size() > 2) {
-            Collections.sort(
-                dtos, Comparator.comparing(FoodResponseDto::getAverageScore).reversed()
-            );
-        }
-        // get top 10
-        return dtos.stream().limit(10).collect(Collectors.toList());
+        List<Food> foodList = foodRepository.findTop10ByOrderByAverageScoreDesc();
+        return transDtoList(foodList.stream().collect(Collectors.toList()));
     }
 
     // 가장 최신의 10개 메뉴를 가져온다

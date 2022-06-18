@@ -17,6 +17,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
+
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import lombok.AllArgsConstructor;
@@ -61,11 +62,19 @@ public class Food extends BaseTimeEntity {
     @OneToMany(mappedBy = "food", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     private List<Review> reviews = new ArrayList<>();
 
+    @Column(name = "average_score", columnDefinition = "double default 0.0")
+    private double averageScore;
+
+    public void setAverageScore() {
+        int sum = this.reviews.stream().map(r -> r.getScore().value)
+            .mapToInt(Integer::intValue).sum();
+        float average = sum / (float)this.reviews.size();
+        this.averageScore = Math.round(average * 100) / 100.0;
+    }
 
     public void setCategory(Category category) {
         this.category = category;
     }
-
 
     public void setCompany(Company company) {
         this.company = company;
@@ -82,11 +91,3 @@ public class Food extends BaseTimeEntity {
     }
 
 }
-
-    // public void addReviews(Review review) {
-    //     this.reviews.add(review);
-    //     // 무한루프 방지
-    //     if (review.getFood() != this) {
-    //         review.setFood(this);
-    //     }
-    // }

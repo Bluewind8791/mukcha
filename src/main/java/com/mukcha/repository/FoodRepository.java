@@ -33,4 +33,7 @@ public interface FoodRepository extends JpaRepository<Food, Long>, JpaSpecificat
     // 가장 최신의 메뉴 10개
     List<Food> findTop10ByOrderByUpdatedAtDesc();
 
+    // 가장 평균점수가 높은 메뉴 10개
+    List<Food> findTop10ByOrderByAverageScoreDesc();
+
 }

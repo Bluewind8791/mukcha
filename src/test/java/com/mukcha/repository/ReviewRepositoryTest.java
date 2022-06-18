@@ -55,4 +55,5 @@ public class ReviewRepositoryTest extends WithRepositoryTest {
         Review testReview = reviews.get(0);
         assertEquals("testComment", testReview.getComment());
     }
+
 }

@@ -40,18 +40,20 @@ public class ReviewService {
 
     // 코멘트와 점수 저장 및 수정
     public Review saveReview(Long userId, Long foodId,  ReviewSaveRequestDto dto) {
+        Food food = foodService.findByFoodId(foodId);
         try {
             Review review = findByFoodIdAndUserId(foodId, userId);
             // update
             review.update(dto.getScore(), dto.getComment());
+            food.setAverageScore();
             log.info(">>> 리뷰가 수정되었습니다. "+review);
             return review;
         } catch (IllegalArgumentException | NoSuchElementException e) {
             // create
             Review review = dto.toEntity();
             User user = userService.findUser(userId);
-            Food food = foodService.findByFoodId(foodId);
             review.setFoodAndUser(user, food);
+            food.setAverageScore();
             log.info(">>> 리뷰가 생성되었습니다. "+review);
             return reviewRepository.save(review);
         }

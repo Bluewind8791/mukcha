@@ -4,6 +4,8 @@ import java.time.LocalDate;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -37,6 +39,7 @@ public class Review extends BaseTimeEntity {
 
     private String comment;
 
+    @Enumerated(EnumType.ORDINAL)
     private Score score;
 
     @Column(name = "likes_count", columnDefinition = "integer default 0")
@@ -53,7 +56,6 @@ public class Review extends BaseTimeEntity {
     // review -> user (연관관계 주인)
     @ManyToOne(fetch = FetchType.EAGER)
     private User user;
-
 
     public void update(Score score, String comment) {
         this.score = score;

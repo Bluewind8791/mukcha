@@ -7,10 +7,12 @@ import java.util.List;
 
 import com.mukcha.controller.dto.CategoryCountResponseDto;
 import com.mukcha.controller.dto.ReviewResponseDto;
+import com.mukcha.controller.dto.ReviewSaveRequestDto;
 import com.mukcha.domain.Category;
 import com.mukcha.domain.Company;
 import com.mukcha.domain.Food;
 import com.mukcha.domain.Review;
+import com.mukcha.domain.Score;
 import com.mukcha.domain.User;
 import com.mukcha.service.helper.WithTest;
 
@@ -25,7 +27,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Transactional
 @SpringBootTest
-@ActiveProfiles("test2")
+@ActiveProfiles("local")
 public class ReviewServiceTest extends WithTest {
 
     Company company;
@@ -53,8 +55,8 @@ public class ReviewServiceTest extends WithTest {
     }
 
     @Test
-    @DisplayName("5. 해당 음식의 모든 리뷰를 찾는다")
-    void test_5() {
+    @DisplayName("해당 음식의 모든 리뷰를 찾는다")
+    void testFindAllByFoodId() {
         // given
         reviewTestHelper.createReview(food, user);
         User user2 = userTestHelper.createUser("email2", "nickname2");
@@ -68,8 +70,8 @@ public class ReviewServiceTest extends WithTest {
     }
 
     @Test
-    @DisplayName("6. 해당 음식의 모든 음식을 가장 최신순으로 페이징하여 가져온다")
-    void testfindAllByFoodIdOrderByCreatedAtDesc() {
+    @DisplayName("해당 음식의 모든 음식을 가장 최신순으로 페이징하여 가져온다")
+    void testFindAllByFoodIdOrderByCreatedAtDesc() {
         // given
         User user1 = userTestHelper.createUser("test2@review.test", "rt2");
         User user2 = userTestHelper.createUser("test3@review.test", "rt3");
@@ -87,8 +89,8 @@ public class ReviewServiceTest extends WithTest {
     }
 
     @Test
-    @DisplayName("8. 각 카테고리별 해당 유저의 모든 리뷰 수 가져오기")
-    void test_8() {
+    @DisplayName("각 카테고리별 해당 유저의 모든 리뷰 수 가져오기")
+    void testGetCountByCategoryAndUserId() {
         reviewTestHelper.createReview(food, user);
         reviewTestHelper.createReview(food, user);
         reviewTestHelper.createReview(food, user);
@@ -116,7 +118,20 @@ public class ReviewServiceTest extends WithTest {
         assertEquals(true, result);
     }
 
-
-
+    @Test
+    void testSaveReview() {
+        // given
+        ReviewSaveRequestDto dto = ReviewSaveRequestDto.builder()
+            .rating("인생 메뉴에요!")
+            .comment("comment")
+            .build();
+        // when
+        Review review = reviewService.saveReview(user.getUserId(), food.getFoodId(), dto);
+        // then
+        assertEquals("comment", review.getComment());
+        assertEquals(Score.BEST, review.getScore());
+        assertEquals(0, food.getAverageScore());
+        System.out.println(review);
+    }
 
 }
