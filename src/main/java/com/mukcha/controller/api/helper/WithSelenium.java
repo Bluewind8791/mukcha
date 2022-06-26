@@ -1,8 +1,6 @@
 package com.mukcha.controller.api.helper;
 
 
-import java.util.concurrent.TimeUnit;
-
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
@@ -25,8 +23,13 @@ public class WithSelenium extends CrawlingHelper {
         WebDriver driver = new ChromeDriver(options);
         driver.get(url); // WebDriver을 해당 url로 이동한다.
         //브라우저 이동시 생기는 로드시간을 기다린다.
-		//HTTP 응답속도보다 자바의 컴파일 속도가 더 빠르기 때문에 임의적으로 대기한다.
-        driver.manage().timeouts().implicitlyWait(2, TimeUnit.SECONDS);
+        //HTTP 응답속도보다 자바의 컴파일 속도가 더 빠르기 때문에 임의적으로 대기한다.
+        try {
+            Thread.sleep(2000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+            driver.quit();
+        }
         return driver;
     }
 

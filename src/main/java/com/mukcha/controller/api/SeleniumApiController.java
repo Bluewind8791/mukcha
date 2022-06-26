@@ -103,6 +103,72 @@ public class SeleniumApiController extends WithSelenium {
         return ResponseEntity.ok(body);
     }
 
+    @GetMapping("/crawling/푸라닭")
+    public ResponseEntity<Object> crawlingPuradak() {
+        Map<String, String> body;
+        body = puradak();
+        return ResponseEntity.ok(body);
+    }
+
+
+    public Map<String, String> puradak() {
+        Map<String, String> result = new HashMap<>();
+        String companyName = "푸라닭";
+        Company company = companyRepository.findByName(companyName).orElseGet(() -> {
+            Company comp = Company.builder()
+                .name(companyName)
+                .image("https://mukcha-bucket.s3.ap-northeast-2.amazonaws.com/logo/logo_puradak.png")
+                .build();
+            return companyService.save(comp);
+        });
+        List<String> chickenList = new ArrayList<>();
+        chickenList.add("https://puradakchicken.com/menu/product.asp?page=1&sermode=0&sermode2=0&serdiv="); // 치킨메뉴 뼈 1페이지
+        chickenList.add("https://puradakchicken.com/menu/product.asp?page=2&sermode=0&sermode2=0&serdiv="); // 치킨메뉴 뼈 2페이지
+        chickenList.add("https://puradakchicken.com/menu/product.asp?sermode=2"); // 푸레스트 (닭가슴살 메뉴)
+        result.putAll(puradakCrawling(chickenList, company, Category.CHICKEN));
+        List<String> sideList = new ArrayList<>();
+        sideList.add("https://puradakchicken.com/menu/product.asp?page=1&sermode=1&sermode2=&serdiv="); // 사이드메뉴 1페이지
+        sideList.add("https://puradakchicken.com/menu/product.asp?page=2&sermode=1&sermode2=&serdiv="); // 사이드메뉴 2페이지
+        sideList.add("https://puradakchicken.com/menu/product.asp?page=3&sermode=1&sermode2=&serdiv="); // 사이드메뉴 3페이지
+        sideList.add("https://puradakchicken.com/menu/product.asp?sermode=3"); // 베이커리
+        result.putAll(puradakCrawling(sideList, company, Category.SIDEMENU));
+        List<String> pizzaList = new ArrayList<>();
+        pizzaList.add("https://puradakchicken.com/menu/product.asp?sermode=4"); // 피자
+        result.putAll(puradakCrawling(pizzaList, company, Category.PIZZA));
+        return result;
+    }
+    private Map<String, String> puradakCrawling(List<String> urlList, Company company,Category category) {
+        List<String> menuUrlList = new ArrayList<>();
+        Map<String, String> data = new HashMap<>();
+        for (String url : urlList) {
+            WebDriver driver = setupDriver(url);
+            List<WebElement> lists = driver.findElements(By.cssSelector("#contents > div.inConts > div.photo_list.allmenu > ul > li"));
+            for (WebElement menu : lists) {
+                String menuPage = menu.findElement(By.cssSelector("a")).getAttribute("href");
+                menuUrlList.add(menuPage);
+            }
+            driver.quit();
+        }
+        List<String> menuNameFilter = Arrays.asList("배달", "보틀", "2개", "3개");
+        for (String url : menuUrlList) {
+            WebDriver driver = setupDriver(url);
+            String mName = driver.findElement(By.cssSelector("#contents > div.photo_detail.white > div > div > div.pro_name > span > p.title")).getText();
+            if (!menuNameFilter.stream().anyMatch(filter -> mName.contains(filter))) {
+                String menuName = mName;
+                if (menuName.contains("(1개)")) {
+                    menuName = menuName.replace("(1개)", "");
+                }
+                String image = driver.findElement(By.xpath("//*[@id=\"contents\"]/div[1]/div/div/div[2]/img")).getAttribute("src");
+                String imageUrl = saveImage(menuName, image, "puradak");
+                updateMenu(menuName, imageUrl, company, category);
+                data.put(menuName, image);
+            }
+            driver.quit();
+        }
+        return data;
+    }
+
+
 
     public Map<String, String> bigstarPizza() {
         Map<String, String> result = new HashMap<>();

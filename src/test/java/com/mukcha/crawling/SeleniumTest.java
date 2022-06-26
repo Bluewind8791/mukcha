@@ -20,13 +20,13 @@ public class SeleniumTest extends WithSelenium {
     private SeleniumApiController seleniumApiController;
 
     @Test
-    void uploadTest() {
-        String fileName = "/image/burgerking_"+getEncodedFilename("기네스와퍼")+".png";
-        File file = new File(fileName);
-        String imageUrl = s3Uploader.upload(file, "image");
-        System.out.println(imageUrl);
+    void puradak() {
+        Map<String, String> result = seleniumApiController.puradak();
+        result.forEach((key, value) -> {
+            System.out.println(">>> "+key);
+            System.out.println(">>> "+value);
+        });
     }
-
 
     @Test
     void baskin31() throws InterruptedException {
@@ -98,6 +98,14 @@ public class SeleniumTest extends WithSelenium {
             System.out.println(">>> "+key+">");
             System.out.println(">>> "+value);
         });
+    }
+
+    @Test
+    void uploadTest() {
+        String fileName = "/image/burgerking_"+getEncodedFilename("기네스와퍼")+".png";
+        File file = new File(fileName);
+        String imageUrl = s3Uploader.upload(file, "image");
+        System.out.println(imageUrl);
     }
 
 }

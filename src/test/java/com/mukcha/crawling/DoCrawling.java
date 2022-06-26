@@ -23,6 +23,12 @@ public class DoCrawling {
 
 
     @Test
+    @DisplayName("푸라닭 크롤링")
+    void CrawlingPuradak() throws Exception {
+        seleniumApiController.puradak();
+    }
+
+    @Test
     @DisplayName("배스킨라빈스 크롤링")
     void CrawlingBaskin() throws Exception {
         seleniumApiController.baskin31();

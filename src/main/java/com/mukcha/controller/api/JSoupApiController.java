@@ -82,7 +82,6 @@ public class JSoupApiController extends CrawlingHelper {
         }
     }
 
-
     public Map<String, String> pericana() throws IOException {
         Map<String, String> result = new HashMap<>();
         String companyName = "페리카나";

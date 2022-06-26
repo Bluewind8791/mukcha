@@ -18,7 +18,6 @@ public class JSoupTest {
     @Autowired
     private JSoupApiController jSoupApiController;
 
-
     @Test
     void baedduck() throws IOException {
         Map<String, String> result = jSoupApiController.baedduck();
