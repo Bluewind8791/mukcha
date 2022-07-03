@@ -23,7 +23,8 @@
 
 ### 프론트엔드
 
-* **BootStrap 5** 및 **Thymeleaf** 기술을 사용하여 간단하게 개발하였습니다.
+- HTML5, CSS 와 **BootStrap 5** 및 **Thymeleaf**를 사용하여 프론트 부분을 개발하였습니다.
+- **jQuery Ajax**를 사용하여 API와 통신을 하게끔 개발하였습니다.
 
 ### 백엔드
 
@@ -53,6 +54,7 @@
       <img alt="html" src="https://img.shields.io/badge/-HTML5-E34F26?style=for-the-badge&logo=html5&logoColor=white" />
       <img alt="Thymeleaf" src="https://img.shields.io/badge/-Thymeleaf-005F0F?style=for-the-badge&logo=Thymeleaf&logoColor=white" />
       <img alt="Bootstrap5" src="https://img.shields.io/badge/-Bootstrap5-7952B3?style=for-the-badge&logo=Bootstrap&logoColor=white" />
+      <img alt="jQuery" src="https://img.shields.io/badge/-jQuery-0769AD?style=for-the-badge&logo=Jquery&logoColor=white" />
   </p>
 </div>
 
