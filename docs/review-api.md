@@ -1,9 +1,6 @@
 # Review API
 
 
-## /users/2/category/CHICKEN
-
-
 ## 리뷰 테이블 추가 / 수정
 
 - 로그인 한 유저만이 접근 가능한 API입니다.

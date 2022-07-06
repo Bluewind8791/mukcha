@@ -143,8 +143,6 @@ foodId | Long | 해당 메뉴 ID | required
 - 해당 카테고리의 모든 메뉴 리스트를 보여줍니다.
 
 
-
-
 | Method | URI
 |--|--|
 | `GET` | `/category/{category}`
