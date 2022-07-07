@@ -10,6 +10,10 @@ import com.mukcha.domain.Category;
 import com.mukcha.service.ReviewService;
 import com.mukcha.service.UserService;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.tags.Tag;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -21,6 +25,7 @@ import lombok.RequiredArgsConstructor;
 
 @RestController
 @RequiredArgsConstructor
+@Tag(name = "User Controller")
 @RequestMapping(value = "/users")
 public class UserController {
 
@@ -28,11 +33,11 @@ public class UserController {
     private final UserService userService;
 
 
-    // 해당 유저 정보 페이지
     @GetMapping("/{userId}")
+    @Operation(description = "해당 유저의 정보를 볼 수 있는 페이지입니다.")
     public ModelAndView viewUserInfo(
-        @PathVariable Long userId,
-        @LoginUser SessionUser sessionUser
+        @Parameter(description = "유저ID", example = "1") @PathVariable Long userId,
+        @Parameter(hidden = true) @LoginUser SessionUser sessionUser
     ) {
         Map<String, Object> response = new HashMap<>();
         if (sessionUser != null) {
@@ -47,11 +52,11 @@ public class UserController {
         return new ModelAndView("user/userPage", response, HttpStatus.OK);
     }
 
-    // 해당 유저의 각 카테고리별 리뷰 페이지
     @GetMapping("/{userId}/category/{category}")
+    @Operation(description = "해당 유저의 각 카테고리별 리뷰를 보여줍니다.")
     public ModelAndView viewReviewInCategory(
-        @PathVariable Long userId,
-        @PathVariable Category category,
+        @Parameter(description = "유저ID", example = "1") @PathVariable Long userId,
+        @Parameter(description = "카테고리", example = "1") @PathVariable Category category,
         @LoginUser SessionUser sessionUser
     ) {
         Map<String, Object> response = new HashMap<>();

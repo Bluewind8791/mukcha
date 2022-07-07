@@ -11,6 +11,10 @@ import com.mukcha.service.CompanyService;
 import com.mukcha.service.FoodService;
 import com.mukcha.service.UserService;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.tags.Tag;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -24,6 +28,7 @@ import lombok.RequiredArgsConstructor;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/companies")
+@Tag(name = "Company Controller")
 public class CompanyController {
 
     private final CompanyService companyService;
@@ -32,9 +37,10 @@ public class CompanyController {
 
     // VIEW - 각 회사 페이지
     @GetMapping("/{companyId}")
+    @Operation(description = "해당 프랜차이즈 회사의 모든 메뉴를 볼 수 있는 페이지입니다.")
     public ModelAndView getCompany(
-        @PathVariable Long companyId,
-        @LoginUser SessionUser sessionUser
+        @Parameter(description = "회사ID", example = "1") @PathVariable Long companyId,
+        @Parameter(hidden = true) @LoginUser SessionUser sessionUser
     ) {
         Map<String, Object> response = new HashMap<>();
         if (sessionUser != null) {

@@ -6,6 +6,10 @@ import java.util.List;
 
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
+
 import org.springframework.core.env.Environment;
 
 import lombok.RequiredArgsConstructor;
@@ -13,12 +17,13 @@ import lombok.RequiredArgsConstructor;
 
 @RestController
 @RequiredArgsConstructor
+@Tag(name = "Profile Controller")
 public class ProfileController {
 
     private final Environment env;
 
-    // 실행중인 프로젝트의 Profile이 뭔지 확인할 수 있는 API
     @GetMapping("/profile")
+    @Operation(description = "실행중인 프로젝트의 Profile을 확인할 수 있는 API입니다.")
     public String getProfile() {
         List<String> profile = Arrays.asList(env.getActiveProfiles());
         List<String> realProfiles = Arrays.asList("set1", "set2");
@@ -29,6 +34,5 @@ public class ProfileController {
                 .findAny()
                 .orElse(defaultProfile);
     }
-
 
 }
