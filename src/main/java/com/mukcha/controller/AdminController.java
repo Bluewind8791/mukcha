@@ -13,6 +13,7 @@ import com.mukcha.service.CompanyService;
 import com.mukcha.service.FoodService;
 import com.mukcha.service.UserService;
 
+import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 
@@ -26,7 +27,6 @@ import org.springframework.web.servlet.ModelAndView;
 import lombok.RequiredArgsConstructor;
 
 
-// 
 @RestController
 @RequiredArgsConstructor
 @RequestMapping(value = "/admin")
@@ -39,8 +39,8 @@ public class AdminController {
     private final UserService userService;
 
 
-    // 관리자 루트 페이지
     @GetMapping({"/", ""})
+    @Operation(summary = "관리자 루트 페이지")
     public ModelAndView home(@Parameter(hidden = true) @LoginUser SessionUser sessionUser) {
         Map<String, Object> response = new HashMap<>();
         response.put("_links", // self link 추가
@@ -58,8 +58,8 @@ public class AdminController {
         return new ModelAndView("admin/adminHome", response, HttpStatus.OK);
     }
 
-    // 해당 회사 정보 페이지
     @GetMapping("/companies/{companyId}")
+    @Operation(summary = "해당 회사 정보 페이지")
     public ModelAndView getCompany(
             @Parameter(hidden = true) @LoginUser SessionUser sessionUser,
             @Parameter(description = "해당 회사 ID", required = true) @PathVariable Long companyId
@@ -80,8 +80,8 @@ public class AdminController {
         return new ModelAndView("admin/adminCompany", response, HttpStatus.OK);
     }
 
-    // 모든 메뉴 더보기 페이지
     @GetMapping("/menus")
+    @Operation(summary = "모든 메뉴 더보기 페이지")
     public ModelAndView getMenus(@Parameter(hidden = true) @LoginUser SessionUser sessionUser) {
         Map<String, Object> response = new HashMap<>();
         response.put("_links",

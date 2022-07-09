@@ -12,6 +12,9 @@ import com.mukcha.service.FoodService;
 import com.mukcha.service.ReviewService;
 import com.mukcha.service.UserService;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -25,6 +28,7 @@ import lombok.RequiredArgsConstructor;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping(value = "/menus")
+@Tag(name = "Food Controller", description = "메뉴 관련 정보 페이지를 넘겨주는 API입니다.")
 public class FoodController {
 
     private final FoodService foodService;
@@ -32,8 +36,8 @@ public class FoodController {
     private final UserService userService;
 
 
-    // 해당 메뉴의 정보와 리뷰 3개를 보여주는 페이지
     @GetMapping("/{foodId}")
+    @Operation(description = "해당 메뉴의 정보와 리뷰 3개를 보여주는 페이지")
     public ModelAndView getMenu(
         @PathVariable Long foodId,
         @LoginUser SessionUser sessionUser,
@@ -66,8 +70,8 @@ public class FoodController {
         return new ModelAndView("food/detail", response, HttpStatus.OK);
     }
 
-    // '리뷰 더보기'를 눌러 해당 메뉴의 모든 리뷰 보기
     @GetMapping("/{foodId}/reviews")
+    @Operation(description = "'리뷰 더보기'를 눌러 해당 메뉴의 모든 리뷰를 보여주는 페이지")
     public ModelAndView getReviews(@PathVariable Long foodId, @LoginUser SessionUser sessionUser) {
         Map<String, Object> response = new HashMap<>();
         response.put("_links",

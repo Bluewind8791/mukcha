@@ -35,9 +35,8 @@ public class CompanyController {
     private final UserService userService;
     private final FoodService foodService;
 
-    // VIEW - 각 회사 페이지
     @GetMapping("/{companyId}")
-    @Operation(description = "해당 프랜차이즈 회사의 모든 메뉴를 볼 수 있는 페이지입니다.")
+    @Operation(summary = "해당 프랜차이즈 회사의 모든 메뉴를 볼 수 있는 페이지")
     public ModelAndView getCompany(
         @Parameter(description = "회사ID", example = "1") @PathVariable Long companyId,
         @Parameter(hidden = true) @LoginUser SessionUser sessionUser
@@ -54,7 +53,5 @@ public class CompanyController {
         response.put("foodList", foodService.findAllFoodsByCategory(companyId));
         return new ModelAndView("company/detail", response, HttpStatus.OK);
     }
-
-
 
 }

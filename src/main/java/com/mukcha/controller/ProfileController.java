@@ -23,7 +23,7 @@ public class ProfileController {
     private final Environment env;
 
     @GetMapping("/profile")
-    @Operation(description = "실행중인 프로젝트의 Profile을 확인할 수 있는 API입니다.")
+    @Operation(summary = "실행중인 프로젝트의 profile을 확인할 수 있는 페이지")
     public String getProfile() {
         List<String> profile = Arrays.asList(env.getActiveProfiles());
         List<String> realProfiles = Arrays.asList("set1", "set2");

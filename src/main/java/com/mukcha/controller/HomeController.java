@@ -8,6 +8,10 @@ import com.mukcha.config.dto.SessionUser;
 import com.mukcha.service.FoodService;
 import com.mukcha.service.UserService;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.tags.Tag;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -18,15 +22,16 @@ import lombok.RequiredArgsConstructor;
 
 @RestController
 @RequiredArgsConstructor
+@Tag(name = "Home Controller")
 public class HomeController {
 
     private final FoodService foodService;
     private final UserService userService;
 
 
-    // Root page
     @GetMapping({"/", ""})
-    public ModelAndView home(@LoginUser SessionUser sessionUser) {
+    @Operation(summary = "루트 페이지의 별점순 TOP10 메뉴와 최신메뉴 TOP10 리스트를 넘겨줍니다.")
+    public ModelAndView home(@Parameter(hidden = true) @LoginUser SessionUser sessionUser) {
         Map<String, Object> response = new HashMap<>();
         // login user 정보
         if (sessionUser != null) {
@@ -39,14 +44,14 @@ public class HomeController {
         return new ModelAndView("home", response, HttpStatus.OK);
     }
 
-    // 로그인 페이지
     @GetMapping("/login")
+    @Operation(summary = "로그인 페이지")
     public ModelAndView login() {
         return new ModelAndView("user/loginForm", HttpStatus.OK);
     }
 
-    // 권한없음 페이지
     @GetMapping("/access-denied")
+    @Operation(summary = "권한없음 페이지")
     public ModelAndView accessDenied(@LoginUser SessionUser sessionUser) {
         Map<String, Object> response = new HashMap<>();
         if (sessionUser != null) {

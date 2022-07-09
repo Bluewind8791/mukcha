@@ -34,7 +34,7 @@ public class UserController {
 
 
     @GetMapping("/{userId}")
-    @Operation(description = "해당 유저의 정보를 볼 수 있는 페이지입니다.")
+    @Operation(summary = "해당 유저의 정보를 볼 수 있는 페이지")
     public ModelAndView viewUserInfo(
         @Parameter(description = "유저ID", example = "1") @PathVariable Long userId,
         @Parameter(hidden = true) @LoginUser SessionUser sessionUser
@@ -53,7 +53,7 @@ public class UserController {
     }
 
     @GetMapping("/{userId}/category/{category}")
-    @Operation(description = "해당 유저의 각 카테고리별 리뷰를 보여줍니다.")
+    @Operation(summary = "해당 유저의 각 카테고리별 리뷰를 보여주는 페이지")
     public ModelAndView viewReviewInCategory(
         @Parameter(description = "유저ID", example = "1") @PathVariable Long userId,
         @Parameter(description = "카테고리", example = "1") @PathVariable Category category,

@@ -8,9 +8,6 @@ import com.mukcha.service.CompanyService;
 import com.mukcha.service.FoodService;
 import com.mukcha.service.UserService;
 
-import io.swagger.v3.oas.annotations.Parameter;
-import io.swagger.v3.oas.annotations.tags.Tag;
-
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -20,7 +17,6 @@ import lombok.RequiredArgsConstructor;
 
 @Controller
 @RequiredArgsConstructor
-@Tag(name = "Search Controller")
 public class SearchController {
 
     private final UserService userService;
@@ -32,7 +28,7 @@ public class SearchController {
     public String search(
         @RequestParam(required = false) String keyword,
         Model model,
-        @Parameter(hidden = true) @LoginUser SessionUser sessionUser
+        @LoginUser SessionUser sessionUser
     ) {
         if (sessionUser != null) {
             model.addAttribute("loginUser", userService.getSessionUserInfo(sessionUser));
@@ -48,7 +44,7 @@ public class SearchController {
     public String foodSearchList(
         @RequestParam(required = false) String keyword,
         Model model,
-        @Parameter(hidden = true) @LoginUser SessionUser sessionUser
+        @LoginUser SessionUser sessionUser
     ) {
         if (sessionUser != null) {
             model.addAttribute("loginUser", userService.getSessionUserInfo(sessionUser));
@@ -62,7 +58,7 @@ public class SearchController {
     public String companySearchList(
         @RequestParam(required = false) String keyword,
         Model model,
-        @Parameter(hidden = true) @LoginUser SessionUser sessionUser
+        @LoginUser SessionUser sessionUser
     ) {
         if (sessionUser != null) {
             model.addAttribute("loginUser", userService.getSessionUserInfo(sessionUser));

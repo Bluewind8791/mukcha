@@ -29,7 +29,7 @@ public class UserInfoController {
 
 
     @GetMapping("/edit")
-    @Operation(description = "회원 개인정보 수정 페이지입니다.")
+    @Operation(summary = "회원 개인정보 수정 페이지")
     public String viewUserEditPage(Model model, @LoginUser SessionUser sessionUser) {
         if (sessionUser != null) {
             SessionUserResponseDto sUser = userService.getSessionUserInfo(sessionUser);
@@ -41,7 +41,7 @@ public class UserInfoController {
     }
 
     @GetMapping(value = "/delete")
-    @Operation(description = "회원 탈퇴 페이지입니다.")
+    @Operation(summary = "회원 탈퇴 페이지")
     public String viewDisableUserPage(@LoginUser SessionUser sessionUser, Model model) {
         // Login User
         if (sessionUser != null) {

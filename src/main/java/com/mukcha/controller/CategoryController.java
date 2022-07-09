@@ -35,7 +35,7 @@ public class CategoryController {
     private final UserService userService;
 
     @GetMapping("/category/{categoryName}")
-    @Operation(description = "해당 카테고리의 모든 메뉴를 볼 수 있는 페이지입니다.")
+    @Operation(summary = "해당 카테고리의 모든 메뉴를 볼 수 있는 페이지")
     public ModelAndView categoryPage(
         @Parameter(description = "카테고리명", example = "CHICKEN") @PathVariable String categoryName,
         @Parameter(hidden = true) @LoginUser SessionUser sessionUser
